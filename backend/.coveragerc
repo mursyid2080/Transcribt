@@ -1,0 +1,6 @@
+[run]
+source = authentication/, backend/,
+omit=
+    */migrations/*
+    */tests/*
+    */__init__.py

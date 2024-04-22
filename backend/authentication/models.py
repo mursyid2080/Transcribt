@@ -1,9 +1,12 @@
 from django.db import models
 from helpers.models import TrackingModel
-from django.contrib.auth.validators import UnicodeUsernameValidator    
+from django.contrib.auth.validators import UnicodeUsernameValidator 
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.apps import apps
+
 
 # Create your models here.
 
