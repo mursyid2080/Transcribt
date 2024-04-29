@@ -14,3 +14,7 @@ class TestModel(APITestCase):
         self.assertIsInstance(user, User)
         self.assertTrue(user.is_staff)
         self.assertEqual(user.email, 'malekmursyid@gmail.com')
+
+    # add for messages
+    def test_raises_error_when_no_userna(self):
+        self.assertRaises(ValueError,User.objects.create_user, username="", email='malekmursyid@gmail.com', password='rightp@55word')

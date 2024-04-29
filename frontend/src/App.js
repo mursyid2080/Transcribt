@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from './Home'
+import Login from './Login'
+import Register from './Register'
+import { AuthenticationForm } from './AuthenticationForm'
+import { MantineProvider } from '@mantine/core'
+
+
+
+
+import './App.css'
+import React, { useEffect, useState } from 'react'
 
 function App() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get('/get-data/');
-      setData(response.data);
-    }
-    fetchData();
-  }, []);
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [email, setEmail] = useState('')
 
   return (
-    <div>
-      <h1>Data from Django Backend</h1>
-      <ul>
-        {data.map(item => (
-          <li key={item.id}>
-            <strong>{item.name}</strong>: {item.description}
-          </li>
-        ))}
-      </ul>
+    <div className="App">
+
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+            <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+            <Route path="/authenticationform" element={<AuthenticationForm/>} />
+          </Routes>
+        </BrowserRouter>
+
     </div>
-  );
+  )
 }
 
-export default App;
-
+export default App
