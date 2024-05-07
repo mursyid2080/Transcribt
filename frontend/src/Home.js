@@ -6,7 +6,7 @@ const Home = (props) => {
   const navigate = useNavigate()
 
   const onButtonClick = () => {
-    navigate('/authenticationform')
+    navigate('/login')
   };
 
   return (

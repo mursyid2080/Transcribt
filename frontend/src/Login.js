@@ -53,6 +53,7 @@ const Login = (props) => {
       .then(response => {
           // Handle successful response
           console.log('Login successful:', response.data);
+          navigate('/homepage')
           // You may want to handle redirection or other actions upon successful login
       })
       .catch(error => {
