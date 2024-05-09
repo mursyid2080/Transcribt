@@ -1,3 +1,4 @@
+
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 // import IconButton from '@mui/material/IconButton';
@@ -10,31 +11,6 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 
 import { GitHub, Twitter, Facebook, Instagram, Youtube } from "react-feather"
 import IconButton from "./IconButton"
-
-function InputSelector() {
-  return (
-    <div className="flex flex-row justify-center gap-4">
-      <IconButton text="Github">
-        <GitHub size={20} />
-      </IconButton>
-      <IconButton text="Facebook" color="bg-blue-500">
-        <Facebook size={20} />
-      </IconButton>
-      <IconButton
-        text="/ycldev"
-        color="bg-gradient-to-tr from-yellow-500 to-purple-500 via-pink-500"
-      >
-        <Instagram size={20} />
-      </IconButton>
-      <IconButton text="/YourCodeLab" color="bg-sky-500">
-        <Twitter size={20} />
-      </IconButton>
-      <IconButton text="@ycldev" color="bg-red-500">
-        <Youtube size={20} />
-      </IconButton>
-    </div>
-  )
-}
 
 const fileTypes = ['mp3', 'wav', 'flac'];
 
@@ -80,15 +56,5 @@ function DragDrop() {
     </Container>
   );
 }
-const Transcribe = () => {
-    return(
-        <div>
-            <div className="main-content">
-                <InputSelector/>
-                <DragDrop/>
-            </div>
-        </div>
-    )
-}
 
-export default Transcribe;
+export default DragDrop;

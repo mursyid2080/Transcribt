@@ -30,7 +30,7 @@ import Dashboard from './Dashboard';
 import { useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import Transcribe from './Transcribe';
+import Transcribe from './TranscribeModule/Transcribe';
 
 
 function Copyright(props) {
