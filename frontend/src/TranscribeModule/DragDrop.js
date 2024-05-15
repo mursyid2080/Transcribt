@@ -44,7 +44,7 @@ function DragDrop() {
         >
           <MusicNoteIcon fontSize="large" />
           <Typography variant="body1" sx={{ marginTop: 1 }}>
-            Supported file types: {fileTypes.join(", ")}
+            {fileTypes.join(", ")}
           </Typography>
         </FileUploader>
         {file && (
