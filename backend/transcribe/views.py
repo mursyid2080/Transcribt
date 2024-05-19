@@ -113,29 +113,38 @@ class TranscriptionUploadView(APIView):
             ideal_offset = statistics.mean(offsets)
             print("ideal offset: ", ideal_offset)
 
-            best_error = float("inf")
-            best_notes_and_rests = None
-            best_predictions_per_note = None
+            # best_error = float("inf")
+            # best_notes_and_rests = None
+            # best_predictions_per_note = None
 
-            for predictions_per_note in range(20, 65, 1):
-                for prediction_start_offset in range(predictions_per_note):
+            # for predictions_per_note in range(20, 65, 1):
+            #     for prediction_start_offset in range(predictions_per_note):
 
-                    error, notes_and_rests = get_quantization_and_error(
-                        pitch_outputs_and_rests, predictions_per_note,
-                        prediction_start_offset, ideal_offset)
+            #         error, notes_and_rests = get_quantization_and_error(
+            #             pitch_outputs_and_rests, predictions_per_note,
+            #             prediction_start_offset, ideal_offset)
+            #         print(1)
+            #         if error < best_error:
+            #             best_error = error
+            #             print(best_error)
+                        
+            #             best_notes_and_rests = notes_and_rests
+            #             best_predictions_per_note = predictions_per_note
 
-                    if error < best_error:
-                        best_error = error
-                        best_notes_and_rests = notes_and_rests
-                        best_predictions_per_note = predictions_per_note
+            best_notes_and_rests, best_predictions_per_note, best_error = find_best_quantization(pitch_outputs_and_rests, ideal_offset)
 
+            # Now you can use the returned values as needed
+            print("Best quantization:")
+            print("Notes and rests:", best_notes_and_rests)
+            print("Best predictions per note:", best_predictions_per_note)
+            print("Best error:", best_error)    
             # At this point, best_notes_and_rests contains the best quantization.
             # Since we don't need to have rests at the beginning, let's remove these:
-            while best_notes_and_rests[0] == 'Rest':
-                est_notes_and_rests = best_notes_and_rests[1:]
-            # Also remove silence at the end.
-            while best_notes_and_rests[-1] == 'Rest':
-                best_notes_and_rests = best_notes_and_rests[:-1]
+            # while best_notes_and_rests[0] == 'Rest':
+            #     est_notes_and_rests = best_notes_and_rests[1:]
+            # # Also remove silence at the end.
+            # while best_notes_and_rests[-1] == 'Rest':
+            #     best_notes_and_rests = best_notes_and_rests[:-1]
 
             # Creating the sheet music score.
             sc = music21.stream.Score()
@@ -153,12 +162,33 @@ class TranscriptionUploadView(APIView):
                 else:
                     sc.append(music21.note.Note(snote, type=d))
                         
-            showScore(sc)
-            print(best_notes_and_rests)
+            sc_dict = {
+                'metadata': sc.metadata,  # Include any metadata if needed
+                'notes_and_rests': [str(element) for element in sc.flatten.notesAndRests],  # Convert notes and rests to strings
+            }
 
-            return Response({'transcription': transcription}, status=status.HTTP_200_OK)
+            return Response({'transcription': sc_dict}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+def find_best_quantization(pitch_outputs_and_rests, ideal_offset):
+    best_error = float('inf')  # Initialize best_error to a large value
+    best_notes_and_rests = None
+    best_predictions_per_note = None
+
+    for predictions_per_note in range(20, 65, 1):
+        for prediction_start_offset in range(predictions_per_note):
+
+            error, notes_and_rests = get_quantization_and_error(
+                pitch_outputs_and_rests, predictions_per_note,
+                prediction_start_offset, ideal_offset)
+            
+            if error < best_error:
+                best_error = error
+                best_notes_and_rests = notes_and_rests
+                best_predictions_per_note = predictions_per_note 
+
+    return best_notes_and_rests, best_predictions_per_note, best_error
 
 
 def showScore(score):

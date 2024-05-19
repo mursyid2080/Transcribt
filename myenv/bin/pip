@@ -1,4 +1,4 @@
-#!/home/mursyid/Transcribt/myenv/bin/python
+#!/home/mursyid/Transcribt/myenv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
