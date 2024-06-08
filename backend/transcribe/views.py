@@ -15,7 +15,10 @@ import requests
 import soundfile as sf
 from scipy.io import wavfile
 import music21
+import tempfile
+import base64
 
+from music21 import converter
 
 from IPython.core.display import display, HTML, Javascript
 import json, random
@@ -146,6 +149,7 @@ class TranscriptionUploadView(APIView):
             # while best_notes_and_rests[-1] == 'Rest':
             #     best_notes_and_rests = best_notes_and_rests[:-1]
 
+            
             # Creating the sheet music score.
             sc = music21.stream.Score()
             # Adjust the speed to match the actual singing.
@@ -162,10 +166,16 @@ class TranscriptionUploadView(APIView):
                 else:
                     sc.append(music21.note.Note(snote, type=d))
                         
+            
+            xml = open(sc.write('musicxml')).read()
+
             sc_dict = {
                 'metadata': sc.metadata,  # Include any metadata if needed
-                'notes_and_rests': [str(element) for element in sc.flatten.notesAndRests],  # Convert notes and rests to strings
+                'notes_and_rests': [str(element) for element in sc],  # Convert notes and rests to strings
+                'musicxml': xml  # Include the MusicXML representation
             }
+
+          
 
             return Response({'transcription': sc_dict}, status=status.HTTP_200_OK)
         else:

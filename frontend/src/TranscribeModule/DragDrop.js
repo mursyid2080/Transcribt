@@ -1,33 +1,49 @@
-
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-// import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
+import Button from '@mui/material/Button';
 import { FileUploader } from "react-drag-drop-files";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-
-import { GitHub, Twitter, Facebook, Instagram, Youtube } from "react-feather"
-import IconButton from "./IconButton"
+import axios from 'axios';
 
 const fileTypes = ['mp3', 'wav', 'flac'];
 
-function DragDrop() {
+function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
   const [file, setFile] = useState(null);
 
   const handleChange = (selectedFile) => {
-    // Extract file information
     const { name } = selectedFile;
-    // Update state with the selected file
     setFile(selectedFile);
-    // Log the file name (you can remove this line in production)
     console.log('Selected file:', name);
   };
 
+  const handleUpload = () => {
+    if (!file) {
+      console.error('No file selected');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    axios.post('http://localhost:8000/transcribe/upload/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(response => {
+      console.log('Transcription:', response.data);
+      const { transcription } = response.data;
+      onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
+    })
+    .catch(error => {
+      console.error('There was an error uploading the file!', error);
+    });
+  };
+
   const dropMessageStyle = {
-    backgroundColor: 'red', // Example styling, replace with your desired styles
+    backgroundColor: 'red',
   };
 
   return (
@@ -48,9 +64,14 @@ function DragDrop() {
           </Typography>
         </FileUploader>
         {file && (
-          <Typography variant="body1" sx={{ marginTop: 1 }}>
-            Selected file: {file.name}
-          </Typography>
+          <>
+            <Typography variant="body1" sx={{ marginTop: 1 }}>
+              Selected file: {file.name}
+            </Typography>
+            <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleUpload}>
+              Upload
+            </Button>
+          </>
         )}
       </Box>
     </Container>
