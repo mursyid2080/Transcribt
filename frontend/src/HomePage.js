@@ -225,8 +225,10 @@ export default function HomePage() {
             
             <Copyright sx={{ pt: 4 }} />
           </Container> */}
-          <Container
-            maxWidth="lg"
+          
+        </Box>
+        <Container
+            maxWidth="100%"
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -238,7 +240,6 @@ export default function HomePage() {
             {pageDictionary[currentPage]}
           </Container>
 
-        </Box>
       </Box>
     </ThemeProvider>
   );

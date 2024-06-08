@@ -55,24 +55,23 @@ const Transcribe = () => {
   
 
   return (
-    <div>
+    <Container maxWidth="lg">
       <div className="main-content">
         <InputSelector onClick={handleInputClick} />
         <Box>
           {inputDictionary[currentInput]}
         </Box>
       </div>
-      
+
       {musicxml && (
-        <Box sx={{ marginTop: 4, width: '100%' }}> {/* Adjust the width here */}
+        <Box sx={{ marginTop: 4, width: '100%' }}>
           <Typography variant="h6" gutterBottom>
             Music Sheet
           </Typography>
           <MusicXMLRenderer musicxml={musicxml} />
         </Box>
       )}
-
-    </div>
+    </Container>
   );
 };
 
