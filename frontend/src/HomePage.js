@@ -106,7 +106,7 @@ function DragDrop() {
     backgroundColor: 'red', // Example styling, replace with your desired styles
   };
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center" }} marginBottom="100px">
       <Box sx={{ border: "2px dashed black", padding: "20px", borderRadius: "10px", marginTop: "20px" }}>
         <Typography variant="h6" gutterBottom>
         
