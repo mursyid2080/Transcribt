@@ -42,7 +42,7 @@ const Transcribe = () => {
   
   const inputDictionary = {
     'DragDrop': <DragDrop onMusicXml={handleMusicXml} />,
-    'Record': <Record />
+    'Record': <Record onMusicXml={handleMusicXml} />
   };
   
   const [currentInput, setCurrentInput] = useState('DragDrop');
