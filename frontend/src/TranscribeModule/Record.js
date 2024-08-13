@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import { Container } from "@mui/material";
 import axios from 'axios';
 
-export default function Record() {
+export default function Record({ onMusicXml }) {
   const [audioDetails, setAudioDetails] = useState({
     url: null,
     blob: null,
@@ -37,15 +37,17 @@ export default function Record() {
 
         // Send the FormData with axios
         axios.post('http://localhost:8000/transcribe/upload/', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         })
         .then(response => {
-            console.log('Transcription:', response.data);
+          console.log('Transcription:', response.data);
+          const { transcription } = response.data;
+          onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
         })
         .catch(error => {
-            console.error('There was an error uploading the file!', error);
+          console.error('There was an error uploading the file!', error);
         });
     })
     .catch(error => {
