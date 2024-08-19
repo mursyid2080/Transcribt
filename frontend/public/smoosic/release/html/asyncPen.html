@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+		<meta charset="utf-8">
+		<title>Smoosic Editor</title>
+		<link href="https://aarondavidnewman.github.io/Smoosic/build/styles/fonts.css" rel="stylesheet">
+        <link href="../styles/media.css" rel="stylesheet">
+        <link href="https://aarondavidnewman.github.io/Smoosic/build/styles/ribbon.css" rel="stylesheet">
+        <link href="https://aarondavidnewman.github.io/Smoosic/build/styles/dialogs.css" rel="stylesheet">
+        <link href="https://aarondavidnewman.github.io/Smoosic/build/styles/menus.css" rel="stylesheet">
+        <link href="https://aarondavidnewman.github.io/Smoosic/build/styles/piano.css" rel="stylesheet">
+        <link href="https://aarondavidnewman.github.io/Smoosic/build/styles/tree.css" rel="stylesheet">
+        <script type="text/javascript" src="https://aarondavidnewman.github.io/vexflow_smoosic/releases/vexflow-debug.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js" integrity="sha512-uVSVjE7zYsGz4ag0HEzfugJ78oHCI1KhdkivjQro8ABL/PRiEO4ROwvrolYAcZnky0Fl/baWKYilQfWvESliRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- script type="text/javascript" src="../../../vex_smoosic/vexflow_smoosic/build/vexflow-debug.js"></script  -->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.js" ></script>
+		<script type="text/javascript" src="../smoosic.js" ></script>
+    <script type="text/javascript">
+           document.addEventListener("DOMContentLoaded", function (event) {
+               // @@@@@@
+               // A simple music program using Smoosic in library mode.
+               // 
+               // Music is rendered in the background, and during the rendering tracker/mapper maps 
+               // the location of the music for the UI.  If you don't wait for the music to be rendered, you will end up
+               // acting on the wrong notes.
+               //
+               // If you want to manipulate the music objects directly, check out the syncPen 
+               var app = async (Smo, application) => {
+                 // create the app in library mode (no UI)
+                 // Create an empty score (1 measure rests)
+                 const view = application.view;
+                 const score = Smo.SmoScore.getDefaultScore(Smo.SmoScore.defaults, null);
+                 score.preferences.autoPlay = false; // kind of annoying for this demo
+                 const renderer = view.renderer;
+                 // Create and start the view object.
+                 // The outer container DOM is for scrolling
+                 renderer.stepMode = true;
+
+                 // Convienence object that sends a command to the view object, and
+                 // returns a promise that is resolved when the change is rendered
+                 const t = ((action, repetition) => {
+                   return view.waitableAction(action, repetition);
+                 });
+                 // render the initial score (1 empty measure)
+                 await renderer.renderPromise();
+                 await view.changeScore(score);
+                 await renderer.renderPromise();
+                 await view.growSelectionRight();
+
+                 // Select 1st 2 quarters and make them into 16ths by 1/2 their duration twice
+                 await view.batchDurationOperation('halveDuration');
+                 await view.batchDurationOperation('halveDuration');
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+
+                 // Set some pitches.  Auto-advance moves the cursor to the left
+                 // SmoScore.preferences can toggle auto-advance and auto-play
+                 // setPitch sets the key-appropriate note for the given letter.
+                 await view.setPitchesPromise('cdefdec');
+
+                 // Set the notes we just made down the octave by selecting them
+                 // Transpose works relative to the pitch and does not auto-advance
+                 await view.moveSelectionLeft();
+                 // same as await view.growSelectionLeft() 6 times...
+                 await t(() => view.growSelectionLeft(), 6);
+                 await view.transposeSelections(-12);
+
+                 // Create 4 1/8 note at end
+                 await view.moveSelectionRight();
+                 await view.growSelectionRight();
+                 await view.batchDurationOperation('halveDuration');
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+                 await view.setPitchesPromise('gcbc');
+
+                 await view.moveSelectionLeft();
+                 // Add a turn on the next tick
+                 await view.toggleArticulation('mordent_inverted', 'SmoOrnament');
+                 await view.moveSelectionRight();
+
+                 // Beam the 8th notes and the 16th notes
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.transposeSelections(12);
+                 await view.beamSelections();
+                 await view.moveSelectionLeft();
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.beamSelections();
+
+                 // Add measure after this one
+                 await view.addMeasure(true);
+                 await t(() => view.moveSelectionRight(), 5);
+                 await view.growSelectionRight();
+                 await t(() => view.batchDurationOperation('halveDuration'),  2);
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+                 await view.setPitchesPromise('dgabcabg');
+                 await view.growSelectionRight();
+                 await view.batchDurationOperation('halveDuration');
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+                 await view.setPitchesPromise('dgfg');
+
+                 await view.moveSelectionLeft();
+                 // Add a turn on the next tick
+                 await view.toggleArticulation('mordent_inverted', 'SmoOrnament');
+                 await view.moveSelectionRight();
+                 await t(() => view.growSelectionLeft(), 3);
+                 await t(() => view.beamSelections());
+                 await view.moveSelectionLeft();
+                 await t(() => view.growSelectionLeft(), 6);
+                 await view.transposeSelections(-12);
+                 await view.moveSelectionLeftMeasure();
+
+                 // Add the bass cleff staff.  It automatically adds
+                 // all the measures
+                 await view.addStaffSimple({
+                     "instrumentName": "Bass Clef Staff",
+                     "keyOffset": 0,
+                     "clef": "bass"
+                   
+                 });
+                 await view.moveSelectionDown();
+                 await view.batchDurationOperation('doubleDuration');
+                 await view.moveSelectionRight();
+                 await view.growSelectionRight();
+                 await t(() => view.batchDurationOperation('halveDuration'), 2);
+                 await view.moveSelectionLeft();
+                 await t(() => view.moveSelectionRight(), 2);
+                 await view.setPitchesPromise('cdefdec');
+                 await view.moveSelectionLeft();
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.beamSelections();
+                 await view.moveSelectionRight();
+                 await view.batchDurationOperation('halveDuration');
+                 await view.setPitchesPromise('g');
+                 await t(() => view.moveSelectionLeft(), 3);
+                 await view.transposeSelections(12);
+                 await view.moveSelectionRight();
+                 await view.toggleArticulation('staccato','SmoArticulation');
+                 // select notes to slur
+                 await view.growSelectionLeft();
+                 // slur applies to selection
+                 await view.slur();
+
+                 await t(() => view.moveSelectionRight(), 2);
+                 await t(() => view.growSelectionRight(), 2);
+                 await t(() => view.batchDurationOperation('halveDuration'), 2);
+                 await view.moveSelectionLeft();
+                 await t(() => view.moveSelectionRight(), 2);
+                 await view.setPitchesPromise('gabcabg');
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.beamSelections();
+
+                 // Add measure after this one.  Both staffs get the new measure
+                 // and it is populated with rests
+                 await view.addMeasure(true);
+                 await view.moveSelectionUp();
+                 await view.moveSelectionRightMeasure();
+                 await t(() => view.growSelectionRight(), 3);
+                 await t(() => view.batchDurationOperation('halveDuration'), 2);
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+                 await view.setPitchesPromise('eagfegfagfedcedf');
+                 await view.moveSelectionDown();
+                 await t(() => view.growSelectionRight(), 3);
+                 await view.batchDurationOperation('halveDuration');
+                 await view.moveSelectionLeft();
+                 await view.moveSelectionRight();
+                 await view.setPitchesPromise('cbcdegab');
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.beamSelections();
+
+                 await view.moveSelectionLeft();
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.beamSelections();
+                 await view.moveSelectionRight();
+                 await t(() => view.growSelectionLeft(), 3);
+                 await view.slur();
+                 await view.moveSelectionRight();
+                 await t(() => view.growSelectionRight(), 2);
+                 await view.slur();
+                 await view.transposeSelections(-12);
+
+                 // It's starting to get kind of crowded.  Set the svgScale to 60%
+                 // to make the notes smaller.
+                 await view.setGlobalLayout({
+                     "leftMargin": 30,
+                     "rightMargin": 30,
+                     "topMargin": 40,
+                     "bottomMargin": 40,
+                     "pageWidth": 816,
+                     "pageHeight": 1056,
+                     "orientation": 0,
+                     "interGap": 30,
+                     "intraGap": 10,
+                     "svgScale": 0.6,
+                     "zoomScale": 2.1,
+                     "zoomMode": 0,
+                     "noteSpacing": 1,
+                     "pages": 1
+                   });
+
+               };
+                 Smo.SuiApplication.configure({
+                   mode: 'library',
+                   idleRedrawTime: 1,
+                   demonPollTime: 1,
+                   initialScore: Smo.emptyScoreJson,
+                   scoreDomContainer: 'outer-container',
+                 }).then((application) => {
+                  app(Smo, application);
+                 });
+           });
+       </script>
+</head>
+<body>
+  <sub id="link-hdr"><a href="https://github.com/AaronDavidNewman/smoosic">Github site</a> | 
+    <a href="https://aarondavidnewman.github.io/Smoosic/release/docs/modules.html">source documentation</a> | 
+    <a href="https://aarondavidnewman.github.io/Smoosic/changes.html">change notes</a> |
+     <a href="https://aarondavidnewman.github.io/Smoosic/release/html/smoosic.html">application</a><button class="close-header"><span class="icon icon-cross"></span></button></sub>
+  <!-- audio crossOrigin="anonymous" id="sample" src="https://aarondavidnewman.github.io/Smoosic/build/sound/piano_middle_C.mp3" / -->
+  <div id="outer-container" style="overflow:auto">
+    <div id="container1">
+
+    </div>
+  </div>
+</body>
+</html>

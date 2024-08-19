@@ -1,0 +1,27 @@
+
+.icon-bravura {
+  font-family: 'Bravura'!important;
+  font-size: 24px;
+  position: absolute;
+  top: calc(50% - 12px);
+}
+
+.icon-accidentalFlat:before {
+  content: "\e260";
+}
+
+.icon-caesura:before {
+  content: "\e4d2"
+}
+
+.icon-breath:before {
+  content: "\e4ce"
+}
+
+.icon-pedal-open:before {
+  content: "\e650"
+}
+
+.icon-pedal-closed:before {
+  content: "\e655"
+}

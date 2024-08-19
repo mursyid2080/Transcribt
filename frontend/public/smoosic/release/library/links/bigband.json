@@ -1,0 +1,37 @@
+{
+	"format": "library",
+	"metadata": {
+		"name": "Big Band Charts",
+		"type": "collection",
+		"tags": [
+			"smoosic",
+			"arrangements",
+			"big band",
+      "free"
+		]
+	},
+	"children": [
+    {
+			"format": "smoosic",
+			"metadata": {
+				"name": "Plena para Tres Niños",
+				"composer": "Aaron Newman",
+				"tags": [
+					"smoosic","arrangments","bigband"
+				]
+			},
+			"url": "https://aarondavidnewman.github.io/Smoosic/release/library/bigband/Plena.json"
+		}	,
+		{
+			"format": "smoosic",
+			"metadata": {
+				"name": "Bilongo (Mandinga)",
+				"composer": "Fife Rodriguez",
+				"tags": [
+					"bigband", "arrangement"
+				]
+			},
+      "url": "https://aarondavidnewman.github.io/Smoosic/release/library/bigband/Bilongo-Mandinga.json"
+    }
+	]
+}

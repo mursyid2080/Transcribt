@@ -15,8 +15,11 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ajv": "^8.17.1",
+    "ajv-keywords": "^5.1.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.8",
+    "jquery": "^3.7.1",
     "nodejs": "^0.0.0",
     "opensheetmusicdisplay": "^1.8.8",
     "postcss": "^8.4.38",
@@ -28,6 +31,8 @@
     "react-router-dom": "^6.23.0",
     "react-scripts": "5.0.1",
     "react-voice-recorder": "^2.1.2",
+    "smoosic": "^1.0.5",
+    "vexflow": "^4.2.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

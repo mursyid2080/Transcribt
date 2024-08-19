@@ -1,0 +1,85 @@
+{
+ "format": "library",
+ "metadata": {
+  "name": "Hymn Arrangements",
+  "type": "collection",
+  "tags": [
+   "Sacred Music",
+   "arrangements"
+  ]
+ },
+ "children": [
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "Hyfrydol",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/Hyfrydol.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "HymnFreedom",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/HymnFreedom.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "Precious Lord",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/Precious Lord.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "Shade",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/Shade.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "SpiritofLivingGod",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/SpiritofLivingGod.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "Weisse-Flaggen",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/Weisse-Flaggen.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "WorldPeacePrayer",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/WorldPeacePrayer.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "balm",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/balm.json"
+  },
+  {
+   "format": "mxml",
+   "metadata": {
+    "name": "cplist",
+    "composer": "various"
+   },
+   "url": "https://aarondavidnewman.github.io/Smoosic/release/library/hymns/cplist.txt"
+  }
+ ]
+}

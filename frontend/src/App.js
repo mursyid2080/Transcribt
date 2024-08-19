@@ -7,7 +7,7 @@ import Transcribe from './TranscribeModule/Transcribe'
 import Dashboard from './Dashboard'
 import ProfilePage from './ProfilePage'
 import { MantineProvider } from '@mantine/core'
-
+import SmoosicApp from './TranscribeModule/SmoosicApp'
 
 
 
@@ -17,6 +17,16 @@ import React, { useEffect, useState } from 'react'
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [email, setEmail] = useState('')
+
+  const [smoosicConfig, setSmoosicConfig] = useState({
+    smoPath: "../../public/smoosic/release",
+    mode: "application",
+    uiDomContainer: "smoo",
+    scoreDomContainer: "smo-scroll-region",
+    leftControls: "controls-left",
+    topControls: "controls-top",
+  });
+
 
   return (
     <div className="App">   
@@ -29,6 +39,7 @@ function App() {
           <Route path="/transcribe" element={<Transcribe />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route exact path="/profile" component={ProfilePage} />
+          <Route path="/editor" element={<SmoosicApp config={smoosicConfig} />} />
           {/* <Route path="/authentication" element={<AuthenticationForm />} /> */}
         </Routes>
       </BrowserRouter>

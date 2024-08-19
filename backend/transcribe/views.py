@@ -18,7 +18,6 @@ import music21
 import tempfile
 import base64
 
-from music21 import converter
 
 from IPython.core.display import display, HTML, Javascript
 import json, random
@@ -37,6 +36,13 @@ from IPython.display import Audio, Javascript
 
 from base64 import b64decode
 
+import omnizart
+from omnizart.vocal import VocalTranscription
+from music21 import converter, note, stream
+import pretty_midi
+import malaya_speech    
+import numpy as np
+from malaya_speech import Pipeline
 
 EXPECTED_SAMPLE_RATE = 16000
 
@@ -50,6 +56,84 @@ logger = logging.getLogger(__name__)
 
 class TranscriptionUploadView(APIView):
     def post(self, request, *args, **kwargs):
+        file = request.FILES.get('file')
+        if file:
+            ## Convert input audio file to WAV format
+            output_file = "converted.wav"
+            convert_to_wav(file, output_file)
+
+            # Initialize the vocal transcription model (like SPICE)
+            vocal_transcriber = VocalTranscription()
+
+            # Transcribe the vocal melody directly into a music21 stream object
+            midi_object = vocal_transcriber.transcribe(output_file)
+
+            # Convert the transcription to a music21 stream
+            midi_stream = stream.Stream()
+    
+
+
+            # Add notes to the stream only if their duration is supported
+            for instrument in midi_object.instruments:  # Loop through each instrument
+                for midi_note in instrument.notes:  # Access the notes for that instrument
+                    if isinstance(midi_note, pretty_midi.Note):
+                        note_duration = midi_note.end - midi_note.start
+                        if is_supported_duration(note_duration):
+                            music21_note = note.Note(midi_note.pitch)
+                            music21_note.quarterLength = note_duration
+                            midi_stream.append(music21_note)
+
+            # Analyze the transcribed notes directly from the `music21` stream
+            for element in midi_stream.flat.notes:
+                if isinstance(element, note.Note):
+                    print(f"Note: {element.nameWithOctave}, Duration: {element.duration.quarterLength} quarter lengths")
+                elif isinstance(element, note.Rest):
+                    print(f"Rest, Duration: {element.duration.quarterLength} quarter lengths")
+
+            # Create a music21 score object
+            sc = stream.Score()
+            sc.append(midi_stream)  # Add the midi_stream to the score
+
+            # Write the score to a MusicXML string
+            xml = sc.write('musicxml')
+
+            
+            # Read the MusicXML content into a variable
+            with open(xml, 'r') as f:
+                musicxml_content = f.read()
+
+
+            # Initialize Malaya for speech recognition
+            # Load the pre-trained speech-to-text (ASR) model
+            small_model = malaya_speech.stt.deep_transducer(model = 'small-conformer')
+            print("Loaded model")
+
+            # Load the audio file
+            y, sr = malaya_speech.load('converted.wav')
+            if y is None or len(y) == 0:
+                raise ValueError("The audio file is empty or not loaded properly.")
+
+            # Perform speech-to-text
+            result = small_model.greedy_decoder([y])
+
+            # Prepare the response dictionary with both transcription and sheet music
+            sc_dict = {
+                'musicxml': musicxml_content,  # Include the MusicXML representation
+                'speech_transcription': result # Include the speech transcription
+            }
+
+            # Clean up the temporary files
+            os.remove(output_file)
+            os.remove(xml)
+
+            return Response({'transcription': sc_dict}, status=status.HTTP_200_OK)
+
+
+
+        else:
+            return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # def post(self, request, *args, **kwargs):
         file = request.FILES.get('file')
         if file:
             output_file = "converted.wav"
@@ -200,6 +284,10 @@ def find_best_quantization(pitch_outputs_and_rests, ideal_offset):
 
     return best_notes_and_rests, best_predictions_per_note, best_error
 
+
+def is_supported_duration(duration):
+    MIN_DURATION = 1/64.0
+    return duration >= MIN_DURATION
 
 def showScore(score):
     xml = open(score.write('musicxml')).read()

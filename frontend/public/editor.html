@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smoosic Application</title>
+</head>
+<body>
+  <div id="smoo">
+    <div id="controls-left"></div>
+    <div id="controls-top"></div>
+    <div id="smo-scroll-region"></div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://aarondavidnewman.github.io/Smoosic/build/smoosic.js"></script>
+  <script>
+    // Create the DOM components where the menus/buttons go
+    Smo.SuiDom.createUiDom(document.getElementById("smoo"));
+    
+    // Create config object
+    var config = {
+      smoPath: "https://aarondavidnewman.github.io/Smoosic/release",
+      mode: "application",
+      uiDomContainer: "smoo",
+      scoreDomContainer: "smo-scroll-region",
+      leftControls: "controls-left",
+      topControls: "controls-top"
+    };
+    
+    // Start the application
+    Smo.SuiApplication.configure(config);
+  </script>
+</body>
+</html>
