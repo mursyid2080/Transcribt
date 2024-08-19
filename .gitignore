@@ -142,6 +142,8 @@ env.bak/
 venv.bak/
 myenv
 .myenv
+.omnizart
+omnizart
 
 # Spyder project settings
 .spyderproject
