@@ -145,6 +145,7 @@ myenv
 .omnizart
 omnizart
 node_modules/ 
+node_modules
 package.json
 package-lock.json
 frontend/node_modules
