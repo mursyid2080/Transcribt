@@ -415,7 +415,7 @@ export class SuiApplication {
       subscriptOffset: 0.66,
       description: 'Open source Serif screen font from Adobe',
     });
-    await SuiApplication.loadMusicFont('Bravura', '../styles/fonts/Bravura_1.392.woff');
+    await SuiApplication.loadMusicFont('Bravura', '../styles/fonts/Bravura_1-392.woff');
     // await SuiApplication.loadMusicFont('Bravura', '../styles/fonts/Bravura_1.392.woff');
   }
   _deferCreateTranslator() {

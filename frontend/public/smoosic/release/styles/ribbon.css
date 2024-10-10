@@ -55,7 +55,7 @@ body.refresh-1 #refresh  {
 }
 
 .collapseContainer button.collapseParent {
-  border: 3px inset blue;
+  border: 3px inset rgb(145, 145, 145);
 }
 
 div.ribbonButtonContainer.expanded {
@@ -86,7 +86,7 @@ div.ribbonButtonContainer.expanded {
 	font-family:serif;
 	font-size:1em;
   border-radius: 5px;
-  border:1px solid #33f;
+  border:1px solid rgb(145, 145, 145);
   padding-top:2px;
 }
 
@@ -111,7 +111,7 @@ div.ribbonButtonContainer.expanded {
  {
 	padding: 5px 0;
 	font-size: 0.7em;
-	border: 1px #44e solid;
+	border: 1px rgb(145, 145, 145) solid;
 	position:relative;
   border-radius:5px;
 }
@@ -129,7 +129,7 @@ div.ribbonButtonContainer.expanded {
 
 .controls-left  button:hover,controls-left button:focus,
 .controls-top  button:hover,controls-left button:focus{
-	border:2px blue solid;
+	border:2px rgb(145, 145, 145) solid;
 	border-radius:3px;
 	opacity:0.7;
 }

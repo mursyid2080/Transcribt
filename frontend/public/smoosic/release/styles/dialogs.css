@@ -526,6 +526,7 @@ body.showAttributeDialog .attributeDialog {
 
 .button-container {
 	margin-left:10px;
+  margin-bottom: 25px;
 }
 .bug-dismiss-button {
 	position:absolute;
@@ -538,7 +539,7 @@ body.showAttributeDialog .attributeDialog {
     width: 80%;
     height: 60%;
     border: block solid 1px;
-    font-family: monospace;
+    font-family: monospace !important;
     border: black solid 1px;
     margin: 10px;
 	overflow-y: scroll;
@@ -593,15 +594,15 @@ body.splashScreen .bugDialog {
 body.showHelpDialog .helpDialog {
 	display:flex;
   overflow: hidden;
-	background: #eef;
+	background: rgb(218, 218, 218);
   flex: 1 0 100%;
   flex-flow:column wrap;
   overflow:auto;
 	margin: 8px;
 	padding: 10px;
   position: absolute;
-  top:0;
-  left: 0;
+  left: 1476px;
+  top: 94px;
   z-index: 10;
   max-width: 350px;
   min-width: 350px;

@@ -6,11 +6,15 @@ import Button from '@mui/material/Button';
 import { FileUploader } from "react-drag-drop-files";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
 
 const fileTypes = ['mp3', 'wav', 'flac'];
 
 function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
   const [file, setFile] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate
+
 
   const handleChange = (selectedFile) => {
     const { name } = selectedFile;
@@ -33,9 +37,20 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
       },
     })
     .then(response => {
-      console.log('Transcription:', response.data);
       const { transcription } = response.data;
-      onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
+
+      // Access MusicXML
+      const musicxmlData = transcription.musicxml;
+
+      // Access speech transcription
+      const speechTranscription = transcription.speech_transcription;
+
+      // Now you can use the data
+      console.log('MusicXML:', musicxmlData);
+      console.log('Speech Transcription:', speechTranscription);
+
+      navigate('/editor', { state: { score: musicxmlData } });
+      // onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
     })
     .catch(error => {
       console.error('There was an error uploading the file!', error);

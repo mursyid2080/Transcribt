@@ -13,7 +13,7 @@
   }
 }
 
-.App-header {
+/* .App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -22,7 +22,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-}
+} */
 
 .App-link {
   color: #61dafb;
@@ -99,4 +99,132 @@
   border-radius: 8px;
   border: 1px solid grey;
   padding-left: 8px;
+}
+
+header {
+  padding: 15px;
+  background: #011627;
+  height: 60px;
+}
+
+.sidenav {
+  z-index: 1000;
+  width: 240px;
+  background: #011627;
+  position: absolute;
+  height: 95vh;
+  padding: 0 30px;
+  left: -100%;
+  transition: all 0.3s;
+}
+
+.sidenav.active{
+  z-index: 1000;
+  left: 0;
+}
+
+ul {
+  padding: 0;
+
+}
+
+ul li {
+  list-style-type: none;
+  margin: 10px 0;
+}
+
+ul li a {
+  color: #eaecef;
+  text-decoration: none;
+  font-size: 16px;
+  display: block;
+  padding: 10px 15px;
+  border-radius: 6px;
+}
+
+ul li a:hover,
+ul li a.active{
+  background: #172b4d;
+
+}
+
+header svg{
+  font-size: 30px;
+  color: #eaecef;
+}
+
+.main{
+  display: flex;
+
+  /* height: 98vh; */
+  /* display: flex;
+  
+  justify-content: center;
+  align-items: center; */
+  /* width: 100%;      
+  margin: 0 auto;  
+  padding: 20px;    */
+}
+
+.workspace.language-dir {
+  height: auto;
+  max-height: 700px;
+}
+
+.musicRelief {
+  height: auto;
+  max-height: 400px;
+}
+
+/* SmoosicComponent CSS */
+.smoosic-container {
+  width: 100%;       
+  height: 700px;    
+  display: grid;
+  gap: 50px;
+  grid-auto-rows: min-content;
+  position: relative;
+  /* z-index: 1;
+  position: relative; or absolute/fixed if necessary */
+}
+
+.inputSelection {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center; /* Center elements vertically */
+  align-items: center; /* Center elements horizontally */
+  height: 100vh; /* Ensure the container takes up the full viewport height */
+}
+
+
+#waveform {
+  width: 100%;
+  max-width: 100%;
+}
+
+.controls {
+  margin-top: 10px;
+}
+
+.controls button {
+  margin: 10px;
+  border: 1px solid #ccc !important;
+  padding: 8px; /* Adjust padding as needed */
+  background-color: #fff; /* Optional: to ensure consistent background */
+  border-radius: 4px; /* Optional: to soften the corners */
+  cursor: pointer; /* Optional: to ensure it looks like a clickable button */
+}
+
+
+.controls button:hover{
+  background-color: #ececec;
+}
+
+.audio-info{
+  margin-top: 15px;
+  color: #000000;
+  border-radius: 4px;
+  padding: 8px 15px;
+  display: inline-block;
+  font-size: 12px;
 }

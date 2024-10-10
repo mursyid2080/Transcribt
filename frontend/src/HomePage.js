@@ -97,35 +97,6 @@ const defaultTheme = createTheme();
 
 const fileTypes = ["WAV", "MP3"];
  
-function DragDrop() {
-  const [file, setFile] = useState(null);
-  const handleChange = (file) => {
-    setFile(file);
-  };
-  const dropMessageStyle = {
-    backgroundColor: 'red', // Example styling, replace with your desired styles
-  };
-  return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }} marginBottom="100px">
-      <Box sx={{ border: "2px dashed black", padding: "20px", borderRadius: "10px", marginTop: "20px" }}>
-        <Typography variant="h6" gutterBottom>
-        
-        </Typography>
-        <FileUploader
-          handleChange={handleChange}
-          name="file"
-          types={fileTypes}
-          dropMessageStyle={dropMessageStyle}
-        >
-          <MusicNoteIcon fontSize="large" />
-          <Typography variant="body1" sx={{ marginTop: 1 }}>
-            Supported file types: {fileTypes.join(", ")}
-          </Typography>
-        </FileUploader>
-      </Box>
-    </Container>
-  );
-}
 
 export default function HomePage() {
   const [open, setOpen] = React.useState(true);

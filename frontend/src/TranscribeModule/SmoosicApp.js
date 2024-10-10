@@ -1,61 +1,96 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import AudioPlayer from '../components/AudioPlayer';
+import {useLocation} from 'react-router-dom';
 
-const SmoosicApp = ({ config }) => {
-  const smoosicContainerRef = useRef(null);
+export default class SmoosicComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      audioFile: null, // State to store the selected audio file
+    };
+    this.smoosicElem = React.createRef();
+  }
 
-  // Load Smoosic and jQuery scripts dynamically
-  const loadScript = (src) => {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.async = true;
-      script.onload = () => resolve(script);
-      script.onerror = () => reject(new Error(`Script load error: ${src}`));
-      document.body.appendChild(script);
-    });
+  componentDidMount() {
+    const location = useLocation();
+    const { config } = {
+      smoPath: "../../public/smoosic/release",
+      mode: "application",
+      uiDomContainer: "smoo",
+      scoreDomContainer: "smo-scroll-region",
+      leftControls: "controls-left",
+      topControls: "controls-top",
+      remoteScore: location.state.score,
+    };
+    const elem = this.smoosicElem.current;
+
+    // Initialize the Smoosic instance
+    this.initSmoosic(elem, config);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { config } = this.props;
+    if (config !== prevProps.config) {
+      this.updateSmoosic(config);
+    }
+  }
+
+  componentWillUnmount() {
+    this.cleanupSmoosic();
+  }
+
+  initSmoosic(element, config) {
+    if (window.Smo) {
+      window.Smo.SuiDom.createUiDom(element);
+      window.Smo.SuiApplication.configure(config);
+      this.smoosicInstance = window.Smo.SuiApplication;
+    } else {
+      console.error('Smo is not defined');
+    }
+  }
+
+  updateSmoosic(config) {
+    if (this.smoosicInstance) {
+      this.smoosicInstance.configure(config);
+    }
+  }
+
+  cleanupSmoosic() {
+    if (this.smoosicInstance && typeof this.smoosicInstance.cleanup === 'function') {
+      this.smoosicInstance.cleanup();
+    }
+  }
+
+  // Handler for file selection
+  handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileURL = URL.createObjectURL(file); // Create a URL for the file
+      this.setState({ audioFile: fileURL }); // Set audio file in state
+    }
   };
 
-  // Initialize the Smoosic app after the component is mounted
-  useEffect(() => {
-    const initSmoosic = async () => {
-      try {
-        // Load jQuery
-        await loadScript('https://code.jquery.com/jquery-3.3.1.slim.js');
+  render() {
+    const { audioFile } = this.state;
 
-        // Load Smoosic
-        await loadScript(`../../public/smoosic/build/smoosic.js`);
-        console.log('Smoosic URL:', `${process.env.PUBLIC_URL}/smoosic/build/smoosic.js`);
+    return (
+      <div>
+      {/* Smoosic container */}
+      <div className="smoosic-container" ref={this.smoosicElem} ></div>
 
+      {/* Audio file upload input and player, now moved below the Smoosic container */}
+      <div className="audio-player-section" style={{ marginTop: '20px', textAlign: 'center' }}>
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={this.handleFileChange}
+          style={{ marginBottom: '20px' }}
+        />
 
-        // Initialize Smoosic only after scripts are loaded and Smo is available
-        if (window.Smo) {
-          // Create the DOM components where the menus/buttons go
-          window.Smo.SuiDom.createUiDom(smoosicContainerRef.current);
-
-          // Start the application with the passed config
-          window.Smo.SuiApplication.configure(config);
-        } else {
-          console.error('Smo is not defined');
-        }
-      } catch (error) {
-        console.error('Error loading scripts or initializing Smoosic:', error);
-      }
-    };
-
-    initSmoosic();
-
-    // Cleanup when the component is unmounted
-    return () => {
-      if (window.Smo) {
-        // Call a cleanup function if Smoosic provides one
-        if (typeof window.Smo.SuiApplication.cleanup === 'function') {
-          window.Smo.SuiApplication.cleanup();
-        }
-      }
-    };
-  }, [config]); // Rerun the effect if the config changes
-
-  return <div ref={smoosicContainerRef} />; // No initial rendering
-};
-
-export default SmoosicApp;
+        {/* Render the audio player when an audio file is selected */}
+        {audioFile && <AudioPlayer audioFile={audioFile} />}
+      </div>
+    </div>
+    );
+  }
+}

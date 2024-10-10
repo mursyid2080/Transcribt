@@ -23,6 +23,7 @@
   display:flex;
   flex: auto;
   justify-content:center;
+  align-items: center;
 }
 
 .key-right-ctrl button.close {

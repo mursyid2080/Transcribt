@@ -526,6 +526,7 @@ body.showAttributeDialog .attributeDialog {
 
 .button-container {
 	margin-left:10px;
+  margin-bottom: 25px;
 }
 .bug-dismiss-button {
 	position:absolute;

@@ -56,7 +56,7 @@ const Transcribe = () => {
 
   return (
     <Container maxWidth="lg">
-      <div className="main-content" marginTop="100px">
+      <div className="inputSelection" marginTop="100px">
         <InputSelector onClick={handleInputClick} />
         <Box>
           {inputDictionary[currentInput]}

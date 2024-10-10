@@ -1,100 +1,98 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = (props) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
+const Login = ({ setLoggedIn, setEmail }) => {
+  const [email, setEmailState] = useState('');
+  const [password, setPasswordState] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [loginError, setLoginError] = useState('');
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onButtonClick = () => {
-    const data = {
-        email: email,
-        password: password
-      };
+    // Reset error states
+    setEmailError('');
+    setPasswordError('');
+    setLoginError('');
 
-      const dataJSON = JSON.stringify(data);
-    
-      // Set initial error values to empty
-      setEmailError('')
-      setPasswordError('')
-    
-      // Check if the user has entered both fields correctly
-  
-      if ('' === email) {
-        setEmailError('Please enter your email')
-        return
-      }
-    
-      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-        setEmailError('Please enter a valid email')
-        return
-      }
-    
-      if ('' === password) {
-        setPasswordError('Please enter a password')
-        return
-      }
-    
-      if (password.length < 5) {
-        setPasswordError('The password must be 6 characters or longer')
-        return
-      }
-      
-      // route with axios
-      // Authentication calls will be made here...
-      axios.post('http://127.0.0.1:8000/api/auth/login', {
-          email: email,
-          password: password
-      })
+    // Validate email
+    if (!email) {
+      setEmailError('Please enter your email');
+      return;
+    }
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setEmailError('Please enter a valid email');
+      return;
+    }
+
+    // Validate password
+    if (!password) {
+      setPasswordError('Please enter a password');
+      return;
+    }
+    if (password.length < 6) {
+      setPasswordError('The password must be 6 characters or longer');
+      return;
+    }
+
+    // Make the authentication call
+    axios.post('http://127.0.0.1:8000/api/auth/login', { email, password })
       .then(response => {
-          // Handle successful response
-          console.log('Login successful:', response.data);
-          navigate('/homepage')
-          // You may want to handle redirection or other actions upon successful login
+        console.log('Login successful:', response.data);
+        
+        // Update state in the parent component
+        setEmail(email);
+        setLoggedIn(true);
+        
+        // Redirect to home page
+        navigate('/');
       })
       .catch(error => {
-          // Handle error
-          console.error('Error logging in:', error);
-          // You may want to display an error message to the user
+        console.error('Error logging in:', error);
+        setLoginError('Invalid email or password. Please try again.');
       });
-  }
+  };
 
   return (
-    <div className={'mainContainer'}>
-      <div className={'titleContainer'}>
+    <div className="mainContainer">
+      <div className="titleContainer">
         <div>Login</div>
       </div>
       <br />
-      <div className={'inputContainer'}>
+      <div className="inputContainer">
         <input
           value={email}
           placeholder="Enter your email here"
-          onChange={(ev) => setEmail(ev.target.value)}
-          className={'inputBox'}
+          onChange={(ev) => setEmailState(ev.target.value)}
+          className="inputBox"
         />
-        <label className="errorLabel">{emailError}</label>
+        {emailError && <label className="errorLabel">{emailError}</label>}
       </div>
       <br />
-      <div className={'inputContainer'}>
+      <div className="inputContainer">
         <input
-            type="password"
-            value={password}
-            placeholder="Enter your password here"
-            onChange={(ev) => setPassword(ev.target.value)}
-            className={'inputBox'}
+          type="password"
+          value={password}
+          placeholder="Enter your password here"
+          onChange={(ev) => setPasswordState(ev.target.value)}
+          className="inputBox"
         />
-        <label className="errorLabel">{passwordError}</label>
+        {passwordError && <label className="errorLabel">{passwordError}</label>}
       </div>
       <br />
-      <div className={'inputContainer'}>
-        <input className={'inputButton'} type="button" onClick={onButtonClick} value={'Log in'} />
+      <div className="inputContainer">
+        <input
+          className="inputButton"
+          type="button"
+          onClick={onButtonClick}
+          value="Log in"
+        />
       </div>
+      {loginError && <div className="errorLabel">{loginError}</div>}
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

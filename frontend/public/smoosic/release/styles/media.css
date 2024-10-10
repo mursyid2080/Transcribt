@@ -58,8 +58,8 @@
 
 @font-face {
   font-family: 'Bravura';
-  src:
-    url('fonts/Bravura_1.392.woff') format('woff');
+  src: 
+    url('fonts/Bravura_1-392.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -141,6 +141,12 @@ h1 {
 
 .italic {
   font-style: italic;
+}
+.superscript {
+  font-size: 0.7em; /* Adjust size relative to the '8' */
+  vertical-align: super; /* Moves 'va' up */
+  position: relative;
+  top: -0.1em; /* Fine-tune the positioning to your liking */
 }
 
 .testTitle {
@@ -251,7 +257,7 @@ body.printing .vf-hide-print{
         padding-top: 0;
         position:relative;
         padding-left: 0;
-        background: #999;
+        background: #3a3a3a;
     }
     iframe {
         border:0;
@@ -295,14 +301,14 @@ body.printing .printFrame {
   .workspace {
     padding-top: 2px;
     position:relative;
-    background: #999;
+    background: #3a3a3a;
     display:flex;
     flex-flow:row wrap;
   }
 }
 
 .musicRelief {
-	background:#999;
+	background:#3a3a3a;
 
 }
 .media {
@@ -310,6 +316,7 @@ body.printing .printFrame {
   flex-flow:row nowrap;
   flex-basis:100%;
   overflow-y:auto;
+  height: 400px;
 }
 
 .saveLink {

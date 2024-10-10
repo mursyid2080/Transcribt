@@ -1,52 +1,61 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './Home'
-import Login from './Login'
-import Register from './Register'
-import HomePage from './HomePage'
-import Transcribe from './TranscribeModule/Transcribe'
-import Dashboard from './Dashboard'
-import ProfilePage from './ProfilePage'
-import { MantineProvider } from '@mantine/core'
-import SmoosicApp from './TranscribeModule/SmoosicApp'
-
-
-
-import './App.css'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './Login';
+import Register from './Register';
+import Transcribe from './TranscribeModule/Transcribe';
+import Dashboard from './Dashboard';
+import ProfilePage from './ProfilePage';
+import SmoosicApp from './TranscribeModule/SmoosicApp';
+import NavBar from './components/NavBar';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import './App.css';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [email, setEmail] = useState('')
-
-  const [smoosicConfig, setSmoosicConfig] = useState({
-    smoPath: "../../public/smoosic/release",
-    mode: "application",
-    uiDomContainer: "smoo",
-    scoreDomContainer: "smo-scroll-region",
-    leftControls: "controls-left",
-    topControls: "controls-top",
+  const [loggedIn, setLoggedIn] = useState(() => {
+    // Check if the user is logged in by reading from localStorage
+    return localStorage.getItem('loggedIn') === 'true';
   });
 
+  const [email, setEmail] = useState('');
+
+
+
+  const [showNav, setShowNav] = useState(false);
+
+  useEffect(() => {
+    // Save loggedIn state to localStorage whenever it changes
+    localStorage.setItem('loggedIn', loggedIn);
+  }, [loggedIn]);
 
   return (
-    <div className="App">   
-      <BrowserRouter>
+    <Router>
+      {loggedIn ? (
+        <>
+          <header>
+            <GiHamburgerMenu onClick={() => setShowNav(!showNav)} />
+          </header>
+          <NavBar show={showNav} />
+          <div className="main">
+            <Routes>
+              <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+              <Route path="/transcribe" element={<Transcribe />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/editor" element={<SmoosicApp />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </div>
+        </>
+      ) : (
         <Routes>
-          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-          <Route path="/homepage" element={<HomePage />} />
-          <Route path="/transcribe" element={<Transcribe />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route exact path="/profile" component={ProfilePage} />
-          <Route path="/editor" element={<SmoosicApp config={smoosicConfig} />} />
-          {/* <Route path="/authentication" element={<AuthenticationForm />} /> */}
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
-      </BrowserRouter>
-      
-
-    </div>
-  )
+      )}
+    </Router>
+  );
 }
 
-export default App
+export default App;
