@@ -144,6 +144,9 @@ myenv
 .myenv
 .omnizart
 omnizart
+node_modules 
+package.json
+package-locl.json
 
 # Spyder project settings
 .spyderproject
