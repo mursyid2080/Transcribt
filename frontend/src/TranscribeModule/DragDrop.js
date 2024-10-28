@@ -45,11 +45,19 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
       // Access speech transcription
       const speechTranscription = transcription.speech_transcription;
 
+      const audioFileURL = URL.createObjectURL(file);
+      console.log('Generated Audio File URL:', audioFileURL);  // Check if the URL is correct
+
+
       // Now you can use the data
       console.log('MusicXML:', musicxmlData);
       console.log('Speech Transcription:', speechTranscription);
 
-      navigate('/editor', { state: { score: musicxmlData } });
+      navigate('/editor', { 
+        state: { 
+          score: musicxmlData, 
+          audioFile: audioFileURL } 
+        });
       // onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
     })
     .catch(error => {

@@ -33,6 +33,10 @@ function formatTime(seconds){
 
 
 export default function AudioPlayer ({audioFile}){
+    // getting called to many times
+    // console.log('AudioPlayer received audioFile:', audioFile);  // Debug log
+
+
     const waveformRef = useRef(null);
     const wavesurfer = useRef(null);
     const [playing, setPlaying] = useState(false);
@@ -91,7 +95,7 @@ export default function AudioPlayer ({audioFile}){
     };
 
     return (
-        <div>
+        <div >
             <div id='waveform' ref={waveformRef} style={{width:'100%'}}></div>
             <div className='controls'>
                 <button onClick={handlePlayPause}>
@@ -122,9 +126,9 @@ export default function AudioPlayer ({audioFile}){
                 </button>
             </div>
             <div className='audio-info'>
-                <span>
+                {/* <span>
                     Playing: {audioFileName} <br />
-                </span>
+                </span> */}
                 <span>
                     Duration: {formatTime(duration)} | Current Time:{''}
                     {formatTime(currentTime)} <br />
