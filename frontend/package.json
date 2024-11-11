@@ -19,6 +19,7 @@
     "ajv-keywords": "^5.1.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.8",
+    "html2canvas": "^1.4.1",
     "jquery": "^3.7.1",
     "nodejs": "^0.0.0",
     "opensheetmusicdisplay": "^1.8.8",

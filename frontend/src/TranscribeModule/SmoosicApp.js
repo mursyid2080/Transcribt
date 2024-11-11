@@ -4,6 +4,8 @@ import _ from 'lodash';
 import AudioPlayer from '../components/AudioPlayer';
 import withRouter from '../components/withRouter';
 import ModalForm from '../components/ModalForm';
+import html2canvas from 'html2canvas';
+import axios from 'axios';
 
 class SmoosicComponent extends React.Component {
   constructor(props) {
@@ -33,7 +35,7 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      remoteScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
     };
 
     // Access the passed 'score' and 'audioFile' from the router props
@@ -188,7 +190,9 @@ class SmoosicComponent extends React.Component {
   handleSave = () => {
     if (this.globSmoApp) {
       const serializedScore = this.globSmoApp.score.serialize();
+      
       this.setState({ serializedScore }, () => {
+        this.captureImage(); // Capture the image when saving
         this.toggleModal(); // Open modal after saving the score
         console.log("Serialized Score:", serializedScore);
       });
@@ -222,18 +226,58 @@ class SmoosicComponent extends React.Component {
     this.setState({ selectedCategories });
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const { title, author, selectedCategories, serializedScore } = this.state;
-    const savedData = {
-      title,
-      author,
-      categories: selectedCategories,
-      score: serializedScore,
-    };
-    console.log('Saved Data:', savedData);
-    this.toggleModal(); // Close modal after submission
+  // Capture notation as image
+  captureImage = () => {
+    if (this.smoosicElem.current) {
+      html2canvas(this.smoosicElem.current).then((canvas) => {
+        const imageCapture = canvas.toDataURL('image/png');
+        this.setState({ imageCapture });
+      });
+    }
   };
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const { title, author, selectedCategories, serializedScore, audioFile, imageCapture } = this.state;
+  
+    // Create a FormData object to send files
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('author', author);
+    formData.append('categories', JSON.stringify(selectedCategories));
+    formData.append('score_data', JSON.stringify(serializedScore));
+    formData.append('is_published', false);
+  
+    // Append the audio file and image capture (blob)
+    formData.append('audio_file', audioFile);
+    formData.append('image_file', imageCapture);
+  
+    // Log form data for debugging
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+  
+    try {
+      // POST request to save data
+      const response = await axios.post('http://localhost:8000/save/save-transcription/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // Add CSRF token if necessary
+          // 'X-CSRFToken': csrfToken, // Uncomment and set csrfToken if CSRF protection is enabled
+        },
+      });
+  
+      if (response.status === 200) {
+        console.log('Data saved successfully:', response.data);
+        this.toggleModal();  // Close the modal after successful save
+      } else {
+        console.error('Error saving data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
 
 
   render() {
