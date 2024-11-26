@@ -13,6 +13,25 @@
   }
 }
 
+/* App.css */
+.sidenav .logout-button {
+  margin-top: auto;
+  padding: 10px;
+  text-align: center;
+}
+
+.sidenav .logout-button button {
+  background-color: #ff4b4b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.sidenav .logout-button button:hover {
+  background-color: #ff3333;
+}
+
 /* .App-header {
   background-color: #282c34;
   min-height: 100vh;

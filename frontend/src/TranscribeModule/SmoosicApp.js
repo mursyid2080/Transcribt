@@ -6,6 +6,7 @@ import withRouter from '../components/withRouter';
 import ModalForm from '../components/ModalForm';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid'; 
 
 class SmoosicComponent extends React.Component {
   constructor(props) {
@@ -17,7 +18,22 @@ class SmoosicComponent extends React.Component {
       showModal: false, // State to control the visibility of the modal
       title: '', // To store the entered title
       author: '', // To store the entered author
-      categoriesOptions: ['Jazz', 'Classical', 'Rock', 'Pop', 'Electronic'], // Predefined categories
+      categoriesOptions: [
+        "Nasihat dan Pengajaran",       // Advice and moral lessons
+        "Cinta dan Kasih Sayang",       // Love and affection
+        "Keindahan Alam",               // Nature and the environment
+        "Kehidupan Seharian",           // Daily life and routines
+        "Permainan dan Hiburan",        // Games and entertainment
+        "Cerita dan Legenda",           // Stories and legends
+        "Keagamaan dan Ketuhanan",      // Religious and spiritual themes
+        "Pekerjaan dan Tradisi",        // Occupations and traditional work
+        "Perpaduan dan Kemasyarakatan", // Unity and community
+        "Kebudayaan dan Adat",          // Culture and customs
+        "Kanak-kanak dan Lullabies",    // Children's songs and lullabies
+        "Kritikan Sosial",              // Social critique and satire
+        "Upacara dan Ritual",           // Ceremonial and ritualistic
+        "Kegembiraan dan Perayaan"      // Joy and celebrations
+      ], // Predefined categories
       selectedCategories: [], // To store selected categories
     };
     this.globSmo = null;
@@ -36,6 +52,7 @@ class SmoosicComponent extends React.Component {
       leftControls: "controls-left",
       topControls: "controls-top",
       initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      disableSplash: true,
     };
 
     // Access the passed 'score' and 'audioFile' from the router props
@@ -229,12 +246,32 @@ class SmoosicComponent extends React.Component {
   // Capture notation as image
   captureImage = () => {
     if (this.smoosicElem.current) {
-      html2canvas(this.smoosicElem.current).then((canvas) => {
-        const imageCapture = canvas.toDataURL('image/png');
-        this.setState({ imageCapture });
-      });
+      // Find the child element with id 'boo' inside the smoosic-container
+      const booElement = this.smoosicElem.current.querySelector('#boo');
+  
+      if (booElement) {
+        // Get the original width of the 'boo' element
+        const originalWidth = booElement.offsetWidth;
+  
+        // Capture the 'boo' element as a square image
+        html2canvas(booElement, {
+          width: originalWidth,
+          height: originalWidth,
+          windowWidth: originalWidth,  // Force the width of the viewport
+          windowHeight: originalWidth // Force the height of the viewport
+        }).then((canvas) => {
+          // Resize the canvas to a square if needed
+          const imageCapture = canvas.toDataURL('image/png');
+          this.setState({ imageCapture });
+        });
+      } else {
+        console.error("Element with id 'boo' not found");
+      }
     }
   };
+  
+  
+  
 
   handleSubmit = async (e) => {
     e.preventDefault();
@@ -248,9 +285,22 @@ class SmoosicComponent extends React.Component {
     formData.append('score_data', JSON.stringify(serializedScore));
     formData.append('is_published', false);
   
-    // Append the audio file and image capture (blob)
-    formData.append('audio_file', audioFile);
-    formData.append('image_file', imageCapture);
+    // Handle the audio file (Blob URL)
+    if (audioFile) {
+      const audioBlob = await fetch(audioFile).then(response => response.blob());
+      const audioFileName = `audio_${uuidv4()}.mp3`; // Generate a unique name for the audio file using UUID
+      const audioFileObject = new File([audioBlob], audioFileName, { type: audioBlob.type });
+      formData.append('audio_file', audioFileObject);
+    }
+  
+    // Handle the image capture (Base64 string)
+    if (imageCapture) {
+      const imageData = imageCapture.split(',')[1]; // Strip out the data URI prefix
+      const imageBlob = new Blob([new Uint8Array(atob(imageData).split("").map(c => c.charCodeAt(0)))], { type: 'image/png' });
+      const imageFileName = `image_${uuidv4()}.png`; // Generate a unique name for the image file using UUID
+      const imageFileObject = new File([imageBlob], imageFileName, { type: imageBlob.type });
+      formData.append('image_file', imageFileObject);
+    }
   
     // Log form data for debugging
     for (let [key, value] of formData.entries()) {
@@ -259,13 +309,7 @@ class SmoosicComponent extends React.Component {
   
     try {
       // POST request to save data
-      const response = await axios.post('http://localhost:8000/save/save-transcription/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          // Add CSRF token if necessary
-          // 'X-CSRFToken': csrfToken, // Uncomment and set csrfToken if CSRF protection is enabled
-        },
-      });
+      const response = await axios.post('http://localhost:8000/transcription/save-transcription/', formData);
   
       if (response.status === 200) {
         console.log('Data saved successfully:', response.data);

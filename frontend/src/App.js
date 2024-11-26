@@ -1,3 +1,4 @@
+// App.js
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
@@ -13,20 +14,24 @@ import './App.css';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
-    // Check if the user is logged in by reading from localStorage
     return localStorage.getItem('loggedIn') === 'true';
   });
-
   const [email, setEmail] = useState('');
-
-
-
   const [showNav, setShowNav] = useState(false);
 
   useEffect(() => {
-    // Save loggedIn state to localStorage whenever it changes
     localStorage.setItem('loggedIn', loggedIn);
   }, [loggedIn]);
+
+  // Logout function to reset login state
+  const handleLogout = () => {
+    setLoggedIn(false);
+    setEmail('');
+    localStorage.removeItem('loggedIn');
+  };
+
+  // Function to close NavBar when any link is clicked
+  const handleNavClick = () => setShowNav(false);
 
   return (
     <Router>
@@ -35,7 +40,7 @@ function App() {
           <header>
             <GiHamburgerMenu onClick={() => setShowNav(!showNav)} />
           </header>
-          <NavBar show={showNav} />
+          <NavBar show={showNav} handleLogout={handleLogout} handleNavClick={handleNavClick} />
           <div className="main">
             <Routes>
               <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
