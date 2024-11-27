@@ -11,6 +11,8 @@ import SmoosicApp from './TranscribeModule/SmoosicApp';
 import NavBar from './components/NavBar';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import './App.css';
+import TranscriptionPage from "./components/TranscriptionPage"; // Component to display the transcription details
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -48,6 +50,9 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/editor" element={<SmoosicApp />} />
+
+              <Route path="/transcription/:id" element={<TranscriptionPage />} />
+
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>

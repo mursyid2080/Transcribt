@@ -13,7 +13,6 @@ const TranscriptionCard = ({ image, title, likes, saves }) => {
       <div className="card-content">
         <h3 className="card-title">{title}</h3>
         <div className="card-stats">
-          <span className="likes">❤️ {likes} Likes</span>
           <span className="saves">🔖 {saves} Saves</span>
         </div>
       </div>

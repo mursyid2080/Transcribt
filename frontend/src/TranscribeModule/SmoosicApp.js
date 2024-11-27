@@ -284,6 +284,7 @@ class SmoosicComponent extends React.Component {
     formData.append('categories', JSON.stringify(selectedCategories));
     formData.append('score_data', JSON.stringify(serializedScore));
     formData.append('is_published', false);
+    formData.append('saves', 0);
   
     // Handle the audio file (Blob URL)
     if (audioFile) {

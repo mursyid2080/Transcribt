@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const TranscriptionPost = () => {
+const TranscriptionPage = () => {
   const { id } = useParams(); // Access the dynamic 'id' from the URL
   const [transcription, setTranscription] = useState(null);
 
@@ -12,6 +12,7 @@ const TranscriptionPost = () => {
       .get(`http://localhost:8000/transcription/api/transcriptions/${id}/`)
       .then((response) => {
         setTranscription(response.data);
+        console.log('id data: ', response.data);
       })
       .catch((error) => {
         console.error("Error fetching transcription:", error);
@@ -30,4 +31,4 @@ const TranscriptionPost = () => {
   );
 };
 
-export default TranscriptionPost;
+export default TranscriptionPage;
