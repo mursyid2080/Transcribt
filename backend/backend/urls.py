@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path('transcribe/', include('transcribe.urls')),
-    path('save/', include('save.urls')),
+    path('transcription/', include('transcription.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # if settings.DEBUG: 
 #     urlpatterns += static(settings.MEDIA_URL,

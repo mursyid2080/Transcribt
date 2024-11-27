@@ -8,3 +8,5 @@ class SavedTranscription(models.Model):
     is_published = models.BooleanField(default=False)
     audio_file = models.FileField(upload_to='audio_files/')  # Define upload path
     image_file = models.ImageField(upload_to='image_files/', null=True, blank=True)
+    saves = models.IntegerField(default=0)
+
