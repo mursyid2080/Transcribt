@@ -1,0 +1,41 @@
+.sidenav {
+    z-index: 1000;
+    width: 240px;
+    background: #011627;
+    position: absolute;
+    min-height: 95vh;
+    padding: 0 30px;
+    left: -100%;
+    transition: all 0.3s;
+    overflow-y: auto;
+  }
+  
+  .sidenav.active{
+    z-index: 1000;
+    left: 0;
+  }
+  
+  ul {
+    padding: 0;
+  
+  }
+  
+  ul li {
+    list-style-type: none;
+    margin: 10px 0;
+  }
+  
+  ul li a {
+    color: #eaecef;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 6px;
+  }
+  
+  ul li a:hover,
+  ul li a.active{
+    background: #172b4d;
+  
+  }

@@ -1,5 +1,16 @@
+/* Ensure html and body take up the full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Root container: make it a flex container */
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column; /* Stack header, sidenav, and main vertically */
+  height: 100%; /* Full height of the viewport */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 .App-logo {
@@ -13,7 +24,55 @@
   }
 }
 
-/* App.css */
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main layout container */
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1; /* Take up remaining space */
+}
+
+/* Header - fixed height */
+header {
+  padding: 15px;
+  background: #011627;
+  min-height: 60px;
+  flex-shrink: 0; /* Prevent header from shrinking */
+  z-index: 1000;
+}
+
+header svg {
+  font-size: 30px;
+  color: #eaecef;
+}
+
+/* Side Navigation - fixed to left, hidden by default */
+.sidenav {
+  width: 240px;
+  background: #011627;
+  position: fixed; /* Fix it to the side */
+  top: 0;
+  bottom: 0;
+  left: -100%; /* Hide it initially */
+  padding: 0 30px;
+  transition: all 0.3s;
+  overflow-y: auto;
+}
+
+.sidenav.active {
+  left: 0; /* Slide it in */
+}
+
 .sidenav .logout-button {
   margin-top: auto;
   padding: 10px;
@@ -32,80 +91,16 @@
   background-color: #ff3333;
 }
 
-/* .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-} */
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.mainContainer {
-  flex-direction: column;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Main content container - scrollable area */
+.main {
+  flex: 1; /* Take up the remaining space */
+  overflow-y: scroll; /* Scroll when content overflows */
+  
+  background: #f0f0f0; /* Background color */
   height: 100vh;
 }
 
-.titleContainer {
-  display: flex;
-  flex-direction: column;
-  font-size: 64px;
-  font-weight: bolder;
-  align-items: center;
-  justify-content: center;
-}
-
-.resultContainer,
-.historyItem {
-  flex-direction: row;
-  display: flex;
-  width: 400px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.historyContainer {
-  flex-direction: column;
-  display: flex;
-  height: 200px;
-  align-items: center;
-  flex-grow: 5;
-  justify-content: flex-start;
-}
-
-.buttonContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 260px;
-}
-
-.inputContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
+/* Example components like buttons, containers, input fields, etc. */
 .inputContainer > .errorLabel {
   color: red;
   font-size: 12px;
@@ -120,93 +115,18 @@
   padding-left: 8px;
 }
 
-header {
-  padding: 15px;
-  background: #011627;
-  height: 60px;
-}
-
-.sidenav {
-  z-index: 1000;
-  width: 240px;
-  background: #011627;
-  position: absolute;
-  height: 95vh;
-  padding: 0 30px;
-  left: -100%;
-  transition: all 0.3s;
-}
-
-.sidenav.active{
-  z-index: 1000;
-  left: 0;
-}
-
-ul {
-  padding: 0;
-
-}
-
-ul li {
-  list-style-type: none;
-  margin: 10px 0;
-}
-
-ul li a {
-  color: #eaecef;
-  text-decoration: none;
-  font-size: 16px;
-  display: block;
-  padding: 10px 15px;
-  border-radius: 6px;
-}
-
-ul li a:hover,
-ul li a.active{
-  background: #172b4d;
-
-}
-
-header svg{
-  font-size: 30px;
-  color: #eaecef;
-}
-
-.main{
-  display: flex;
-
-  /* height: 98vh; */
-  /* display: flex;
-  
-  justify-content: center;
-  align-items: center; */
-  /* width: 100%;      
-  margin: 0 auto;  
-  padding: 20px;    */
-}
-
+/* Workspace and Music Relief sections */
 .workspace.language-dir {
   height: 700px;
   max-height: 700px;
 }
 
-
 .musicRelief {
   height: auto;
   max-height: 500px;
-} 
+}
 
-/* SmoosicComponent CSS */
-/* .smoosic-container {
-  width: 100%;       
-  height: 700px;    
-  display: grid;
-  gap: 50px;
-  grid-auto-rows: min-content;
-  position: relative;
-  z-index: 1;
-} */
-
+/* Input Selection - full viewport height */
 .inputSelection {
   display: flex;
   flex-direction: column; /* Stack items vertically */
@@ -215,36 +135,75 @@ header svg{
   height: 100vh; /* Ensure the container takes up the full viewport height */
 }
 
-
-#waveform {
-  margin-top: 10px;
-  width: 100%;
-  max-width: 100%;
+/* Trending Section */
+.trending-section {
+  margin: 20px 0;
 }
 
-.controls {
-  margin-top: 10px;
+.trending-section h2 {
+  margin-bottom: 10px;
 }
 
-.controls button {
-  margin: 10px;
-  border: 1px solid #ccc !important;
-  padding: 8px; /* Adjust padding as needed */
-  background-color: #fff; /* Optional: to ensure consistent background */
-  border-radius: 4px; /* Optional: to soften the corners */
-  cursor: pointer; /* Optional: to ensure it looks like a clickable button */
+.scroll-container {
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
-
-.controls button:hover{
-  background-color: #ececec;
+.trending-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
 }
 
-.audio-info{
-  margin-top: 15px;
-  color: #000000;
-  border-radius: 4px;
-  padding: 8px 15px;
-  display: inline-block;
-  font-size: 12px;
+.trending-grid::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 1;
+}
+
+.scroll-button.left {
+  left: 0;
+}
+
+.scroll-button.right {
+  right: 0;
+}
+
+/* Categories Section */
+.categories-section {
+  margin: 20px 0;
+}
+
+.category-group {
+  margin-bottom: 20px;
+}
+
+.category-group h3 {
+  margin-bottom: 10px;
+}
+
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Button Container */
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
 }

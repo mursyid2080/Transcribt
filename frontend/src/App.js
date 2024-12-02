@@ -39,7 +39,7 @@ function App() {
     <Router>
       {loggedIn ? (
         <>
-          <header>
+          <header className='header'>
             <GiHamburgerMenu onClick={() => setShowNav(!showNav)} />
           </header>
           <NavBar show={showNav} handleLogout={handleLogout} handleNavClick={handleNavClick} />

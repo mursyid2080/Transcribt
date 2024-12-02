@@ -1,0 +1,32 @@
+#waveform {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .controls {
+    margin-top: 10px;
+  }
+  
+  .controls button {
+    margin: 10px;
+    border: 1px solid #ccc !important;
+    padding: 8px; /* Adjust padding as needed */
+    background-color: #fff; /* Optional: to ensure consistent background */
+    border-radius: 4px; /* Optional: to soften the corners */
+    cursor: pointer; /* Optional: to ensure it looks like a clickable button */
+  }
+  
+  
+  .controls button:hover{
+    background-color: #ececec;
+  }
+  
+  .audio-info{
+    margin-top: 15px;
+    color: #000000;
+    border-radius: 4px;
+    padding: 8px 15px;
+    display: inline-block;
+    font-size: 12px;
+  }

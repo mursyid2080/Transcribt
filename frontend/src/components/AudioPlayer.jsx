@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import "./AudioPlayer.css"
+
 import{
     faPlay,
     faPause,
