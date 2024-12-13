@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = ({ setLoggedIn, setEmail }) => {
-  const [email, setEmailState] = useState('');
+const Login = ({ setLoggedIn, setUsername }) => {
+  const [username, setUsernameState] = useState('');
   const [password, setPasswordState] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
@@ -13,20 +13,16 @@ const Login = ({ setLoggedIn, setEmail }) => {
 
   const onButtonClick = () => {
     // Reset error states
-    setEmailError('');
+    setUsernameError('');
     setPasswordError('');
     setLoginError('');
-
-    // Validate email
-    if (!email) {
-      setEmailError('Please enter your email');
+  
+    // Validate username
+    if (!username) {
+      setUsernameError('Please enter your username');
       return;
     }
-    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-      setEmailError('Please enter a valid email');
-      return;
-    }
-
+  
     // Validate password
     if (!password) {
       setPasswordError('Please enter a password');
@@ -36,14 +32,19 @@ const Login = ({ setLoggedIn, setEmail }) => {
       setPasswordError('The password must be 6 characters or longer');
       return;
     }
-
+  
+    // Send data as URL-encoded
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+  
     // Make the authentication call
-    axios.post('http://127.0.0.1:8000/api/auth/login', { email, password })
+    axios.post('http://localhost:8000/api/auth/login', formData, { withCredentials: true },)
       .then(response => {
-        console.log('Login successful:', response.data);
-        
+        console.log('Login successful:', response);
+        localStorage.setItem("access_token", response.data.access_token);
         // Update state in the parent component
-        setEmail(email);
+        setUsername(username);
         setLoggedIn(true);
         
         // Redirect to home page
@@ -51,8 +52,9 @@ const Login = ({ setLoggedIn, setEmail }) => {
       })
       .catch(error => {
         console.error('Error logging in:', error);
-        setLoginError('Invalid email or password. Please try again.');
+        setLoginError('Invalid username or password. Please try again.');
       });
+    
   };
 
   return (
@@ -63,12 +65,12 @@ const Login = ({ setLoggedIn, setEmail }) => {
       <br />
       <div className="inputContainer">
         <input
-          value={email}
-          placeholder="Enter your email here"
-          onChange={(ev) => setEmailState(ev.target.value)}
+          value={username}
+          placeholder="Enter your username here"
+          onChange={(ev) => setUsernameState(ev.target.value)}
           className="inputBox"
         />
-        {emailError && <label className="errorLabel">{emailError}</label>}
+        {usernameError && <label className="errorLabel">{usernameError}</label>}
       </div>
       <br />
       <div className="inputContainer">

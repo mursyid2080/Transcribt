@@ -29,8 +29,8 @@ class SmoosicComponent extends React.Component {
         "Pekerjaan dan Tradisi",        // Occupations and traditional work
         "Perpaduan dan Kemasyarakatan", // Unity and community
         "Kebudayaan dan Adat",          // Culture and customs
-        "Kanak-kanak dan Lullabies",    // Children's songs and lullabies
-        "Kritikan Sosial",              // Social critique and satire
+        "Kanak-kanak",    // Children's songs and lullabies
+        // "Kritikan Sosial",              // Social critique and satire
         "Upacara dan Ritual",           // Ceremonial and ritualistic
         "Kegembiraan dan Perayaan"      // Joy and celebrations
       ], // Predefined categories
@@ -273,6 +273,7 @@ class SmoosicComponent extends React.Component {
   
   
 
+
   handleSubmit = async (e) => {
     e.preventDefault();
     const { title, author, selectedCategories, serializedScore, audioFile, imageCapture } = this.state;
@@ -307,20 +308,53 @@ class SmoosicComponent extends React.Component {
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
+
+    const token = localStorage.getItem("access_token");
+    console.log(token);
+    
+    const getCSRFToken = () => {
+      console.log(document.cookie);
+      const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+        const [name, value] = cookie.split('=');
+        acc[name] = value;
+        return acc;
+      }, {});
+    
+      return cookies.csrftoken || null;
+    };
+    
   
-    try {
-      // POST request to save data
-      const response = await axios.post('http://localhost:8000/transcription/save-transcription/', formData);
   
-      if (response.status === 200) {
-        console.log('Data saved successfully:', response.data);
-        this.toggleModal();  // Close the modal after successful save
-      } else {
-        console.error('Error saving data:', response.statusText);
+
+try {
+    const csrfToken = getCSRFToken();
+    console.log('csrf', csrfToken);
+
+    const response = await axios.post(
+      'http://localhost:8000/transcription/save-transcription/',
+      formData,
+      {
+          headers: {
+              // 'Authorization': token,
+              'X-CSRFToken': csrfToken, // Include CSRF token
+          },
+          withCredentials: true, // Ensure session cookies are sent
       }
-    } catch (error) {
-      console.error('Error:', error);
+  );
+
+    console.log('Headers:', axios.defaults.headers);
+    console.log('Cookies:', document.cookie);
+
+
+    if (response.status === 200) {
+        console.log('Data saved successfully:', response.data);
+        this.toggleModal(); // Close the modal after successful save
+    } else {
+        console.error('Error saving data:', response.statusText);
     }
+} catch (error) {
+    console.error('Error:', error.response ? error.response.data : error.message);
+}
   };
 
 

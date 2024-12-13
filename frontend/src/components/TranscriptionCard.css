@@ -5,7 +5,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
   background-color: #ffffff; /* Ensure default background is white */
-  margin: 16px;
+  margin: 5px;
   height: 335px;
   transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add smooth hover animation */
 }

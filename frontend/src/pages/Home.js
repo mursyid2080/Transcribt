@@ -13,7 +13,9 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/transcription/api/transcriptions/");
+        const response = await axios.get("http://localhost:8000/transcription/api/transcriptions/", {}, {
+          withCredentials: true
+        });
         const data = response.data;
 
         // Sort by favorites for trending
@@ -23,9 +25,7 @@ const Home = () => {
         const groupedCategories = {};
 
         data.forEach((item) => {
-          // Ensure item.categories is an array
           const itemCategories = Array.isArray(item.categories) ? item.categories : [];
-
           itemCategories.forEach((category) => {
             if (!groupedCategories[category]) groupedCategories[category] = [];
             groupedCategories[category].push(item);
@@ -48,7 +48,6 @@ const Home = () => {
     fetchData();
   }, []);
 
-  // Horizontal Scroll handler
   const handleScroll = (direction, ref) => {
     if (ref.current) {
       const { scrollLeft, clientWidth } = ref.current;
@@ -64,10 +63,6 @@ const Home = () => {
       {/* Search Bar */}
       <div className="search-bar">
         <input type="text" placeholder="Search" />
-        {/* <select>
-          <option value="all">All category</option>
-        
-        </select> */}
         <button>Search</button>
       </div>
 
@@ -86,10 +81,10 @@ const Home = () => {
                 style={{ backgroundColor: "transparent" }}
               >
                 <TranscriptionCard
-                  image={item.image_file} // Adjust if the API includes an image field
+                  image={item.image_file}
                   title={item.title}
                   likes={item.favorites}
-                  saves={item.saves || 0} // Default to 0 if `saves` field doesn't exist
+                  saves={item.saves || 0}
                 />
               </Link>
             ))}
@@ -104,9 +99,19 @@ const Home = () => {
       <section className="categories-section">
         <h2>Categories</h2>
         {Object.keys(categories).map((category) => (
-          <div key={category} className="category-group">
-            <h3>{category}</h3>
-            <div className="category-grid">
+          <div key={category} className="category-row">
+            {/* Left section with image and title */}
+            <div className="category-left">
+              <img
+                src={`/images/${category}.jpg`} // Adjust path dynamically
+                alt={category}
+                className="category-image"
+              />
+              <h3 className="category-title">{category}</h3>
+            </div>
+
+            {/* Right section with cards */}
+            <div className="category-cards">
               {categories[category].map((item) => (
                 <Link
                   to={`/transcription/${item.id}`}
@@ -125,6 +130,7 @@ const Home = () => {
           </div>
         ))}
       </section>
+
 
       {/* Routes */}
       <Routes>

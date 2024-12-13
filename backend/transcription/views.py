@@ -1,15 +1,19 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import SavedTranscription
+from .models import SavedTranscription, UserFavorite
 from .serializers import SavedTranscriptionSerializer
 import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import get_object_or_404
 
 
 @csrf_exempt  # Temporarily disable CSRF for testing (for APIs, use proper CSRF token handling)
-# Inside your Django view
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def save_transcription(request):
     if request.method == 'POST':
         # Retrieve standard fields from `request.POST`
@@ -25,6 +29,9 @@ def save_transcription(request):
 
         # Now you can use these files, for example:
         # Save them to a model, handle them, or validate them
+        print(f'Authenticated user: {request.user}')
+        print(f'Session ID: {request.session.session_key}')
+        user = request.user
 
         # Example saving to a model
         transcription = SavedTranscription.objects.create(
@@ -35,6 +42,7 @@ def save_transcription(request):
             is_published=is_published,
             audio_file=audio_file,
             image_file=image_file,
+            user=user,
         )
 
         # Response to confirm the save operation
@@ -54,3 +62,20 @@ class TranscriptionDetailView(RetrieveAPIView):
     queryset = SavedTranscription.objects.all()
     serializer_class = SavedTranscriptionSerializer
     lookup_field = 'id'  # Use 'id' instead of 'pk'
+
+class ToggleFavoriteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, transcription_id):
+        transcription = get_object_or_404(SavedTranscription, id=transcription_id)
+
+        # Check if the user already favorited the transcription
+        favorite, created = UserFavorite.objects.get_or_create(user=request.user, transcription=transcription)
+
+        if not created:
+            # If already favorited, unfavorite it
+            favorite.delete()
+            return Response({'status': 'unfavorited', 'transcription_id': transcription.id})
+
+        # Otherwise, mark as favorite
+        return Response({'status': 'favorited', 'transcription_id': transcription.id})

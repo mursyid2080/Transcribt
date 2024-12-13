@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SavedTranscription
+from .models import SavedTranscription, UserFavorite
 
 class SavedTranscriptionSerializer(serializers.ModelSerializer):
     image_file = serializers.SerializerMethodField()
@@ -12,4 +12,9 @@ class SavedTranscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SavedTranscription
+        fields = '__all__'
+
+class UserFavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserFavorite
         fields = '__all__'

@@ -12,13 +12,14 @@ import NavBar from './components/NavBar';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import './App.css';
 import TranscriptionPage from "./components/TranscriptionPage"; // Component to display the transcription details
+import axios from 'axios';
 
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
     return localStorage.getItem('loggedIn') === 'true';
   });
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [showNav, setShowNav] = useState(false);
 
   useEffect(() => {
@@ -27,10 +28,23 @@ function App() {
 
   // Logout function to reset login state
   const handleLogout = () => {
-    setLoggedIn(false);
-    setEmail('');
-    localStorage.removeItem('loggedIn');
+    // Send logout request to backend
+    axios.post('http://localhost:8000/api/auth/logout', {}, {
+      withCredentials: true,
+    })
+    .then(response => {
+      console.log('Logout successful:', response.data);
+      
+      // Clear local storage and update state
+      setLoggedIn(false);
+      setUsername('');
+      localStorage.removeItem('access_token');  // Remove the token after logout
+    })
+    .catch(error => {
+      console.error('Error logging out:', error);
+    });
   };
+  
 
   // Function to close NavBar when any link is clicked
   const handleNavClick = () => setShowNav(false);
@@ -45,7 +59,7 @@ function App() {
           <NavBar show={showNav} handleLogout={handleLogout} handleNavClick={handleNavClick} />
           <div className="main">
             <Routes>
-              <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+              <Route path="/" element={<Home username={username} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
               <Route path="/transcribe" element={<Transcribe />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<ProfilePage />} />
@@ -59,8 +73,8 @@ function App() {
         </>
       ) : (
         <Routes>
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-          <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUsername={setUsername} />} />
+          <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUsername={setUsername} />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}

@@ -6,9 +6,11 @@ const Register = (props) => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [password2, setPassword2] = useState('')
   const [usernameError, setUsernameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [password2Error, setPassword2Error] = useState('')
 
   const navigate = useNavigate()
 
@@ -17,7 +19,8 @@ const Register = (props) => {
     setUsernameError('')
     setEmailError('')
     setPasswordError('')
-  
+    setPassword2Error('')
+
     // Check if the user has entered both fields correctly
     if ('' === username) {
         setUsernameError('Please enter your username')
@@ -43,24 +46,38 @@ const Register = (props) => {
       setPasswordError('The password must be 6 characters or longer')
       return
     }
-    
+
+    if ('' === password2) {
+      setPassword2Error('Please enter a password')
+      return
+    }
+  
+    if (password2.length < 5) {
+      setPassword2Error('The password must be 6 characters or longer')
+      return
+    }
+
+    if (password2 != password) {
+      setPassword2Error('The password does not match')
+      return
+    }
+
+    const formData = new URLSearchParams();
+    formData.append('email', email);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('password2', password2);
     // route with axios
     // Authentication calls will be made here...
-    axios.post('http://127.0.0.1:8000/api/auth/register', {
-        username: username,
-        email: email,
-        password: password
-    })
-    .then(response => {
-        // Handle successful response
-        console.log('Register successful:', response.data);
-        // You may want to handle redirection or other actions upon successful login
-    })
-    .catch(error => {
-        // Handle error
+    axios.post('http://127.0.0.1:8000/api/auth/register', formData,)
+      .then(response => {
+        console.log('Register successful:', response);
+        
+      })
+      .catch(error => {
         console.error('Error registering:', error);
-        // You may want to display an error message to the user
-    });
+        
+      });
   }
 
   return (
@@ -98,6 +115,17 @@ const Register = (props) => {
             className={'inputBox'}
         />
         <label className="errorLabel">{passwordError}</label>
+      </div>
+      <br />
+      <div className={'inputContainer'}>
+        <input
+            type="password2"
+            value={password2}
+            placeholder="Enter your password here"
+            onChange={(ev) => setPassword2(ev.target.value)}
+            className={'inputBox'}
+        />
+        <label className="errorLabel">{password2Error}</label>
       </div>
       <br />
       <div className={'inputContainer'}>
