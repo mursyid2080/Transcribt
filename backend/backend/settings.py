@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'authentication',
     'corsheaders',
     'transcribe',
-    'transcription'
+    'transcription',
+    
 ]
 STATIC_DIR = BASE_DIR / 'static'
 MEDIA_DIR = BASE_DIR / 'media'

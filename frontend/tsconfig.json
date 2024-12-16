@@ -102,6 +102,6 @@
   },
   "include": [
     "src", 
-    "Transcribt/frontend/src/Smoosic/src/vexflow_smoosic.d.ts"
+    "Transcribt/frontend/src/Smoosic/src/vexflow_smoosic.d.ts",
   ],
 }

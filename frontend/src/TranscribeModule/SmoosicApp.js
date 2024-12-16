@@ -105,7 +105,7 @@ class SmoosicComponent extends React.Component {
 
         // After initialization, you can safely use SmoScore or other Smoosic-related instances
         console.log('Smoosic initialized:', this.globSmoApp.instance.eventSource);
-        console.log('Score', this.globSmoApp.score.serialize());
+        // console.log('Score', this.globSmoApp.score.serialize());
       } catch (error) {
         console.error('Error during Smoosic initialization:', error);
       }
@@ -206,7 +206,12 @@ class SmoosicComponent extends React.Component {
 
   handleSave = () => {
     if (this.globSmoApp) {
-      const serializedScore = this.globSmoApp.score.serialize();
+      console.log(this.globSmoApp);
+      // const serializedScore = this.globSmoApp.score.serialize();
+
+      const serializedScore = window.Smo.SmoToXml.convert(this.globSmoApp.score);
+
+
       
       this.setState({ serializedScore }, () => {
         this.captureImage(); // Capture the image when saving

@@ -8,6 +8,7 @@ import Transcribe from './TranscribeModule/Transcribe';
 import Dashboard from './Dashboard';
 import ProfilePage from './ProfilePage';
 import SmoosicApp from './TranscribeModule/SmoosicApp';
+import Smoosical from './TranscribeModule/Smoosical';
 import NavBar from './components/NavBar';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import './App.css';
@@ -59,7 +60,7 @@ function App() {
           <NavBar show={showNav} handleLogout={handleLogout} handleNavClick={handleNavClick} />
           <div className="main">
             <Routes>
-              <Route path="/" element={<Home username={username} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+              <Route path="/*" element={<Home username={username} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
               <Route path="/transcribe" element={<Transcribe />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<ProfilePage />} />

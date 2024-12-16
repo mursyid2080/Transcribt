@@ -11,7 +11,7 @@ import{
     faVolumeMute,
     faVolumeOff,
 } from '@fortawesome/free-solid-svg-icons';
-import { handHeart, playCircle, turkey } from 'fontawesome';
+
 
 const formWaveSurferOptions = (ref) => ({
     container: ref,

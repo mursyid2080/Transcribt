@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from .models import UserProfile
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -47,6 +48,8 @@ class RegistrationView(View):
         # user.last_name = full_name
         user.is_active = True  # Directly activate the account
         user.save()
+
+        
 
         return JsonResponse({'message': 'Account created successfully. You can now log in.'})
 

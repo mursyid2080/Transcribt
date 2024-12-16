@@ -79,3 +79,4 @@ class ToggleFavoriteView(APIView):
 
         # Otherwise, mark as favorite
         return Response({'status': 'favorited', 'transcription_id': transcription.id})
+    
