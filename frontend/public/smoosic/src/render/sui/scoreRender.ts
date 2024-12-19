@@ -180,6 +180,7 @@ export class SuiScoreRender {
       return;
     }
     const layoutManager = this.score!.layoutManager!;
+    console.log(layoutManager);
     // All pages have same width/height, so use that
     const layout = layoutManager.getGlobalLayout();
     this.vexContainers.updateLayout(layout, layoutManager.pageLayouts);

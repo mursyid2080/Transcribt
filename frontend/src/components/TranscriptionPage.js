@@ -2,78 +2,64 @@ import React, { Component } from 'react';
 import withRouter from '../components/withRouter';
 import axios from 'axios';
 import './TranscriptionPage.css'; // Import your CSS if needed
+import OpenSheetMusicDisplay from '../lib/OpenSheetMusicDisplay';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 class TranscriptionPage extends Component {
   constructor(props) {
     super(props);
-    this.smoosicElem = React.createRef(); // Ref for the Smoosic container
-    this.smo = null;
-    this.smoApp = null;
+    this.osmdContainer = React.createRef(); // Ref for OSMD container
+    this.osmd = null; // OSMD instance
     this.state = {
       transcription: null,
+      isDomReady: false,
     };
   }
 
   componentDidMount() {
     const { id } = this.props.router.params;
-  
+
     if (!id) {
       console.error('ID is undefined, routing might be misconfigured.');
       return;
     }
-  
-    axios.get(`http://localhost:8000/transcription/api/transcriptions/${id}/`)
+
+    axios
+      .get(`http://localhost:8000/transcription/api/transcriptions/${id}/`)
       .then((response) => {
-        this.setState({ transcription: response.data });
-  
-        if (response.data.score_data) {
-          const scoreData = response.data.score_data;
-          const deserializedData = window.Smo.XmlToSmo.convert(scoreData);
-          console.log('score: ', scoreData);
-          const path = `${process.env.PUBLIC_URL}/../../smoosic/release`;
-  
-          // Ensure the DOM is ready
-          setTimeout(() => {
-            if (this.smoosicElem.current && this.smoosicElem.current.id) {
-              const containerId = this.smoosicElem.current.id;
-              let config = {
-                mode: "library",
-                scoreDomContainer: containerId,
-                remoteScore: null,
-                initialScore: deserializedData,
-                smoPath: path
-              };
-  
-              try {
-                this.initializeSmoosic(config);
-              } catch (error) {
-                console.error('Error during Smoosic initialization:', error);
-              }
-            } else {
-              console.error('Smoosic container not found.');
-            }
-          }, 1000); // Adjust the timeout as needed
-        }
+        this.setState({ transcription: response.data }, () => {
+          if (response.data.score_data) {
+            this.setState({ isDomReady: true });
+          }
+        });
       })
       .catch((error) => {
-        console.error("Error fetching transcription:", error);
+        console.error('Error fetching transcription:', error);
       });
   }
-  
-  async initializeSmoosic(config) {
-    if (window.Smo) {
-      this.smo = window.Smo;
-      try {
-        this.smoApp = await this.smo.SuiApplication.configure(config);
-        console.log('Smoosic initialized:', this.smoApp.instance.eventSource);
-      } catch (error) {
-        console.error('Error during Smoosic initialization:', error);
+
+  exportToPdf = async () => {
+    if (!this.state.isDomReady) return;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const container = this.osmdContainer.current;
+
+    if (container) {
+      const elements = Array.from(container.querySelectorAll('svg'));
+      for (let i = 0; i < elements.length; i++) {
+        const canvas = await html2canvas(elements[i]);
+        const imgData = canvas.toDataURL('image/png');
+
+        const imgWidth = 210; // A4 width in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       }
-    } else {
-      console.error('Smo object is not available.');
     }
-  }
-  
+
+    pdf.save('music_sheet.pdf');
+  };
 
   render() {
     const { transcription } = this.state;
@@ -89,8 +75,7 @@ class TranscriptionPage extends Component {
           <p className="transcription-author">by {transcription.author}</p>
         </div>
 
-        {/* Use the React ref to pass the DOM element to Smoosic */}
-        <div id="outer-container" ref={this.smoosicElem}></div>
+        <OpenSheetMusicDisplay file={transcription.score_data} />
 
         <div className="audio-section">
           <audio controls>
@@ -98,6 +83,10 @@ class TranscriptionPage extends Component {
             Your browser does not support the audio element.
           </audio>
         </div>
+
+        <button onClick={this.exportToPdf} disabled={!this.state.isDomReady}>
+          Export to PDF
+        </button>
       </div>
     );
   }

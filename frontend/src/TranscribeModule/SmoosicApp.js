@@ -51,7 +51,7 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      remoteScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
       disableSplash: true,
     };
 
@@ -211,7 +211,7 @@ class SmoosicComponent extends React.Component {
 
       const serializedScore = window.Smo.SmoToXml.convert(this.globSmoApp.score);
 
-
+      // const serializedScore = this.globSmoApp.score;
       
       this.setState({ serializedScore }, () => {
         this.captureImage(); // Capture the image when saving
@@ -288,7 +288,6 @@ class SmoosicComponent extends React.Component {
     formData.append('title', title);
     formData.append('author', author);
     formData.append('categories', JSON.stringify(selectedCategories));
-    formData.append('score_data', JSON.stringify(serializedScore));
     formData.append('is_published', false);
     formData.append('saves', 0);
   
@@ -308,6 +307,28 @@ class SmoosicComponent extends React.Component {
       const imageFileObject = new File([imageBlob], imageFileName, { type: imageBlob.type });
       formData.append('image_file', imageFileObject);
     }
+
+    // Handle the serializedScore (XML file)
+    if (serializedScore) {
+      // Convert the serializedScore object (e.g., XMLDocument) to a string
+      const serializer = new XMLSerializer();
+      const serializedScoreString = serializer.serializeToString(serializedScore);
+    
+      // Create a Blob from the serialized XML string
+      const xmlData = '<?xml version="1.0" encoding="UTF-8"?>\n' + serializedScoreString;
+      const scoreBlob = new Blob([xmlData], { type: 'text/xml;charset=utf-8' });
+
+    
+      // Generate a unique file name for the XML file
+      const scoreFileName = `score_${uuidv4()}.xml`;
+    
+      // Create a File object from the Blob
+      const scoreFileObject = new File([scoreBlob], scoreFileName, { type: scoreBlob.type });
+    
+      // Append the File object to the FormData
+      formData.append('score_data', scoreFileObject);
+    }
+    
   
     // Log form data for debugging
     for (let [key, value] of formData.entries()) {

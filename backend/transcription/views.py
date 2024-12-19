@@ -20,7 +20,9 @@ def save_transcription(request):
         title = request.POST.get('title')
         author = request.POST.get('author')
         categories = json.loads(request.POST.get('categories', '[]'))  # Deserialize JSON string to Python list
-        score_data = json.loads(request.POST.get('score_data', '{}'))  # Deserialize JSON string to Python dict
+
+        score_data = request.FILES.get('score_data')  # Deserialize JSON string to Python dict
+        print(score_data)
         is_published = request.POST.get('is_published') == 'true'
 
         # Retrieve file uploads from `request.FILES`

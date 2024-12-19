@@ -1,0 +1,40 @@
+.favorite-item-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #282828; /* Slightly lighter rectangle */
+    border-radius: 8px; /* Rounded corners for each item */
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .favorite-item-card:hover {
+    background-color: #383838; /* Slightly lighter on hover */
+  }
+  
+  .favorite-item-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .favorite-item-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .favorite-item-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  
+  .favorite-item-meta {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #b3b3b3;
+  }
+  

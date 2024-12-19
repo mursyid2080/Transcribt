@@ -68,7 +68,7 @@ a:focus {
 }
 
 a:hover {
-  background: #AAFE9E;
+  /* background: #AAFE9E; */
 }
 
 ul.tree button.expander {

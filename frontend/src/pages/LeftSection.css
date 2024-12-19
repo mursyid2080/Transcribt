@@ -1,0 +1,48 @@
+/* General container to fill page height */
+.left-section {
+    display: flex;
+    flex-direction: column;
+    background-color: #121212; /* Dark Spotify-like background */
+    color: #ffffff;
+    height: 100vh; /* Full viewport height */
+    padding: 20px;
+    box-sizing: border-box;
+    width: 35vh;
+  }
+  
+  .left-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  /* Rounded rectangle container */
+  .favorites-container {
+    background-color: #181818; /* Slightly lighter than the background */
+    border-radius: 12px;
+    padding: 15px;
+    flex-grow: 1; /* Makes it fill the remaining space */
+    overflow-y: auto; /* Enables vertical scrolling for overflow */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  }
+  
+  /* Favorites list */
+  .favorites-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .favorite-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  /* No favorites message */
+  .no-favorites {
+    text-align: center;
+    color: #b3b3b3;
+  }
+  
+  
