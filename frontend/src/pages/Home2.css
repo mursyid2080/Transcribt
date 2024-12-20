@@ -1,29 +1,33 @@
-.homepage {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-  }
+.home-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* Make sure the container takes full vertical height */
+  overflow: hidden; /*Prevents elements from overflowing the container*/
+}
+
+
+.left-section {
+  background: #e0e0e0; /* Light gray for testing */
+  width:30vw; /* Adjust width for LeftSection */
+}
+
+.middle-section {
+  background: #f0f0f0; /* Lighter gray for testing */
+  flex: 0.7; /* Adjust width for MiddleSection */
+}
+
+h2 {
+  margin-bottom: 15px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
   
-  .left-section,
-  .middle-section,
-  .right-section {
-    width: 30%;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    margin-bottom: 15px;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    margin-bottom: 10px;
-  }
+
   

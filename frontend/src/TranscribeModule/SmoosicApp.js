@@ -51,7 +51,7 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      remoteScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
       disableSplash: true,
     };
 
@@ -97,14 +97,14 @@ class SmoosicComponent extends React.Component {
       this.globSmo = window.Smo;
 
       // Create the UI DOM structure
-      this.globSmo.SuiDom.createUiDom(element);
+      window.Smo.SuiDom.createUiDom(element);
 
       try {
         // Use async/await to wait for Smoosic configuration to complete
-        this.globSmoApp = await this.globSmo.SuiApplication.configure(config);
+        await window.Smo.SuiApplication.configure(config);
 
         // After initialization, you can safely use SmoScore or other Smoosic-related instances
-        console.log('Smoosic initialized:', this.globSmoApp.instance.eventSource);
+        console.log('Smoosic initialized:', window.Smo.SuiApplication.instance.eventSource);
         // console.log('Score', this.globSmoApp.score.serialize());
       } catch (error) {
         console.error('Error during Smoosic initialization:', error);
@@ -114,10 +114,7 @@ class SmoosicComponent extends React.Component {
     }
   }
 
-  bindEvents = () => {
-    return;
-  };
-  
+
   // Unbind keyboard events when modal opens
   unbindKeyboardForModal = (dialog) => {
     if (this.unbound) {
@@ -126,20 +123,20 @@ class SmoosicComponent extends React.Component {
     }
   
     this.unbound = true;
-    console.log("before unbind ", this.globSmoApp.instance.eventSource.keydownHandlers)
-    console.log('Unbinding keydown handler[0]:', this.globSmoApp.instance.eventSource.keydownHandlers[0]);
-    this.default = this.globSmoApp.instance.eventSource.keydownHandlers[0].sink;
+    console.log("before unbind ", window.Smo.SuiApplication.instance.eventSource.keydownHandlers)
+    console.log('Unbinding keydown handler[0]:', window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0]);
+    this.default = window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0].sink;
   
     // Unbind the keydown handler
-    this.globSmoApp.instance.eventSource.unbindKeydownHandler(this.globSmoApp.instance.eventSource.keydownHandlers[0]);
+    window.Smo.SuiApplication.instance.eventSource.unbindKeydownHandler(window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0]);
   
-    console.log('Handlers after unbinding:', this.globSmoApp.instance.eventSource.keydownHandlers);
+    console.log('Handlers after unbinding:', window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
   
     // Rebind events when the modal closes (when closeModalPromise is resolved)
     dialog.closeModalPromise.then(() => {
       this.unbound = false;  // Reset the flag so that future modal opens can unbind again
       console.log('Modal closed, rebinding keyboard handlers');
-      this.bindEvents();  // Rebind events after modal closes
+      // this.bindEvents();  // Rebind events after modal closes
     });
   };
   
@@ -153,6 +150,7 @@ class SmoosicComponent extends React.Component {
     this.globSmoApp.instance.eventSource.keydownHandlers[0] = this.globSmoApp.instance.eventSource.bindKeydownHandler(this.default, 'evKey');
     console.log("after rebind", this.globSmoApp.instance.eventSource.keydownHandlers);
   };
+
   toggleModal = () => {
     let resolvePromise;  // Declare a variable to store the resolve function
   
@@ -181,17 +179,13 @@ class SmoosicComponent extends React.Component {
       if (!this.state.showModal) {
         // If the modal is closing, resolve the promise and rebind keyboard events
         resolvePromise();  // Resolve the promise when the modal is closing
-        this.bindEvents();  // Rebind keyboard events after modal closes
+        // this.bindEvents();  // Rebind keyboard events after modal closes
       }
     });
     
     // Return the dialog object with the closeModalPromise
     return dialog;
   };
-  
-  
-
-  
 
   componentDidUpdate(prevProps) {
     const { config } = this.props;
@@ -205,11 +199,11 @@ class SmoosicComponent extends React.Component {
   }
 
   handleSave = () => {
-    if (this.globSmoApp) {
-      console.log(this.globSmoApp);
+    if (window.Smo) {
+      console.log(window.Smo.SuiApplication.instance);
       // const serializedScore = this.globSmoApp.score.serialize();
 
-      const serializedScore = window.Smo.SmoToXml.convert(this.globSmoApp.score);
+      const serializedScore = window.Smo.SmoToXml.convert(window.Smo.SuiApplication.instance.view.score);
 
       // const serializedScore = this.globSmoApp.score;
       

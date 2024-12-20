@@ -93,7 +93,7 @@ header svg {
 
 /* Main content container - scrollable area */
 .main {
-  flex: 1; /* Take up the remaining space */
+  /* flex: 1; Take up the remaining space */
   overflow-y: scroll; /* Scroll when content overflows */
   
   background: #f0f0f0; /* Background color */

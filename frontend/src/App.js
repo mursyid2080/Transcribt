@@ -1,7 +1,7 @@
 // App.js
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './pages/Home2';
 import Login from './Login';
 import Register from './Register';
 import Transcribe from './TranscribeModule/Transcribe';
