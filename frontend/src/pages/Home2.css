@@ -1,19 +1,28 @@
 .home-container {
   display: flex;
   flex-direction: row;
-  height: 100vh; /* Make sure the container takes full vertical height */
+  height: 92vh; /* Make sure the container takes full vertical height */
   overflow: hidden; /*Prevents elements from overflowing the container*/
 }
 
 
 .left-section {
-  background: #e0e0e0; /* Light gray for testing */
-  width:30vw; /* Adjust width for LeftSection */
+  background: #000; /* Light gray for testing */
+  width:20vw; /* Adjust width for LeftSection */
+  padding-bottom: 5px;
 }
 
 .middle-section {
-  background: #f0f0f0; /* Lighter gray for testing */
-  flex: 0.7; /* Adjust width for MiddleSection */
+  background: #000; /* Lighter gray for testing */
+  /* width: 65vw; Adjust width for MiddleSection */
+  padding-bottom: 5px;
+  
+}
+
+.right-section {
+  /* background: #000; Light gray for testing */
+   /* Adjust width for LeftSection */
+   padding-bottom: 5px;
 }
 
 h2 {

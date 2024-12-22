@@ -9,7 +9,7 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
-
+from authentication.models import User
 
 @csrf_exempt  # Temporarily disable CSRF for testing (for APIs, use proper CSRF token handling)
 @api_view(['POST'])
@@ -19,6 +19,7 @@ def save_transcription(request):
         # Retrieve standard fields from `request.POST`
         title = request.POST.get('title')
         author = request.POST.get('author')
+        lyrics = request.POST.get('lyrics')
         categories = json.loads(request.POST.get('categories', '[]'))  # Deserialize JSON string to Python list
 
         score_data = request.FILES.get('score_data')  # Deserialize JSON string to Python dict
@@ -44,6 +45,7 @@ def save_transcription(request):
             is_published=is_published,
             audio_file=audio_file,
             image_file=image_file,
+            lyrics=lyrics,
             user=user,
         )
 

@@ -2,7 +2,8 @@
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #282828; /* Slightly lighter rectangle */
+    /* background-color: #181818; Slightly lighter rectangle */
+    background-color: #181818;
     border-radius: 8px; /* Rounded corners for each item */
     transition: background-color 0.2s ease;
     cursor: pointer;

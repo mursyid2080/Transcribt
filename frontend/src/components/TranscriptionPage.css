@@ -3,6 +3,8 @@
     margin: 0 auto;
     font-family: Arial, sans-serif;
     padding: 20px;
+    height: 92vh;
+    overflow-y: auto;
   }
   
   .header-section {
@@ -57,6 +59,73 @@
   }
   
   .audio-section {
-    text-align: center;
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    width: 70vw;
+    max-height: 10vw;
+    margin: 20px auto; /* Center the container horizontally */
+    padding: 20px; /* Add padding inside the container */
+    background-color: #ffffff; /* Contrast background color */
+    border-radius: 10px; /* Rounded corners for the container */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for contrast */
+}
+
+  /* check with smoosic */
+
+  .music-page-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .music-page-header-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .transcription-title {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .transcription-author {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .transcription-content {
+    height: 55vh;
+    display: flex;
+    /* align-items: center; */
+    flex-direction: row; /* Stack items vertically */
+    justify-content: center; 
+    /* justify-content: space-between; */
+  }
+  
+  .transcription-scrollable {
+    width: 35%;
+    margin-right: 20px;
+    overflow-y: scroll;
+  }
+  
+  .transcription-lyrics {
+    flex: 1;
+    max-width: 35%;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    overflow-y: auto;
+  }
+  
+  .audio-section {
+    margin-top: 20px;
   }
   

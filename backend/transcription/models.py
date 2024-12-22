@@ -11,6 +11,7 @@ class SavedTranscription(models.Model):
     audio_file = models.FileField(upload_to='audio_files/')  # Define upload path
     image_file = models.ImageField(upload_to='image_files/', null=True, blank=True)
     saves = models.IntegerField(default=0)
+    lyrics = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title

@@ -1,16 +1,22 @@
-#waveform {
+  .waveform {
     margin-top: 10px;
     width: 100%;
     max-width: 100%;
   }
   
   .controls {
+    display: flex; /* Use flexbox for centering */
+    flex-direction: row; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
     margin-top: 10px;
   }
   
   .controls button {
+    
     margin: 10px;
     border: 1px solid #ccc !important;
+    width: 50px;
     padding: 8px; /* Adjust padding as needed */
     background-color: #fff; /* Optional: to ensure consistent background */
     border-radius: 4px; /* Optional: to soften the corners */
@@ -23,10 +29,10 @@
   }
   
   .audio-info{
-    margin-top: 15px;
+    /* margin-top: 15px;
     color: #000000;
     border-radius: 4px;
     padding: 8px 15px;
     display: inline-block;
-    font-size: 12px;
+    font-size: 12px; */
   }

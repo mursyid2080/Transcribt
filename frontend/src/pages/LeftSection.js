@@ -17,25 +17,25 @@ const LeftSection = ({ favorites }) => {
 
   return (
     <div className="left-section">
-      <h2>Favorites</h2>
       <div className="favorites-container">
+        <h2>Favorites</h2>
         <Scrollbars
           autoHide // Automatically hides scrollbar when inactive
           autoHideTimeout={1000} // Hides after 1 second of inactivity
           autoHideDuration={300} // Smooth hide duration
           renderThumbVertical={renderThumb} // Custom thumb style
           universal={true} // Ensures consistent behavior across devices
-        >
+          >
           {favorites.length ? (
             <ul className="favorites-list">
               {favorites.map((item) => (
                 <Link
-                  to={`/favorites/${item.id}`}
+                  to={`/transcription/${item.id}`}
                   key={item.id}
                   className="favorite-link"
                 >
                   <FavoriteItemCard
-                    image={item.image}
+                    image={item.image_file}
                     title={item.title}
                     type={item.type || "Unknown"}
                     author={item.author}

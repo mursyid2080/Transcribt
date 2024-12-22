@@ -47,13 +47,16 @@ export default function AudioPlayer ({audioFile}){
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [audioFileName, setAudioFileName] = useState('');
+    
 
     useEffect(() => {
 
         const options = formWaveSurferOptions(waveformRef.current);
         wavesurfer.current = WaveSurfer.create(options)
 
-        wavesurfer.current.load(audioFile);
+        if (wavesurfer.current) {
+            wavesurfer.current.load(audioFile);
+        }
         wavesurfer.current.on('ready', () => {  
             setVolume(wavesurfer.current.getVolume());
             setDuration(wavesurfer.current.getDuration());
@@ -98,7 +101,7 @@ export default function AudioPlayer ({audioFile}){
 
     return (
         <div >
-            <div id='waveform' ref={waveformRef} style={{width:'100%'}}></div>
+            <div id='waveform' ref={waveformRef} style={{width: '60vw'}}></div>
             <div className='controls'>
                 <button onClick={handlePlayPause}>
                     <FontAwesomeIcon icon={playing ? faPause : faPlay}/>
@@ -131,13 +134,13 @@ export default function AudioPlayer ({audioFile}){
                 {/* <span>
                     Playing: {audioFileName} <br />
                 </span> */}
-                <span>
+                {/* <span>
                     Duration: {formatTime(duration)} | Current Time:{''}
                     {formatTime(currentTime)} <br />
                 </span>
                 <span>
                     Volume: {Math.round(volume * 100)}%
-                </span>
+                </span> */}
             </div>
         </div>
     )

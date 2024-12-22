@@ -69,26 +69,63 @@ const MiddleSection = () => {
   const trendingRef = React.createRef();
 
   return (
-    <div className="middle">
+    
+  <div className="middle-section">
+    <div className="middle-container">
+
       <Scrollbars
-        className="scroll-area"
-        autoHide={true} // Automatically hides scrollbar when inactive
-        autoHideTimeout={1000} // Hides after 1 second of inactivity
-        autoHideDuration={300} // Smooth hide duration
-        renderThumbVertical={renderThumb} // Custom thumb style
-        universal={true} // Ensures consistent behavior across devices
-        style={{ width: "50vw" }} // Set to 50% viewport width
-      >
-        <div>
-          {/* Trending Section */}
-          <section className="trending-section">
-            <h2>Trending</h2>
-            <div className="scroll-container">
-              <button className="scroll-button left" onClick={() => handleScroll("left", trendingRef)}>
-                &lt;
-              </button>
-              <div className="trending-grid" ref={trendingRef}>
-                {trending.map((item) => (
+      className="scroll-area"
+      autoHide={true} // Automatically hides scrollbar when inactive
+      autoHideTimeout={1000} // Hides after 1 second of inactivity
+      autoHideDuration={300} // Smooth hide duration
+      renderThumbVertical={renderThumb} // Custom thumb style
+      universal={true} // Ensures consistent behavior across devices
+      style={{ width: "60vw" }} // Set to 50% viewport width
+    >
+      <div >
+        {/* Trending Section */}
+        <section className="trending-section">
+          <h2>Trending</h2>
+          <div className="scroll-container">
+            <button className="scroll-button left" onClick={() => handleScroll("left", trendingRef)}>
+              &lt;
+            </button>
+            <div className="trending-grid" ref={trendingRef}>
+              {trending.map((item) => (
+                <Link to={`/transcription/${item.id}`} key={item.id} style={{ backgroundColor: "transparent" }}>
+                  <TranscriptionCard
+                    image={item.image_file}
+                    title={item.title}
+                    likes={item.favorites}
+                    saves={item.saves || 0}
+                  />
+                </Link>
+              ))}
+            </div>
+            <button className="scroll-button right" onClick={() => handleScroll("right", trendingRef)}>
+              &gt;
+            </button>
+          </div>
+        </section>
+
+        {/* Categories Section */}
+        <section className="categories-section">
+          {/* <h2>Categories</h2> */}
+          {Object.keys(categories).map((category) => (
+            <div key={category} className="category-row">
+              {/* Left section with image and title */}
+              <div className="category-left">
+                {/* <img
+                  src={`/images/${category}.jpg`} // Adjust path dynamically
+                  alt={category}
+                  className="category-image"
+                /> */}
+                <h3 className="category-title">{category}</h3>
+              </div>
+
+              {/* Right section with cards */}
+              <div className="category-cards">
+                {categories[category].map((item) => (
                   <Link to={`/transcription/${item.id}`} key={item.id} style={{ backgroundColor: "transparent" }}>
                     <TranscriptionCard
                       image={item.image_file}
@@ -99,51 +136,21 @@ const MiddleSection = () => {
                   </Link>
                 ))}
               </div>
-              <button className="scroll-button right" onClick={() => handleScroll("right", trendingRef)}>
-                &gt;
-              </button>
             </div>
-          </section>
+          ))}
+        </section>
 
-          {/* Categories Section */}
-          <section className="categories-section">
-            <h2>Categories</h2>
-            {Object.keys(categories).map((category) => (
-              <div key={category} className="category-row">
-                {/* Left section with image and title */}
-                <div className="category-left">
-                  <img
-                    src={`/images/${category}.jpg`} // Adjust path dynamically
-                    alt={category}
-                    className="category-image"
-                  />
-                  <h3 className="category-title">{category}</h3>
-                </div>
-
-                {/* Right section with cards */}
-                <div className="category-cards">
-                  {categories[category].map((item) => (
-                    <Link to={`/transcription/${item.id}`} key={item.id} style={{ backgroundColor: "transparent" }}>
-                      <TranscriptionCard
-                        image={item.image_file}
-                        title={item.title}
-                        likes={item.favorites}
-                        saves={item.saves || 0}
-                      />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
-
-          {/* Routes */}
-          <Routes>
-            <Route path="/transcription/:id" element={<TranscriptionPage />} />
-          </Routes>
-        </div>
+        {/* Routes */}
+        <Routes>
+          <Route path="/transcription/:id" element={<TranscriptionPage />} />
+        </Routes>
+      </div>
       </Scrollbars>
     </div>
+
+    
+  </div>
+    
 
   );
 };

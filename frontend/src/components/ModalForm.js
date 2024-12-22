@@ -1,4 +1,3 @@
-// src/components/ModalForm.js
 import React from 'react';
 
 const ModalForm = ({
@@ -7,6 +6,7 @@ const ModalForm = ({
   author,
   categoriesOptions,
   selectedCategories,
+  lyrics,
   onClose,
   onSubmit,
   onInputChange,
@@ -18,20 +18,20 @@ const ModalForm = ({
   const handleCategorySelect = (event) => {
     const options = event.target.options;
     const selected = [];
-  
+
     // Collect selected options
     for (let i = 0; i < options.length; i++) {
       if (options[i].selected) {
         selected.push(options[i].value);
       }
     }
-  
+
     // Merge new selected categories with existing ones, avoiding duplicates
     const uniqueCategories = Array.from(new Set([...selectedCategories, ...selected]));
-  
+
     // Update categories and reset the selection
     onCategoriesChange(uniqueCategories);
-  
+
     // Clear the selection in the dropdown
     event.target.value = [];
   };
@@ -45,70 +45,91 @@ const ModalForm = ({
   return (
     <div className="modal-overlay" style={styles.overlay}>
       <div className="modal-content" style={styles.modal}>
-        <h2>Enter Title, Author, and Categories</h2>
+        <h2>Enter Title, Author, Categories, and Lyrics</h2>
         <form onSubmit={onSubmit}>
-          {/* Title Input */}
-          <div style={styles.formGroup}>
-            <label htmlFor="title">Title:</label>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              value={title}
-              onChange={onInputChange}
-              required
-              style={styles.input}
-            />
-          </div>
-
-          {/* Author Input */}
-          <div style={styles.formGroup}>
-            <label htmlFor="author">Author:</label>
-            <input
-              type="text"
-              name="author"
-              id="author"
-              value={author}
-              onChange={onInputChange}
-              required
-              style={styles.input}
-            />
-          </div>
-
-          {/* Categories Multi-Select */}
-          <div style={styles.formGroup}>
-            <label htmlFor="categories">Categories:</label>
-            <small>Select one or more categories</small>
-            <select
-              multiple
-              name="categories"
-              id="categories"
-              value={selectedCategories}
-              onChange={handleCategorySelect}
-              style={styles.select}
-            >
-              {categoriesOptions.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Display Selected Categories as Chips */}
-          <div style={styles.chipsContainer}>
-            {selectedCategories.map((category) => (
-              <div key={category} style={styles.chip}>
-                {category}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveCategory(category)}
-                  style={styles.chipButton}
-                >
-                  &times;
-                </button>
+          <div style={styles.formContainer}>
+            {/* Left Column: Title, Author, and Categories */}
+            <div style={styles.leftColumn}>
+              {/* Title Input */}
+              <div style={styles.formGroup}>
+                <label htmlFor="title">Title:</label>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  value={title}
+                  onChange={onInputChange}
+                  required
+                  style={styles.input}
+                />
               </div>
-            ))}
+
+              {/* Author Input */}
+              <div style={styles.formGroup}>
+                <label htmlFor="author">Author:</label>
+                <input
+                  type="text"
+                  name="author"
+                  id="author"
+                  value={author}
+                  onChange={onInputChange}
+                  required
+                  style={styles.input}
+                />
+              </div>
+
+              {/* Categories Multi-Select */}
+              <div style={styles.formGroup}>
+                <label htmlFor="categories">Categories:</label>
+                <small>Select one or more categories</small>
+                <select
+                  multiple
+                  name="categories"
+                  id="categories"
+                  value={selectedCategories}
+                  onChange={handleCategorySelect}
+                  style={styles.select}
+                >
+                  {categoriesOptions.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Display Selected Categories as Chips */}
+              <div style={styles.chipsContainer}>
+                {selectedCategories.map((category) => (
+                  <div key={category} style={styles.chip}>
+                    {category}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCategory(category)}
+                      style={styles.chipButton}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column: Lyrics */}
+            <div style={styles.rightColumn}>
+              <div style={styles.formGroup}>
+                <label htmlFor="lyrics">Lyrics:</label>
+                <textarea
+                  name="lyrics"
+                  id="lyrics"
+                  value={lyrics}
+                  onChange={onInputChange}
+                  placeholder="Enter lyrics here..."
+                  style={styles.textarea}
+                  rows="10"
+                ></textarea>
+              </div>
+            </div>
           </div>
 
           {/* Form Buttons */}
@@ -144,10 +165,21 @@ const styles = {
     backgroundColor: '#fff',
     padding: '30px',
     borderRadius: '8px',
-    width: '400px',
+    width: '1000px',
     maxHeight: '80vh',
     overflowY: 'auto',
     boxSizing: 'border-box',
+  },
+  formContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: '20px',
+  },
+  leftColumn: {
+    flex: 1,
+  },
+  rightColumn: {
+    flex: 1,
   },
   formGroup: {
     marginBottom: '15px',
@@ -158,14 +190,23 @@ const styles = {
     padding: '8px',
     fontSize: '16px',
     marginTop: '5px',
-    border: "1px solid #ccc",
-    borderRadius: "4px",
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  },
+  textarea: {
+    padding: '8px',
+    fontSize: '16px',
+    marginTop: '5px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    resize: 'vertical',
+    width: '100%',
   },
   select: {
     padding: '8px',
     fontSize: '16px',
     marginTop: '5px',
-    height: '120px', // Increased height for better visibility
+    height: '120px',
   },
   chipsContainer: {
     display: 'flex',

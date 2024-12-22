@@ -51,7 +51,7 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      remoteScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
       disableSplash: true,
     };
 
@@ -144,11 +144,11 @@ class SmoosicComponent extends React.Component {
   handleModalClose = () => {
     this.setState({ showModal: false });
     this.unbound = false;
-    console.log(this.globSmoApp.instance.eventSource.keydownHandlers);
+    console.log(window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
     // this.globSmoApp.instance.eventSource.keydownHandlers = [];
     // console.log("bind", this.globSmoApp.instance.eventSource.bindKeydownHandler(this, 'evKey'));
-    this.globSmoApp.instance.eventSource.keydownHandlers[0] = this.globSmoApp.instance.eventSource.bindKeydownHandler(this.default, 'evKey');
-    console.log("after rebind", this.globSmoApp.instance.eventSource.keydownHandlers);
+    window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0] = window.Smo.SuiApplication.instance.eventSource.bindKeydownHandler(this.default, 'evKey');
+    console.log("after rebind", window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
   };
 
   toggleModal = () => {
@@ -251,13 +251,14 @@ class SmoosicComponent extends React.Component {
       if (booElement) {
         // Get the original width of the 'boo' element
         const originalWidth = booElement.offsetWidth;
+        const originalHeight = booElement.offsetHeight;
   
         // Capture the 'boo' element as a square image
         html2canvas(booElement, {
           width: originalWidth,
-          height: originalWidth,
+          height: originalHeight,
           windowWidth: originalWidth,  // Force the width of the viewport
-          windowHeight: originalWidth // Force the height of the viewport
+          windowHeight: originalHeight // Force the height of the viewport
         }).then((canvas) => {
           // Resize the canvas to a square if needed
           const imageCapture = canvas.toDataURL('image/png');
@@ -275,12 +276,13 @@ class SmoosicComponent extends React.Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, author, selectedCategories, serializedScore, audioFile, imageCapture } = this.state;
+    const { title, author, selectedCategories, serializedScore, audioFile, imageCapture, lyrics } = this.state;
   
     // Create a FormData object to send files
     const formData = new FormData();
     formData.append('title', title);
     formData.append('author', author);
+    formData.append('lyrics', lyrics);
     formData.append('categories', JSON.stringify(selectedCategories));
     formData.append('is_published', false);
     formData.append('saves', 0);
@@ -402,6 +404,7 @@ try {
             textAlign: 'center',
             justifyContent: 'center',
             alignItems: 'center',
+            marginTop: '10px',
           }}
         >
           <input
@@ -418,6 +421,7 @@ try {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                
               }}
             >
               {/* Audio player */}

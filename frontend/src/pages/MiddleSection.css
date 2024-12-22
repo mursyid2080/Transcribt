@@ -1,17 +1,29 @@
-.middle{
-    display: block;
+  .middle-section{
+    display: flex;
     flex-direction: column;
     align-items: center; /* Center content horizontally */
     justify-content: center; /* Center content vertically (if needed) */
     overflow-y: auto;
+    background-color: #000;
+    
+    padding-right: 15px;
   }
   
-  
+  .middle-container{
+    background-color: #181818;
+    padding: 15px;
+    border-radius: 8px;
+    flex-grow: 1;
+  }
     
   /* Trending Section */
+  .categories-section h2 {
+    color: #ffffff;
+  }
 
   .trending-section h2 {
     margin-bottom: 10px;
+    color: #ffffff;
   }
   
   .trending-grid::-webkit-scrollbar {
@@ -24,8 +36,8 @@
     align-items: center;
     margin: 0 auto; /* Center the section horizontally */
     /* width: 100%; Allow the section to occupy full width */
-    max-width: 900px; /* Constrain the section to 1400px */
-    padding: 20px;
+    /* max-width: 1000px; Constrain the section to 1400px */
+    /* padding: 20px; */
     overflow: hidden; /* Prevent content overflow */
   }
   
@@ -33,21 +45,21 @@
     display: flex;
     align-items: center;
     position: relative;
-    /* width: 100%; Ensure the scroll container spans full width */
+    width: 100%; /*Ensure the scroll container spans full width*/
   }
   
   .trending-grid {
     display: flex;
-    gap: 16px; /* Spacing between items */
+    gap: 12px; /* Spacing between items */
     overflow-x: auto; /* Horizontal scrollable container */
     scroll-behavior: smooth; /* Smooth scrolling */
     padding: 10px;
     /* width: 100%; Allow content to scroll within the container */
-    max-width: 900px; /* Ensure the grid stays within bounds */
+    /* max-width: 900px; Ensure the grid stays within bounds */
   }
   
   .scroll-button {
-    background: #f0f0f0;
+    background: #3b3b3b;
     border: none;
     cursor: pointer;
     padding: 10px;
@@ -79,7 +91,7 @@
   .category-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
   .category-group {
     display: flex;
@@ -99,6 +111,7 @@
 
   .category-row {
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
     gap: 20px; /* Space between left section and cards */
     margin-bottom: 30px; /* Space between rows */
@@ -107,9 +120,10 @@
   /* Left section (image and title) */
   .category-left {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: center;
     width: 400px; /* Adjust as needed */
+    color: white;
   }
   
   .category-image {
@@ -123,8 +137,8 @@
   
   
   .category-title {
-    font-size: 1.5rem;
-    text-align: center;
+    font-size: 1.2rem;
+    /* text-align: center; */
     font-weight: bold;
   }
   

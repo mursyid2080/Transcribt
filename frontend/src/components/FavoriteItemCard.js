@@ -8,7 +8,7 @@ const FavoriteItemCard = ({ image, title, type, author }) => {
       <div className="favorite-item-details">
         <p className="favorite-item-title">{title}</p>
         <p className="favorite-item-meta">
-          {type} • {author}
+           • {author}
         </p>
       </div>
     </div>

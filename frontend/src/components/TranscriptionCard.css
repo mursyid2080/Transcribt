@@ -1,12 +1,12 @@
 .transcription-card {
-  width: 200px; /* Adjust width as needed */
-  border: 1px solid #ccc;
+  width: 260px; /* Adjust width as needed */
+  border: 1px solid #181818;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-  background-color: #ffffff; /* Ensure default background is white */
-  margin: 5px;
-  height: 335px;
+
+  background-color: #181818; /* Ensure default background is white */
+  /* margin: 5px; */
+  height: 340px;
   transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add smooth hover animation */
 }
 
@@ -14,13 +14,14 @@
 .transcription-card:hover {
   transform: translateY(-4px); /* Slight lift effect */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
-  background-color: #f9f9f9 !important; /* Subtle light gray background */
+  background-color: #383838 !important; /* Subtle light gray background */
 }
 
 /* Image section */
 .card-image {
   width: 80%; /* Adjust the width as needed */
   aspect-ratio: 1 / 1; /* Ensures the image is square */
+  
   display: flex; /* Enable flexbox */
   justify-content: center; /* Horizontally center the image */
   align-items: center; /* Vertically center the image */
@@ -32,6 +33,7 @@
   max-width: 100%; /* Ensure the image doesn't overflow the container */
   height: 100%; /* Stretch the image to fill the square */
   object-fit: cover; /* Maintain aspect ratio and crop if necessary */
+  border-radius: 4px;
 }
 
 /* Content section */
@@ -44,7 +46,7 @@
   font-size: 18px;
   font-weight: bold;
   margin: 8px 0;
-  color: #333;
+  color: #666;
 }
 
 .card-stats {

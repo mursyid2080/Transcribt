@@ -10,7 +10,8 @@ html, body {
   display: flex;
   flex-direction: column; /* Stack header, sidenav, and main vertically */
   height: 100%; /* Full height of the viewport */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; */
+  font-family: 'Roboto', sans-serif;
 }
 
 .App-logo {
@@ -40,13 +41,14 @@ html, body {
   align-items: center;
   justify-content: center;
   flex-grow: 1; /* Take up remaining space */
+  
 }
 
 /* Header - fixed height */
 header {
   padding: 15px;
-  background: #011627;
-  min-height: 60px;
+  background: #000;
+  height: 8vh;
   flex-shrink: 0; /* Prevent header from shrinking */
   z-index: 1000;
 }
@@ -94,10 +96,10 @@ header svg {
 /* Main content container - scrollable area */
 .main {
   /* flex: 1; Take up the remaining space */
-  overflow-y: scroll; /* Scroll when content overflows */
+  overflow-y: hidden;
   
   background: #f0f0f0; /* Background color */
-  height: 100vh;
+  height: 92vh;
 }
 
 /* Example components like buttons, containers, input fields, etc. */
