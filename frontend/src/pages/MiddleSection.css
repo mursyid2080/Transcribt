@@ -150,6 +150,13 @@
     flex-grow: 1; /* Cards take remaining space */
   }
 
+  .filtered-transcriptions {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping if cards exceed row width */
+    gap: 15px; /* Space between cards */
+    flex-grow: 1; /* Cards take remaining space */
+  }
+
   /* .search-bar {
     display: flex;
     justify-content: center;

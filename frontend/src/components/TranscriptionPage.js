@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import FavoriteButton from './FavoriteButton';
 import AudioPlayer from './AudioPlayer';
+import Scrollbars from 'react-custom-scrollbars';
 
 class TranscriptionPage extends Component {
   constructor(props) {
@@ -17,7 +18,10 @@ class TranscriptionPage extends Component {
       transcription: null,
       isDomReady: false,
     };
+
   }
+
+  
 
   componentDidMount() {
     const { id } = this.props.router.params;
@@ -67,6 +71,15 @@ class TranscriptionPage extends Component {
   render() {
     const { transcription } = this.state;
 
+    const renderThumb = ({ style, ...props }) => {
+      const thumbStyle = {
+        backgroundColor: "rgba(88, 88, 88, 0.42)", // Semi-transparent white
+        borderRadius: "6px", // Rounded corners
+        width: "8px", // Thin scrollbar
+      };
+      return <div style={{ ...style, ...thumbStyle }} {...props} />;
+    };
+
     if (!transcription) {
       return <div>Loading...</div>;
     }
@@ -94,14 +107,33 @@ class TranscriptionPage extends Component {
 
         <div className="transcription-content">
           {/* Sheet Music */}
-          <div className="transcription-scrollable">
-            <OpenSheetMusicDisplay file={transcription.score_data} />
-          </div>
+          <Scrollbars
+            autoHide // Automatically hides scrollbar when inactive
+            autoHideTimeout={1000} // Hides after 1 second of inactivity
+            autoHideDuration={300} // Smooth hide duration
+            renderThumbVertical={renderThumb} // Custom thumb style
+            universal={true} // Ensures consistent behavior across devices
+            style={{maxWidth: '35%'}}
+            >
+            <div className="transcription-scrollable">
+              <OpenSheetMusicDisplay file={transcription.score_data} />
+            </div>
+          </Scrollbars>
 
           {/* Lyrics */}
-          <div className="transcription-lyrics">
-            <p>{transcription.lyrics}</p>
-          </div>
+          <Scrollbars
+            autoHide // Automatically hides scrollbar when inactive
+            autoHideTimeout={1000} // Hides after 1 second of inactivity
+            autoHideDuration={300} // Smooth hide duration
+            renderThumbVertical={renderThumb} // Custom thumb style
+            universal={true} // Ensures consistent behavior across devices
+            style={{maxWidth: '35%'}}
+            >
+
+            <div className="transcription-lyrics">
+              <p>{transcription.lyrics}</p>
+            </div>
+          </Scrollbars>
         </div>
 
         <div className="audio-section">

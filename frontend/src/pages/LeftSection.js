@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import FavoriteItemCard from "../components/FavoriteItemCard";
 import { Scrollbars } from "react-custom-scrollbars";
 import "./LeftSection.css";
 
 const LeftSection = ({ favorites }) => {
+  const [searchValue, setSearchValue] = useState('');
+
   // Custom scroll thumb renderer
   const renderThumb = ({ style, ...props }) => {
     const thumbStyle = {
@@ -15,20 +17,35 @@ const LeftSection = ({ favorites }) => {
     return <div style={{ ...style, ...thumbStyle }} {...props} />;
   };
 
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  const filteredFavorites = favorites.filter(item =>
+    item.title.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   return (
     <div className="left-section">
       <div className="favorites-container">
         <h2>Favorites</h2>
+        <input
+          type="text"
+          placeholder="Search favorites..."
+          value={searchValue}
+          onChange={handleSearchChange}
+          className="favorites-search"
+        />
         <Scrollbars
           autoHide // Automatically hides scrollbar when inactive
           autoHideTimeout={1000} // Hides after 1 second of inactivity
           autoHideDuration={300} // Smooth hide duration
           renderThumbVertical={renderThumb} // Custom thumb style
           universal={true} // Ensures consistent behavior across devices
-          >
-          {favorites.length ? (
+        >
+          {filteredFavorites.length ? (
             <ul className="favorites-list">
-              {favorites.map((item) => (
+              {filteredFavorites.map((item) => (
                 <Link
                   to={`/transcription/${item.id}`}
                   key={item.id}

@@ -1,41 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Routes, Route, Link } from "react-router-dom";
 import LeftSection from "./LeftSection";
 import MiddleSection from "./MiddleSection";
 import RightSection from "./RightSection";
 import "./Home2.css";
 
-const Home = () => {
-  // const favorites = [
-  //   {
-  //     id: 1,
-  //     image: "https://via.placeholder.com/50",
-  //     title: "Towards Dawn",
-  //     type: "Album",
-  //     author: "Jacob LaVallee",
-  //   },
-  //   {
-  //     id: 2,
-  //     image: "https://via.placeholder.com/50",
-  //     title: "Ghost Voices",
-  //     type: "Single",
-  //     author: "Virtual Self",
-  //   },
-  //   {
-  //     id: 3,
-  //     image: "https://via.placeholder.com/50",
-  //     title: "Shelter",
-  //     type: "Song",
-  //     author: "Porter Robinson & Madeon",
-  //   },
-  //   // Additional favorites here...
-  // ];
-
+const Home = ({ searchInput, setSearchInput }) => {
   const [transcriptions, setTranscriptions] = useState([]);
   const [trending, setTrending] = useState([]);
   const [categories, setCategories] = useState({});
   const [favorites, setFavorites] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,14 +19,10 @@ const Home = () => {
           withCredentials: true
         });
         const data = response.data;
-        console.log(data);
 
-        // Sort by favorites for trending
         const sortedTrending = [...data].sort((a, b) => b.saves - a.saves).slice(0, 10);
 
-        // Group by categories, avoiding duplicates
         const groupedCategories = {};
-
         data.forEach((item) => {
           const itemCategories = Array.isArray(item.categories) ? item.categories : [];
           itemCategories.forEach((category) => {
@@ -60,12 +31,10 @@ const Home = () => {
           });
         });
 
-        // Sort each category by date (latest first)
         for (let category in groupedCategories) {
           groupedCategories[category] = groupedCategories[category].sort((a, b) => new Date(b.date) - new Date(a.date));
         }
 
-        // Favorites
         const favoritedTranscriptions = data.filter(item => item.is_favorited);
 
         setFavorites(favoritedTranscriptions);
@@ -80,12 +49,23 @@ const Home = () => {
     fetchData();
   }, []);
 
-
   return (
     <div className="home-container">
       <LeftSection className="left-section" favorites={favorites} />
-      <MiddleSection className="middle-section" />
-      <RightSection className="right-section" categories={categories} />
+      <MiddleSection
+        className="middle-section"
+        transcriptions={transcriptions}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        searchInput={searchInput} // Pass searchInput to MiddleSection
+        setSearchInput={setSearchInput}
+      />
+      <RightSection
+        className="right-section"
+        categories={categories}
+        setSelectedCategory={setSelectedCategory}
+      />
     </div>
   );
 };

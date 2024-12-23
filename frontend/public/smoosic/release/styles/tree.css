@@ -63,8 +63,8 @@ li.collapsed ul {
   display: none;
 }
 a:focus {
-  border-bottom: 1px solid;
-  background: #BAE498;
+  /* border-bottom: 1px solid; */
+  /* background: #BAE498; */
 }
 
 a:hover {

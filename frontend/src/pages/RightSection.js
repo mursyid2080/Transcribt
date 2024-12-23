@@ -2,13 +2,12 @@ import React from "react";
 import './RightSection.css';
 import Scrollbars from "react-custom-scrollbars";
 
-const RightSection = ({ categories }) => {
-
+const RightSection = ({ categories, setSelectedCategory }) => {
   const renderThumb = ({ style, ...props }) => {
     const thumbStyle = {
-      backgroundColor: "rgba(255, 255, 255, 0)", // Semi-transparent white
-      borderRadius: "6px", // Rounded corners
-      width: "8px", // Thin scrollbar
+      backgroundColor: "rgba(255, 255, 255, 0)", 
+      borderRadius: "6px",
+      width: "8px",
     };
     return <div style={{ ...style, ...thumbStyle }} {...props} />;
   };
@@ -18,23 +17,26 @@ const RightSection = ({ categories }) => {
       <div className="right-section">
         <h2>Categories</h2>
         <Scrollbars
-          autoHide // Automatically hides scrollbar when inactive
-          autoHideTimeout={1000} // Hides after 1 second of inactivity
-          autoHideDuration={300} // Smooth hide duration
-          renderThumbVertical={renderThumb} // Custom thumb style
-          universal={true} // Ensures consistent behavior across devices
-          >
+          autoHide
+          autoHideTimeout={1000}
+          autoHideDuration={300}
+          renderThumbVertical={renderThumb}
+          universal={true}
+        >
           {Object.keys(categories).length > 0 ? (
             <div className="categories-right-grid">
               {Object.keys(categories).map((category) => (
-                <div key={category} className="category-card">
+                <div
+                  key={category}
+                  className="category-card"
+                  onClick={() => setSelectedCategory(category)} // Set selected category
+                >
                   <h3 className="category-title">{category}</h3>
                   <img
-                    src={`/images/${category}.jpg`} // Adjust path dynamically
+                    src={`/images/${category}.jpg`}
                     alt={category}
                     className="category-image"
                   />
-                  
                 </div>
               ))}
             </div>
@@ -48,3 +50,5 @@ const RightSection = ({ categories }) => {
 };
 
 export default RightSection;
+
+

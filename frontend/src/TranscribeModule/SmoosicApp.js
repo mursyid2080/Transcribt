@@ -6,7 +6,9 @@ import withRouter from '../components/withRouter';
 import ModalForm from '../components/ModalForm';
 import html2canvas from 'html2canvas';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 as uuidv4 } from 'uuid';
+import Scrollbars from 'react-custom-scrollbars'; 
+import './SmoosicApp.css'
 
 class SmoosicComponent extends React.Component {
   constructor(props) {
@@ -393,8 +395,10 @@ try {
 
     return (
       <div>
+        
         {/* Smoosic container */}
         <div className="smoosic-container" ref={this.smoosicElem}></div>
+      
 
         {/* Audio file upload input and player */}
         <div
@@ -405,14 +409,19 @@ try {
             justifyContent: 'center',
             alignItems: 'center',
             marginTop: '10px',
+            height: '190px',
           }}
         >
           <input
             type="file"
             accept="audio/*"
             onChange={this.handleFileChange}
-            style={{ marginRight: '20px' }}
+            id="audio-upload"
+            style={{ marginRight: '20px', display: 'none' }}
           />
+          <label htmlFor="audio-upload" className="custom-file-upload">
+            Choose File
+          </label>
 
           {/* Render the audio player and buttons when an audio file is selected */}
           {audioFile && (
