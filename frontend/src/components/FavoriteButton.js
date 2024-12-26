@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { FaHeart, FaRegHeart } from 'react-icons/fa'; // Import icons
+
 
 const FavoriteButton = ({ transcriptionId, isFavoritedInitially }) => {
     const [isFavorited, setIsFavorited] = useState(isFavoritedInitially);
@@ -48,7 +50,7 @@ const FavoriteButton = ({ transcriptionId, isFavoritedInitially }) => {
 
     return (
         <button onClick={handleToggleFavorite} disabled={loading}>
-            {loading ? 'Processing...' : isFavorited ? 'Unfavorite' : 'Favorite'}
+            {loading ? '' : isFavorited ? <FaHeart /> : <FaRegHeart />}
         </button>
     );
 };

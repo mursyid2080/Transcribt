@@ -5,7 +5,7 @@ import Login from './Login';
 import Register from './Register';
 import Transcribe from './TranscribeModule/Transcribe';
 import Dashboard from './Dashboard';
-import ProfilePage from './ProfilePage';
+import ProfilePage from './pages/ProfilePage';
 import SmoosicApp from './TranscribeModule/SmoosicApp';
 import NavBar from './components/NavBar';
 import { GiHamburgerMenu } from 'react-icons/gi';
@@ -56,6 +56,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/editor" element={<SmoosicApp />} />
+              <Route path="/editor/:id" element={<SmoosicApp />} />
               <Route path="/transcription/:id" element={<TranscriptionPage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>

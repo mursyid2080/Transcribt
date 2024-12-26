@@ -44,7 +44,7 @@ class SmoosicComponent extends React.Component {
     this.default = null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Default config, using the remote URL if no score is passed
     let config = {
       smoPath: "../../public/smoosic/release",
@@ -53,17 +53,19 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      remoteScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
       disableSplash: true,
     };
-
+  
     // Access the passed 'score' and 'audioFile' from the router props
     const score = this.props.router?.location?.state?.score;
     const audioFile = this.props.router?.location?.state?.audioFile;
-
+    const { id } = this.props.router.params;
+  
+    // use initial
     if (score) {
       let xmlString;
-
+  
       if (typeof score === 'string') {
         // If score is a string, it may already be valid XML content
         xmlString = score;
@@ -75,19 +77,38 @@ class SmoosicComponent extends React.Component {
         console.error('Invalid score type:', typeof score);
         return; // Early exit if invalid score type
       }
-
+  
       // Update the config to use the passed score instead of the default remote score
       config.initialScore = xmlString;
-
+  
       // Set the XML string in the state for debugging
       this.setState({ xmlString }, () => {
         this.initSmoosic(this.smoosicElem.current, config);
       });
+
+    } 
+    // use remote
+    else if (id) {
+      try {
+        const response = await axios.get(`http://localhost:8000/transcription/api/transcriptions/${id}/`);
+        this.setState({ transcription: response.data }, () => {
+          if (response.data.score_data) {
+            console.log(response.data);
+            config.remoteScore = response.data.score_data;
+            delete config.initialScore; // Remove the initial score if a remote score is provided
+          }
+          this.initSmoosic(this.smoosicElem.current, config);
+        });
+      } catch (error) {
+        console.error('Error fetching transcription:', error);
+        // Initialize Smoosic with the default config if there's an error
+        this.initSmoosic(this.smoosicElem.current, config);
+      }
     } else {
       // Initialize Smoosic with the default config if no score is provided
       this.initSmoosic(this.smoosicElem.current, config);
     }
-
+  
     // Set the audio file if provided
     if (audioFile) {
       this.setState({ audioFile });
@@ -220,11 +241,6 @@ class SmoosicComponent extends React.Component {
     }
   };
   
-
-  
-  
-  
-
   // Handler for file selection
   handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -272,10 +288,6 @@ class SmoosicComponent extends React.Component {
     }
   };
   
-  
-  
-
-
   handleSubmit = async (e) => {
     e.preventDefault();
     const { title, author, selectedCategories, serializedScore, audioFile, imageCapture, lyrics } = this.state;
@@ -380,8 +392,6 @@ try {
     console.error('Error:', error.response ? error.response.data : error.message);
 }
   };
-
-
 
   render() {
     const {

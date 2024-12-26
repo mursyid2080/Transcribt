@@ -10,7 +10,11 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .models import UserProfile
-
+from .serializers import UserProfileSerializer, UserSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(View):
@@ -150,3 +154,38 @@ class SetNewPasswordView(View):
             return JsonResponse({'message': 'Password reset successful. You can now log in.'})
         except User.DoesNotExist:
             return JsonResponse({'error': 'Invalid user ID.'}, status=400)
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user, context={"request": request})
+        return Response(serializer.data)
+
+class UpdateUserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        data = request.data
+        print(data)
+
+        # Update email if provided and not empty
+        email = data.get('email')
+        if email:
+            user.email = email
+
+        # Update bio if provided and not empty
+        bio = data.get('bio')
+        if bio:
+            user.profile.bio = bio
+
+        # Update profile picture if provided
+        if 'profile_picture' in request.FILES:
+            user.profile.profile_picture = request.FILES['profile_picture']
+
+        user.save()
+        user.profile.save()
+        serializer = UserSerializer(user, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

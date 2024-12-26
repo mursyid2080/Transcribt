@@ -15,6 +15,8 @@ urlpatterns = [
     path('login', views.LoginView.as_view(), name='login'),
     path('logout', views.LogoutView.as_view(), name='logout'),
     path('csrf-token/', views.CSRFTokenView.as_view(), name='csrf-token'),
+    path('user/profile/', views.UserProfileView.as_view(), name='user-profile'),
+    path('user/profile/update/', views.UpdateUserProfileView.as_view(), name='update-user-profile'),
     # path('', login_required(views.HomeView.as_view()), name='home'),
     # path('activate/<uidb64>/<token>',
     #      views.ActivateAccountView.as_view(), name='activate'),

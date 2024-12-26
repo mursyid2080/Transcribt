@@ -16,7 +16,7 @@ import{
 const formWaveSurferOptions = (ref) => ({
     container: ref,
     waveColor: '#ccc',
-    progressColor: '#0178ff',
+    progressColor: '#000',
     cursorColor: "transparent",
     responsive: true,
     height: 80,

@@ -84,3 +84,12 @@ class ToggleFavoriteView(APIView):
         # Otherwise, mark as favorite
         return Response({'status': 'favorited', 'transcription_id': transcription.id})
     
+class UserTranscriptionsView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        transcriptions = SavedTranscription.objects.filter(user=user)
+        serializer = SavedTranscriptionSerializer(transcriptions, many=True, context={"request": request})
+        return Response(serializer.data)
