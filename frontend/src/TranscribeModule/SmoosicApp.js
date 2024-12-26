@@ -9,6 +9,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import Scrollbars from 'react-custom-scrollbars'; 
 import './SmoosicApp.css'
+import PublishButton from '../components/PublishButton';
 
 class SmoosicComponent extends React.Component {
   constructor(props) {
@@ -86,6 +87,10 @@ class SmoosicComponent extends React.Component {
         this.initSmoosic(this.smoosicElem.current, config);
       });
 
+      // Set the audio file if provided
+      if (audioFile) {
+        this.setState({ audioFile });
+      }
     } 
     // use remote
     else if (id) {
@@ -98,21 +103,21 @@ class SmoosicComponent extends React.Component {
             delete config.initialScore; // Remove the initial score if a remote score is provided
           }
           this.initSmoosic(this.smoosicElem.current, config);
+          const audioFile = this.state.transcription.audio_file;
+          this.setState({ audioFile });
         });
       } catch (error) {
         console.error('Error fetching transcription:', error);
         // Initialize Smoosic with the default config if there's an error
         this.initSmoosic(this.smoosicElem.current, config);
       }
+
     } else {
       // Initialize Smoosic with the default config if no score is provided
       this.initSmoosic(this.smoosicElem.current, config);
     }
   
-    // Set the audio file if provided
-    if (audioFile) {
-      this.setState({ audioFile });
-    }
+    
   }
 
   async initSmoosic(element, config) {
@@ -469,7 +474,7 @@ try {
                   Save
                 </button>
 
-                <button
+                {/* <button
                   style={{
                     width: '100px',
                     padding: '10px 20px',
@@ -477,7 +482,15 @@ try {
                   }}
                 >
                   Publish
-                </button>
+                </button> */}
+                <PublishButton style={{
+                    width: '100px',
+                    padding: '10px 20px',
+                    cursor: 'pointer',
+                  }}
+                  transcriptionId={this.state.transcription.id}
+                  initialIsPublished={this.state.transcription.is_published}
+                />
               </div>
             </div>
           )}

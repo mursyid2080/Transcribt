@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ModalForm = ({
   showModal,
-  title,
-  author,
+  title: initialTitle,
+  author: initialAuthor,
   categoriesOptions,
-  selectedCategories,
-  lyrics,
+  selectedCategories: initialSelectedCategories,
+  lyrics: initialLyrics,
   onClose,
   onSubmit,
   onInputChange,
   onCategoriesChange,
 }) => {
+  const [title, setTitle] = useState(initialTitle);
+  const [author, setAuthor] = useState(initialAuthor);
+  const [selectedCategories, setSelectedCategories] = useState(initialSelectedCategories);
+  const [lyrics, setLyrics] = useState(initialLyrics);
   if (!showModal) return null; // Do not render if modal is not visible
 
   // Handler for category selection
@@ -30,7 +34,8 @@ const ModalForm = ({
     const uniqueCategories = Array.from(new Set([...selectedCategories, ...selected]));
 
     // Update categories and reset the selection
-    onCategoriesChange(uniqueCategories);
+    setSelectedCategories(selected);
+    onCategoriesChange(selected);
 
     // Clear the selection in the dropdown
     event.target.value = [];
@@ -39,7 +44,13 @@ const ModalForm = ({
   // Handler to remove a specific category
   const handleRemoveCategory = (category) => {
     const updatedCategories = selectedCategories.filter((c) => c !== category);
+    setSelectedCategories(updatedCategories);
     onCategoriesChange(updatedCategories);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ title, author, selectedCategories, lyrics });
   };
 
   return (
@@ -58,7 +69,7 @@ const ModalForm = ({
                   name="title"
                   id="title"
                   value={title}
-                  onChange={onInputChange}
+                  onChange={(e) => setTitle(e.target.value)} 
                   required
                   style={styles.input}
                 />
@@ -72,7 +83,7 @@ const ModalForm = ({
                   name="author"
                   id="author"
                   value={author}
-                  onChange={onInputChange}
+                  onChange={(e) => setAuthor(e.target.value)} 
                   required
                   style={styles.input}
                 />
@@ -123,8 +134,8 @@ const ModalForm = ({
                   name="lyrics"
                   id="lyrics"
                   value={lyrics}
-                  onChange={onInputChange}
-                  placeholder="Enter lyrics here..."
+                  onChange={(e) => setLyrics(e.target.value)}
+                  // placeholder="Enter lyrics here..."
                   style={styles.textarea}
                   rows="10"
                 ></textarea>

@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 from authentication.models import User
+from rest_framework import status
 
 @csrf_exempt  # Temporarily disable CSRF for testing (for APIs, use proper CSRF token handling)
 @api_view(['POST'])
@@ -77,12 +78,16 @@ class ToggleFavoriteView(APIView):
         favorite, created = UserFavorite.objects.get_or_create(user=request.user, transcription=transcription)
 
         if not created:
-            # If already favorited, unfavorite it
+            # If already favorited, unfavorite it and decrease the saves count
             favorite.delete()
-            return Response({'status': 'unfavorited', 'transcription_id': transcription.id})
+            transcription.saves = max(0, transcription.saves - 1)  # Ensure saves doesn't go below 0
+            transcription.save()
+            return Response({'status': 'unfavorited', 'transcription_id': transcription.id, 'saves': transcription.saves})
 
-        # Otherwise, mark as favorite
-        return Response({'status': 'favorited', 'transcription_id': transcription.id})
+        # Otherwise, mark as favorite and increase the saves count
+        transcription.saves += 1
+        transcription.save()
+        return Response({'status': 'favorited', 'transcription_id': transcription.id, 'saves': transcription.saves})
     
 class UserTranscriptionsView(APIView):
     
@@ -93,3 +98,23 @@ class UserTranscriptionsView(APIView):
         transcriptions = SavedTranscription.objects.filter(user=user)
         serializer = SavedTranscriptionSerializer(transcriptions, many=True, context={"request": request})
         return Response(serializer.data)
+
+class UpdateTranscriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        transcription = get_object_or_404(SavedTranscription, pk=pk, user=request.user)
+        serializer = SavedTranscriptionSerializer(transcription, data=request.data, partial=True, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TogglePublishView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        transcription = get_object_or_404(SavedTranscription, pk=pk, user=request.user)
+        transcription.is_published = not transcription.is_published
+        transcription.save()
+        return Response({'is_published': transcription.is_published}, status=status.HTTP_200_OK)

@@ -13,6 +13,7 @@ const ProfilePage = () => {
   const [bio, setBio] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [totalFavorites, setTotalFavorites] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +22,8 @@ const ProfilePage = () => {
           withCredentials: true
         });
         const transcriptionsData = transcriptionsResponse.data;
+        const totalFavorites = transcriptionsData.reduce((acc, transcription) => acc + (transcription.saves || 0), 0);
+
         console.log(transcriptionsData); 
   
         const userProfileResponse = await axios.get("http://localhost:8000/api/auth/user/profile/", {
@@ -29,6 +32,7 @@ const ProfilePage = () => {
         const userProfileData = userProfileResponse.data;
         console.log(userProfileData);
   
+        setTotalFavorites(totalFavorites);
         setUser(userProfileData);
         setTranscriptions(transcriptionsData);
       } catch (error) {
@@ -100,7 +104,7 @@ const ProfilePage = () => {
           <h2>{user.username}</h2>
           <p>{user.email}</p>
           <p>{user.profile.bio}</p>
-          <p>Total Favorites: {user.totalFavorites}</p>
+          <p>Total Favorites: {totalFavorites}</p>
         </div>
       </div>
       <div className="profile-right-section">
@@ -108,7 +112,7 @@ const ProfilePage = () => {
           <h3>Saved Projects</h3>
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
 
-            {transcriptions.filter(transcription => !transcription.isPublished).map(transcription => (
+            {transcriptions.filter(transcription => !transcription.is_published).map(transcription => (
               <Link to={`/editor/${transcription.id}`} key={transcription.id}>
                 <TranscriptionCard
                   image={transcription.image_file}
@@ -122,9 +126,19 @@ const ProfilePage = () => {
         </div>
         <div className="bottom-section">
           <h3>Published Projects</h3>
-          {transcriptions.filter(transcription => transcription.isPublished).map(transcription => (
-            <TranscriptionCard key={transcription.id} transcription={transcription} />
-          ))}
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+
+            {transcriptions.filter(transcription => transcription.is_published).map(transcription => (
+              <Link to={`/editor/${transcription.id}`} key={transcription.id}>
+                <TranscriptionCard
+                  image={transcription.image_file}
+                  title={transcription.title}
+                  likes={transcription.favorites}
+                  saves={transcription.saves || 0}
+                />
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
       <EditProfileModal
