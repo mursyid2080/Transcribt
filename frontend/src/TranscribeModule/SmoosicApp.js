@@ -16,6 +16,8 @@ class SmoosicComponent extends React.Component {
     super(props);
     this.smoosicElem = React.createRef(); // Create a ref for the Smoosic element
     this.state = {
+      modalAvail : false,
+      transcription: null,
       xmlString: '', // State to hold the XML string
       audioFile: '',
       showModal: false, // State to control the visibility of the modal
@@ -43,6 +45,7 @@ class SmoosicComponent extends React.Component {
     this.globSmoApp = null;
     this.unbound = false;
     this.default = null;
+    
   }
 
   async componentDidMount() {
@@ -116,6 +119,7 @@ class SmoosicComponent extends React.Component {
       // Initialize Smoosic with the default config if no score is provided
       this.initSmoosic(this.smoosicElem.current, config);
     }
+    this.modalAvail = true;
   
     
   }
@@ -160,12 +164,12 @@ class SmoosicComponent extends React.Component {
   
     console.log('Handlers after unbinding:', window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
   
-    // Rebind events when the modal closes (when closeModalPromise is resolved)
-    dialog.closeModalPromise.then(() => {
-      this.unbound = false;  // Reset the flag so that future modal opens can unbind again
-      console.log('Modal closed, rebinding keyboard handlers');
-      // this.bindEvents();  // Rebind events after modal closes
-    });
+    // // Rebind events when the modal closes (when closeModalPromise is resolved)
+    // dialog.closeModalPromise.then(() => {
+    //   this.unbound = false;  // Reset the flag so that future modal opens can unbind again
+    //   console.log('Modal closed, rebinding keyboard handlers');
+    //   // this.bindEvents();  // Rebind events after modal closes
+    // });
   };
   
   // Handle modal close without submission
@@ -292,11 +296,20 @@ class SmoosicComponent extends React.Component {
       }
     }
   };
-  
-  handleSubmit = async (e) => {
-    e.preventDefault();
-    const { title, author, selectedCategories, serializedScore, audioFile, imageCapture, lyrics } = this.state;
-  
+
+  handleSubmit = async (modalFormData) => {
+    this.setState({
+      title: modalFormData.title,
+      author: modalFormData.author,
+      selectedCategories: modalFormData.selectedCategories,
+      lyrics: modalFormData.lyrics,
+    }, async () => {
+      // This callback ensures that the state change is completed
+    const { title, author, selectedCategories, serializedScore, audioFile, imageCapture, lyrics, transcription } = this.state;
+    
+    console.log('Form data received:', modalFormData);
+
+    
     // Create a FormData object to send files
     const formData = new FormData();
     formData.append('title', title);
@@ -322,37 +335,35 @@ class SmoosicComponent extends React.Component {
       const imageFileObject = new File([imageBlob], imageFileName, { type: imageBlob.type });
       formData.append('image_file', imageFileObject);
     }
-
+  
     // Handle the serializedScore (XML file)
     if (serializedScore) {
       // Convert the serializedScore object (e.g., XMLDocument) to a string
       const serializer = new XMLSerializer();
       const serializedScoreString = serializer.serializeToString(serializedScore);
-    
+  
       // Create a Blob from the serialized XML string
       const xmlData = '<?xml version="1.0" encoding="UTF-8"?>\n' + serializedScoreString;
       const scoreBlob = new Blob([xmlData], { type: 'text/xml;charset=utf-8' });
-
-    
+  
       // Generate a unique file name for the XML file
       const scoreFileName = `score_${uuidv4()}.xml`;
-    
+  
       // Create a File object from the Blob
       const scoreFileObject = new File([scoreBlob], scoreFileName, { type: scoreBlob.type });
-    
+  
       // Append the File object to the FormData
       formData.append('score_data', scoreFileObject);
     }
-    
   
     // Log form data for debugging
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
-
+  
     const token = localStorage.getItem("access_token");
     console.log(token);
-    
+  
     const getCSRFToken = () => {
       console.log(document.cookie);
       const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
@@ -360,45 +371,151 @@ class SmoosicComponent extends React.Component {
         acc[name] = value;
         return acc;
       }, {});
-    
+  
       return cookies.csrftoken || null;
     };
+  
+    try {
+      const csrfToken = getCSRFToken();
+      console.log('csrf', csrfToken);
+  
+      const url = this.state.transcription && this.state.transcription.id
+        ? `http://localhost:8000/transcription/api/transcription/update/${transcription.id}/`
+        : 'http://localhost:8000/transcription/save-transcription/';
+  
+      const response = await axios.post(
+        url,
+        formData,
+        {
+          headers: {
+            // 'Authorization': token,
+            'X-CSRFToken': csrfToken, // Include CSRF token
+          },
+          withCredentials: true, // Ensure session cookies are sent
+        }
+      );
+  
+      console.log('Headers:', axios.defaults.headers);
+      console.log('Cookies:', document.cookie);
+  
+      if (response.status === 200) {
+        console.log('Data saved successfully:', response.data);
+        this.toggleModal(); // Close the modal after successful save
+      } else {
+        console.error('Error saving data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+    }
+  });
+};
+//   handleSubmit = async (e) => {
+//     e.preventDefault();
+//     const { title, author, selectedCategories, serializedScore, audioFile, imageCapture, lyrics } = this.state;
+  
+//     // Create a FormData object to send files
+//     const formData = new FormData();
+//     formData.append('title', title);
+//     formData.append('author', author);
+//     formData.append('lyrics', lyrics);
+//     formData.append('categories', JSON.stringify(selectedCategories));
+//     formData.append('is_published', false);
+//     formData.append('saves', 0);
+  
+//     // Handle the audio file (Blob URL)
+//     if (audioFile) {
+//       const audioBlob = await fetch(audioFile).then(response => response.blob());
+//       const audioFileName = `audio_${uuidv4()}.mp3`; // Generate a unique name for the audio file using UUID
+//       const audioFileObject = new File([audioBlob], audioFileName, { type: audioBlob.type });
+//       formData.append('audio_file', audioFileObject);
+//     }
+  
+//     // Handle the image capture (Base64 string)
+//     if (imageCapture) {
+//       const imageData = imageCapture.split(',')[1]; // Strip out the data URI prefix
+//       const imageBlob = new Blob([new Uint8Array(atob(imageData).split("").map(c => c.charCodeAt(0)))], { type: 'image/png' });
+//       const imageFileName = `image_${uuidv4()}.png`; // Generate a unique name for the image file using UUID
+//       const imageFileObject = new File([imageBlob], imageFileName, { type: imageBlob.type });
+//       formData.append('image_file', imageFileObject);
+//     }
+
+//     // Handle the serializedScore (XML file)
+//     if (serializedScore) {
+//       // Convert the serializedScore object (e.g., XMLDocument) to a string
+//       const serializer = new XMLSerializer();
+//       const serializedScoreString = serializer.serializeToString(serializedScore);
+    
+//       // Create a Blob from the serialized XML string
+//       const xmlData = '<?xml version="1.0" encoding="UTF-8"?>\n' + serializedScoreString;
+//       const scoreBlob = new Blob([xmlData], { type: 'text/xml;charset=utf-8' });
+
+    
+//       // Generate a unique file name for the XML file
+//       const scoreFileName = `score_${uuidv4()}.xml`;
+    
+//       // Create a File object from the Blob
+//       const scoreFileObject = new File([scoreBlob], scoreFileName, { type: scoreBlob.type });
+    
+//       // Append the File object to the FormData
+//       formData.append('score_data', scoreFileObject);
+//     }
+    
+  
+//     // Log form data for debugging
+//     for (let [key, value] of formData.entries()) {
+//       console.log(`${key}: ${value}`);
+//     }
+
+//     const token = localStorage.getItem("access_token");
+//     console.log(token);
+    
+//     const getCSRFToken = () => {
+//       console.log(document.cookie);
+//       const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+//         const [name, value] = cookie.split('=');
+//         acc[name] = value;
+//         return acc;
+//       }, {});
+    
+//       return cookies.csrftoken || null;
+//     };
     
   
   
 
-try {
-    const csrfToken = getCSRFToken();
-    console.log('csrf', csrfToken);
+//     try {
+//         const csrfToken = getCSRFToken();
+//         console.log('csrf', csrfToken);
 
-    const response = await axios.post(
-      'http://localhost:8000/transcription/save-transcription/',
-      formData,
-      {
-          headers: {
-              // 'Authorization': token,
-              'X-CSRFToken': csrfToken, // Include CSRF token
-          },
-          withCredentials: true, // Ensure session cookies are sent
-      }
-  );
+//         const response = await axios.post(
+//           'http://localhost:8000/transcription/save-transcription/',
+//           formData,
+//           {
+//               headers: {
+//                   // 'Authorization': token,
+//                   'X-CSRFToken': csrfToken, // Include CSRF token
+//               },
+//               withCredentials: true, // Ensure session cookies are sent
+//           }
+//       );
 
-    console.log('Headers:', axios.defaults.headers);
-    console.log('Cookies:', document.cookie);
+//     console.log('Headers:', axios.defaults.headers);
+//     console.log('Cookies:', document.cookie);
 
 
-    if (response.status === 200) {
-        console.log('Data saved successfully:', response.data);
-        this.toggleModal(); // Close the modal after successful save
-    } else {
-        console.error('Error saving data:', response.statusText);
-    }
-} catch (error) {
-    console.error('Error:', error.response ? error.response.data : error.message);
-}
-  };
+//     if (response.status === 200) {
+//         console.log('Data saved successfully:', response.data);
+//         this.toggleModal(); // Close the modal after successful save
+//     } else {
+//         console.error('Error saving data:', response.statusText);
+//     }
+// } catch (error) {
+//     console.error('Error:', error.response ? error.response.data : error.message);
+// }
+//   };
 
   render() {
+    console.log(this.state.transcription);
     const {
       audioFile,
       showModal,
@@ -474,32 +591,27 @@ try {
                   Save
                 </button>
 
-                {/* <button
-                  style={{
-                    width: '100px',
-                    padding: '10px 20px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Publish
-                </button> */}
-                <PublishButton style={{
+                
+                {this.state.transcription ?
+                (<PublishButton style={{
                     width: '100px',
                     padding: '10px 20px',
                     cursor: 'pointer',
                   }}
                   transcriptionId={this.state.transcription.id}
                   initialIsPublished={this.state.transcription.is_published}
-                />
+                />) : (
+                  <div></div>
+                )}
               </div>
             </div>
           )}
         </div>
 
         {/* ModalForm Component */}
-        <ModalForm
+        {/* <ModalForm
           showModal={showModal}
-          title={title}
+          title={this.state.transcription?.title || title}
           author={author}
           categoriesOptions={categoriesOptions}
           selectedCategories={selectedCategories}
@@ -507,7 +619,23 @@ try {
           onSubmit={this.handleSubmit}
           onInputChange={this.handleInputChange}
           onCategoriesChange={this.handleCategoriesChange}
-        />
+        /> */}
+        {this.modalAvail && showModal ? (
+          <ModalForm
+            showModal={showModal}
+            title={this.state.transcription?.title || title}
+            author={this.state.transcription?.author || author}
+            categoriesOptions={categoriesOptions}
+            selectedCategories={this.state.transcription?.categories || selectedCategories}
+            lyrics={this.state.transcription?.lyrics || ''}
+            onClose={this.handleModalClose}
+            onSubmit={this.handleSubmit}
+            onInputChange={this.handleInputChange}
+            onCategoriesChange={this.handleCategoriesChange}
+          />
+        ) : (
+          <div>Loading...</div> // Show a loading indicator if transcription is not available
+        )}
       </div>
     );
   }

@@ -57,7 +57,7 @@ const ModalForm = ({
     <div className="modal-overlay" style={styles.overlay}>
       <div className="modal-content" style={styles.modal}>
         <h2>Enter Title, Author, Categories, and Lyrics</h2>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
           <div style={styles.formContainer}>
             {/* Left Column: Title, Author, and Categories */}
             <div style={styles.leftColumn}>
