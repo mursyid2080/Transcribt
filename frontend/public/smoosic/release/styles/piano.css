@@ -3,6 +3,10 @@
 .piano-container {
 	display:flex;
   justify-content:center;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  
 }
 #keyId-C4 {
 	fill:#ddffee;

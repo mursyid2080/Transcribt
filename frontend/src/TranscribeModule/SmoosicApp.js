@@ -10,6 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 import Scrollbars from 'react-custom-scrollbars'; 
 import './SmoosicApp.css'
 import PublishButton from '../components/PublishButton';
+import parseMidi from '../midi-parser.js';
+
 
 class SmoosicComponent extends React.Component {
   constructor(props) {
@@ -41,14 +43,19 @@ class SmoosicComponent extends React.Component {
       ], // Predefined categories
       selectedCategories: [], // To store selected categories
     };
-    this.globSmo = null;
+    this.Smo = null;
     this.globSmoApp = null;
     this.unbound = false;
     this.default = null;
+    this.keydownHandler = null;
+    this.mouseMoveHandler = null;
+    this.mouseClickHandler = null;
+    this.eventSource = null;
     
   }
 
   async componentDidMount() {
+    this.Smo = window.Smo;
     // Default config, using the remote URL if no score is passed
     let config = {
       smoPath: "../../public/smoosic/release",
@@ -57,38 +64,66 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      initialScore: 'https://aarondavidnewman.github.io/Smoosic/release/library/Beethoven_AnDieFerneGeliebte.xml', // Default remote score
+      initialScore: '', // Default remote score
       disableSplash: true,
     };
   
     // Access the passed 'score' and 'audioFile' from the router props
     const score = this.props.router?.location?.state?.score;
     const audioFile = this.props.router?.location?.state?.audioFile;
-    const { id } = this.props.router.params;
+    if (audioFile) {
+      this.setState({ audioFile });
+    }
+    const id = this.props.router?.location?.state?.id;
+    console.log("ID", id);
   
     // use initial
     if (score) {
-      let xmlString;
-  
-      if (typeof score === 'string') {
-        // If score is a string, it may already be valid XML content
-        xmlString = score;
-      } else if (score instanceof Document || score instanceof Node) {
-        // If score is an XML Document or Node, serialize it
-        const xmlSerializer = new XMLSerializer();
-        xmlString = xmlSerializer.serializeToString(score);
-      } else {
-        console.error('Invalid score type:', typeof score);
-        return; // Early exit if invalid score type
-      }
-  
-      // Update the config to use the passed score instead of the default remote score
-      config.initialScore = xmlString;
+      const midi = score;
+      console.log('Midi:', midi);
+
+      const midiUrl = `http://localhost:8000/media/${score}.mid`;
+
+
+      fetch(midiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const contentType = response.headers.get('content-type');
+          // if (!contentType || !contentType.includes('audio/midi')) {
+          //   throw new Error('Invalid MIDI file.');
+          // }
+          return response.arrayBuffer(); // Get the binary data of the MIDI file
+        })
+        .then(arrayBuffer => {
+          // Convert the ArrayBuffer to Uint8Array
+          const midiFileBuffer = new Uint8Array(arrayBuffer);
+
+          // Parse the MIDI file using parseMidi
+          const midiJson = parseMidi(midiFileBuffer); 
+
+          // Quantization value for the conversion
+          const quantizeDuration = 1024;
+
+          // Create an instance of MidiToSmo and convert
+          const midiToSmo = new this.Smo.MidiToSmo(midiJson, quantizeDuration);
+          // const smoScore = midiToSmo.convert();
+
+          console.log(midiToSmo); // Process or display the SmoScore as needed
+
+          console.log('Score', midiToSmo.convert());
+          config.initialScore = midiToSmo.convert();
+          this.initSmoosic(this.smoosicElem.current, config);
+          
+        })
+        .catch(error => {
+          console.error('Error fetching or processing the MIDI file:', error);
+        });
   
       // Set the XML string in the state for debugging
-      this.setState({ xmlString }, () => {
-        this.initSmoosic(this.smoosicElem.current, config);
-      });
+      
+      
 
       // Set the audio file if provided
       if (audioFile) {
@@ -102,12 +137,14 @@ class SmoosicComponent extends React.Component {
         this.setState({ transcription: response.data }, () => {
           if (response.data.score_data) {
             console.log(response.data);
+            delete config.initialScore;
             config.remoteScore = response.data.score_data;
             delete config.initialScore; // Remove the initial score if a remote score is provided
           }
-          this.initSmoosic(this.smoosicElem.current, config);
           const audioFile = this.state.transcription.audio_file;
           this.setState({ audioFile });
+          this.initSmoosic(this.smoosicElem.current, config);
+          
         });
       } catch (error) {
         console.error('Error fetching transcription:', error);
@@ -125,18 +162,22 @@ class SmoosicComponent extends React.Component {
   }
 
   async initSmoosic(element, config) {
-    if (window.Smo) {
-      this.globSmo = window.Smo;
+    if (this.Smo) {
+      
 
       // Create the UI DOM structure
-      window.Smo.SuiDom.createUiDom(element);
+      this.Smo.SuiDom.createUiDom(element);
 
       try {
         // Use async/await to wait for Smoosic configuration to complete
-        await window.Smo.SuiApplication.configure(config);
+        await this.Smo.SuiApplication.configure(config);
 
         // After initialization, you can safely use SmoScore or other Smoosic-related instances
-        console.log('Smoosic initialized:', window.Smo.SuiApplication.instance.eventSource);
+        console.log('Smoosic initialized:', this.Smo.SuiApplication.instance);
+        console.log('Smoosic Event Handlers:', this.Smo.SuiEventHandler);
+        // window.Smo.SuiApplication.instance.view.preferences.showPiano = false;
+        
+        // window.Smo.SuiApplication.instance.view.updateScorePreferences(window.Smo.SuiApplication.instance.view.score.preferences);
         // console.log('Score', this.globSmoApp.score.serialize());
       } catch (error) {
         console.error('Error during Smoosic initialization:', error);
@@ -155,14 +196,15 @@ class SmoosicComponent extends React.Component {
     }
   
     this.unbound = true;
-    console.log("before unbind ", window.Smo.SuiApplication.instance.eventSource.keydownHandlers)
-    console.log('Unbinding keydown handler[0]:', window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0]);
-    this.default = window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0].sink;
+    console.log("before unbind ", this.Smo.SuiApplication.instance.eventSource.keydownHandlers)
+    console.log('Unbinding keydown handler[0]:', this.Smo.SuiApplication.instance.eventSource.keydownHandlers);
+    this.default = this.Smo.SuiApplication.instance.eventSource.keydownHandlers;
+    console.log("default", this.default);
   
     // Unbind the keydown handler
-    window.Smo.SuiApplication.instance.eventSource.unbindKeydownHandler(window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0]);
+    this.Smo.SuiApplication.instance.eventSource.unbindKeydownHandler(this.Smo.SuiApplication.instance.eventSource.keydownHandlers[0]);
   
-    console.log('Handlers after unbinding:', window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
+    console.log('Handlers after unbinding:', this.Smo.SuiApplication.instance.eventSource.keydownHandlers);
   
     // // Rebind events when the modal closes (when closeModalPromise is resolved)
     // dialog.closeModalPromise.then(() => {
@@ -176,11 +218,13 @@ class SmoosicComponent extends React.Component {
   handleModalClose = () => {
     this.setState({ showModal: false });
     this.unbound = false;
-    console.log(window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
+    console.log(this.Smo.SuiApplication.instance.eventSource.keydownHandlers);
     // this.globSmoApp.instance.eventSource.keydownHandlers = [];
     // console.log("bind", this.globSmoApp.instance.eventSource.bindKeydownHandler(this, 'evKey'));
-    window.Smo.SuiApplication.instance.eventSource.keydownHandlers[0] = window.Smo.SuiApplication.instance.eventSource.bindKeydownHandler(this.default, 'evKey');
-    console.log("after rebind", window.Smo.SuiApplication.instance.eventSource.keydownHandlers);
+    console.log("default after", this.default);
+    // this.Smo.SuiApplication.instance.eventSource = null;
+    this.Smo.SuiApplication.instance.eventSource.keydownHandlers = this.default;
+    console.log("after rebind", this.Smo.SuiApplication.instance.eventSource);
   };
 
   toggleModal = () => {
@@ -228,14 +272,15 @@ class SmoosicComponent extends React.Component {
 
   componentWillUnmount() {
     this.setState({ audioFile: '' });
+    this.Smo = null;
   }
 
   handleSave = () => {
-    if (window.Smo) {
-      console.log(window.Smo.SuiApplication.instance);
+    if (this.Smo) {
+      console.log(this.Smo.SuiApplication.instance);
       // const serializedScore = this.globSmoApp.score.serialize();
 
-      const serializedScore = window.Smo.SmoToXml.convert(window.Smo.SuiApplication.instance.view.score);
+      const serializedScore = this.Smo.SmoToXml.convert(this.Smo.SuiApplication.instance.view.score);
 
       // const serializedScore = this.globSmoApp.score;
       
@@ -409,110 +454,6 @@ class SmoosicComponent extends React.Component {
     }
   });
 };
-//   handleSubmit = async (e) => {
-//     e.preventDefault();
-//     const { title, author, selectedCategories, serializedScore, audioFile, imageCapture, lyrics } = this.state;
-  
-//     // Create a FormData object to send files
-//     const formData = new FormData();
-//     formData.append('title', title);
-//     formData.append('author', author);
-//     formData.append('lyrics', lyrics);
-//     formData.append('categories', JSON.stringify(selectedCategories));
-//     formData.append('is_published', false);
-//     formData.append('saves', 0);
-  
-//     // Handle the audio file (Blob URL)
-//     if (audioFile) {
-//       const audioBlob = await fetch(audioFile).then(response => response.blob());
-//       const audioFileName = `audio_${uuidv4()}.mp3`; // Generate a unique name for the audio file using UUID
-//       const audioFileObject = new File([audioBlob], audioFileName, { type: audioBlob.type });
-//       formData.append('audio_file', audioFileObject);
-//     }
-  
-//     // Handle the image capture (Base64 string)
-//     if (imageCapture) {
-//       const imageData = imageCapture.split(',')[1]; // Strip out the data URI prefix
-//       const imageBlob = new Blob([new Uint8Array(atob(imageData).split("").map(c => c.charCodeAt(0)))], { type: 'image/png' });
-//       const imageFileName = `image_${uuidv4()}.png`; // Generate a unique name for the image file using UUID
-//       const imageFileObject = new File([imageBlob], imageFileName, { type: imageBlob.type });
-//       formData.append('image_file', imageFileObject);
-//     }
-
-//     // Handle the serializedScore (XML file)
-//     if (serializedScore) {
-//       // Convert the serializedScore object (e.g., XMLDocument) to a string
-//       const serializer = new XMLSerializer();
-//       const serializedScoreString = serializer.serializeToString(serializedScore);
-    
-//       // Create a Blob from the serialized XML string
-//       const xmlData = '<?xml version="1.0" encoding="UTF-8"?>\n' + serializedScoreString;
-//       const scoreBlob = new Blob([xmlData], { type: 'text/xml;charset=utf-8' });
-
-    
-//       // Generate a unique file name for the XML file
-//       const scoreFileName = `score_${uuidv4()}.xml`;
-    
-//       // Create a File object from the Blob
-//       const scoreFileObject = new File([scoreBlob], scoreFileName, { type: scoreBlob.type });
-    
-//       // Append the File object to the FormData
-//       formData.append('score_data', scoreFileObject);
-//     }
-    
-  
-//     // Log form data for debugging
-//     for (let [key, value] of formData.entries()) {
-//       console.log(`${key}: ${value}`);
-//     }
-
-//     const token = localStorage.getItem("access_token");
-//     console.log(token);
-    
-//     const getCSRFToken = () => {
-//       console.log(document.cookie);
-//       const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-//         const [name, value] = cookie.split('=');
-//         acc[name] = value;
-//         return acc;
-//       }, {});
-    
-//       return cookies.csrftoken || null;
-//     };
-    
-  
-  
-
-//     try {
-//         const csrfToken = getCSRFToken();
-//         console.log('csrf', csrfToken);
-
-//         const response = await axios.post(
-//           'http://localhost:8000/transcription/save-transcription/',
-//           formData,
-//           {
-//               headers: {
-//                   // 'Authorization': token,
-//                   'X-CSRFToken': csrfToken, // Include CSRF token
-//               },
-//               withCredentials: true, // Ensure session cookies are sent
-//           }
-//       );
-
-//     console.log('Headers:', axios.defaults.headers);
-//     console.log('Cookies:', document.cookie);
-
-
-//     if (response.status === 200) {
-//         console.log('Data saved successfully:', response.data);
-//         this.toggleModal(); // Close the modal after successful save
-//     } else {
-//         console.error('Error saving data:', response.statusText);
-//     }
-// } catch (error) {
-//     console.error('Error:', error.response ? error.response.data : error.message);
-// }
-//   };
 
   render() {
     console.log(this.state.transcription);

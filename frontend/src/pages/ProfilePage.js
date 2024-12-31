@@ -5,6 +5,7 @@ import { FaEdit } from 'react-icons/fa';
 import EditProfileModal from '../components/EditProfileModal';
 import TranscriptionCard from '../components/TranscriptionCard';
 import { Routes, Route, Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'; 
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -14,6 +15,15 @@ const ProfilePage = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [totalFavorites, setTotalFavorites] = useState(0);
+  const navigate = useNavigate();
+
+  const handleNavigate = (transcription) => {
+    navigate('/editor', { 
+      state: { 
+        id: transcription.id,
+      }
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,14 +123,18 @@ const ProfilePage = () => {
           <div style={{ display: 'flex', flexWrap: 'wrap' }}>
 
             {transcriptions.filter(transcription => !transcription.is_published).map(transcription => (
-              <Link to={`/editor/${transcription.id}`} key={transcription.id}>
+              <div 
+                key={transcription.id}
+                onClick={() => handleNavigate(transcription)}
+                style={{ cursor: 'pointer' }}
+              >
                 <TranscriptionCard
                   image={transcription.image_file}
                   title={transcription.title}
                   likes={transcription.favorites}
                   saves={transcription.saves || 0}
                 />
-              </Link>
+              </div>
             ))}
           </div>
         </div>

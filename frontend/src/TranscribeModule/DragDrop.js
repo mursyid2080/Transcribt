@@ -40,22 +40,35 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
       const { transcription } = response.data;
 
       // Access MusicXML
-      const musicxmlData = transcription.musicxml;
+      const midi = transcription.midi_file;
 
       // Access speech transcription
       const speechTranscription = transcription.speech_transcription;
 
       const audioFileURL = URL.createObjectURL(file);
+      // let midiURL;
+      // if (midi instanceof Blob) {
+      //   midiURL = URL.createObjectURL(midi);
+      // } else {
+      //   // Convert to Blob if not already
+      //   const byteCharacters = atob(midi);
+      //   const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
+      //   const byteArray = new Uint8Array(byteNumbers);
+      //   const midiBlob = new Blob([byteArray], { type: 'audio/midi' });
+      //   midiURL = URL.createObjectURL(midiBlob);
+      // }
+      // const midiURL = URL.createObjectURL(midi);
+      // console.log('Generated MIDI File URL:', midiURL);  // Check if the URL is correct
       console.log('Generated Audio File URL:', audioFileURL);  // Check if the URL is correct
 
 
       // Now you can use the data
-      console.log('MusicXML:', musicxmlData);
+      console.log('Midi:', midi);
       console.log('Speech Transcription:', speechTranscription);
 
       navigate('/editor', { 
         state: { 
-          score: musicxmlData, 
+          score: midi, 
           audioFile: audioFileURL } 
         });
       // onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
