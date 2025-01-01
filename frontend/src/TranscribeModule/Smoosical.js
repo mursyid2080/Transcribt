@@ -66,7 +66,7 @@ class SmoosicComponent extends React.Component {
     // Access the passed 'score' and 'audioFile' from the router props
     const score = this.props.router?.location?.state?.score;
     const audioFile = this.props.router?.location?.state?.audioFile;
-    const id = this.props.location?.state?.id;
+    const id = this.props.router?.location?.state?.id;
   
     // use initial
     if (score) {

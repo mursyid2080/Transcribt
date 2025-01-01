@@ -217,7 +217,7 @@ body.showAttributeDialog .attributeDialog {
 }
 .attributeModal .buttonContainer .button-center {
 	margin-right:5px;
-	margin-left:5px;
+	/* margin-left:5px; */
 }
 
 .attributeModal .buttonContainer .button-right {
@@ -233,7 +233,7 @@ body.showAttributeDialog .attributeDialog {
 }
 
 .attributeModal .buttonContainer .ok-button {
-	border:#9cee9d 1px ridge;
+	border:#e7e7e7 1px ridge;
 }
 
 .attributeModal .buttonContainer .ok-button:hover {
@@ -276,11 +276,11 @@ body.showAttributeDialog .attributeDialog {
 
 
 .attributeModal .buttonContainer .cancel-button {
-	border:#dc8899 1px ridge;
+	border:#e7e7e7 1px ridge;
 }
 
 .attributeModal .buttonContainer .remove-button {
-	border:#dc8899 1px ridge;
+	border:#e7e7e7 1px ridge;
 }
 
 
@@ -432,7 +432,7 @@ body.showAttributeDialog .attributeDialog {
 	margin-right:2px;
 	height: 30px;
 	border-radius: 5%;
-	border: 1px solid #52ba73;
+	border: 1px solid #e7e7e7;
 }
 
 .smoControl.cbTextInPlace,.smoControl.cbDragTextDialog ,.smoControl.cbResizeTextBox  {
@@ -478,7 +478,7 @@ body.showAttributeDialog .attributeDialog {
 	margin-left: 7px;
 	height: 30px;
 	border-radius: 5%;
-	border: 1px solid #52ba73;
+	border: 1px solid #e7e7e7;
 }
 
 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Login.css'; // For styling
+
 
 const Login = ({ setLoggedIn, setUsername }) => {
   const [username, setUsernameState] = useState('');
@@ -12,87 +14,77 @@ const Login = ({ setLoggedIn, setUsername }) => {
   const navigate = useNavigate();
 
   const onButtonClick = () => {
-    // Reset error states
     setUsernameError('');
     setPasswordError('');
     setLoginError('');
-  
-    // Validate username
+
     if (!username) {
-      setUsernameError('Please enter your username');
+      setUsernameError('Please enter your email address');
       return;
     }
-  
-    // Validate password
+
     if (!password) {
-      setPasswordError('Please enter a password');
+      setPasswordError('Please enter your password');
       return;
     }
     if (password.length < 6) {
       setPasswordError('The password must be 6 characters or longer');
       return;
     }
-  
-    // Send data as URL-encoded
+
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-  
-    // Make the authentication call
-    axios.post('http://localhost:8000/api/auth/login', formData, { withCredentials: true },)
-      .then(response => {
-        console.log('Login successful:', response);
-        localStorage.setItem("access_token", response.data.access_token);
-        // Update state in the parent component
+
+    axios
+      .post('http://localhost:8000/api/auth/login', formData, { withCredentials: true })
+      .then((response) => {
+        localStorage.setItem('access_token', response.data.access_token);
         setUsername(username);
         setLoggedIn(true);
-        
-        // Redirect to home page
         navigate('/');
       })
-      .catch(error => {
-        console.error('Error logging in:', error);
+      .catch((error) => {
         setLoginError('Invalid username or password. Please try again.');
       });
-    
   };
 
   return (
-    <div className="mainContainer">
-      <div className="titleContainer">
-        <div>Login</div>
+    <div className="login-container">
+      <div className="login-left">
+        <h2>Welcome back!</h2>
+        <p>Enter your credentials to access your account</p>
+        <div className="form-group">
+          <input
+            type="text"
+            value={username}
+            placeholder="Username"
+            onChange={(ev) => setUsernameState(ev.target.value)}
+            className="input-box"
+          />
+          {usernameError && <small className="error-text">{usernameError}</small>}
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            value={password}
+            placeholder="Password"
+            onChange={(ev) => setPasswordState(ev.target.value)}
+            className="input-box"
+          />
+          {passwordError && <small className="error-text">{passwordError}</small>}
+        </div>
+        <button onClick={onButtonClick} className="login-button">
+          Log in
+        </button>
+        {loginError && <small className="error-text">{loginError}</small>}
+        <p className="signup-text">
+          Don’t have an account? <a href="/register">Sign up</a>
+        </p>
       </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          value={username}
-          placeholder="Enter your username here"
-          onChange={(ev) => setUsernameState(ev.target.value)}
-          className="inputBox"
-        />
-        {usernameError && <label className="errorLabel">{usernameError}</label>}
+      <div className="login-right" style={{backgroundImage: `url('/images/login_batik.jpg')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center"}}>
+        <div style={{ width: "100%", height: "100%", backgroundColor: 'rgba(0,0,0, 0.55)'}}/>
       </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          type="password"
-          value={password}
-          placeholder="Enter your password here"
-          onChange={(ev) => setPasswordState(ev.target.value)}
-          className="inputBox"
-        />
-        {passwordError && <label className="errorLabel">{passwordError}</label>}
-      </div>
-      <br />
-      <div className="inputContainer">
-        <input
-          className="inputButton"
-          type="button"
-          onClick={onButtonClick}
-          value="Log in"
-        />
-      </div>
-      {loginError && <div className="errorLabel">{loginError}</div>}
     </div>
   );
 };

@@ -24,9 +24,7 @@ function InputSelector({ onClick }) {
       <IconButton text="Record" color="bg-blue-500" onClick={() => onClick('Record')}>
         <KeyboardVoiceIcon size={20} />
       </IconButton>
-      <IconButton text="URL" color="bg-gradient-to-tr from-yellow-500 to-purple-500 via-pink-500">
-        <LinkIcon size={20} />
-      </IconButton>
+
     </div>
   );
 }
@@ -55,23 +53,27 @@ const Transcribe = () => {
   
 
   return (
-    <Container maxWidth="lg">
-      <div className="inputSelection" marginTop="100px">
-        <InputSelector onClick={handleInputClick} />
-        <Box>
-          {inputDictionary[currentInput]}
-        </Box>
-      </div>
+    <div style={{height: '92vh', backgroundImage: `url('/images/input.jpg')`}}>
+      <div style={{height: '92vh', backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
 
-      {musicxml && (
-        <Box sx={{ marginTop: 4, width: '100%' }}>
-          <Typography variant="h6" gutterBottom>
-            Music Sheet
+        <Container maxWidth="lg" style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+          <Typography variant="h4" align="center" gutterBottom style={{marginTop: "60px", fontFamily: "Poppins"}}>
+            Transcribe Your Music
           </Typography>
-          <MusicXMLRenderer musicxml={musicxml} />
-        </Box>
-      )}
-    </Container>
+          <Typography variant="body1" align="center" paragraph style={{width: "400px", fontFamily: "Poppins"}}>
+            This page allows you to upload an audio file or record your voice to generate a music sheet. 
+            Simply choose your preferred input method below and let our tool do the rest. 
+            Create beautiful music sheets effortlessly with your voice!
+          </Typography>
+          <div className="inputSelection" style={{ marginTop: '20px' }}>
+            <InputSelector onClick={handleInputClick} />
+            <Box>
+              {inputDictionary[currentInput]}
+            </Box>
+          </div>
+        </Container>
+      </div>
+    </div>
   );
 };
 

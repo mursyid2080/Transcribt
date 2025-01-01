@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Home from './pages/Home2';
 import Login from './Login';
 import Register from './Register';
@@ -22,6 +22,13 @@ function App() {
   const [username, setUsername] = useState('');
   const [showNav, setShowNav] = useState(false);
   const [searchInput, setSearchInput] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
+  const navigate = useNavigate();
+
+  const handleNavigate = (path) => {
+    setRefreshKey((prevKey) => prevKey + 1); // Increment key to force refresh
+    navigate(path);
+  };
 
   useEffect(() => {
     localStorage.setItem('loggedIn', loggedIn);
@@ -42,16 +49,17 @@ function App() {
     });
   };
 
+
   const handleNavClick = () => setShowNav(false);
 
   return (
-    <Router>
+    <>
       {loggedIn ? (
         <>
-          <Header handleNavClick={handleNavClick} setLoggedIn={setLoggedIn} setUsername={setUsername} setSearchInput={setSearchInput} />
+          <Header handleNavClick={handleNavClick} handleNavigate={handleNavigate} setLoggedIn={setLoggedIn} setUsername={setUsername} setSearchInput={setSearchInput} />
           <NavBar show={showNav} handleLogout={handleLogout} handleNavClick={handleNavClick} />
           <div className="main">
-            <Routes>
+            <Routes key={refreshKey}>
               <Route path="/*" element={<Home username={username} loggedIn={loggedIn} setLoggedIn={setLoggedIn} searchInput={searchInput} setSearchInput={setSearchInput}/>} />
               <Route path="/transcribe" element={<Transcribe />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -70,8 +78,9 @@ function App() {
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}
-    </Router>
+    </>
   );
 }
+
 
 export default App;

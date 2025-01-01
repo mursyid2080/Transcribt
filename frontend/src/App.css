@@ -110,10 +110,10 @@ header svg {
 
 .inputBox {
   height: 48px;
-  width: 400px;
+  /* width: 400px; */
   font-size: large;
   border-radius: 8px;
-  border: 1px solid grey;
+  border: 1px solid rgb(209, 209, 209);
   padding-left: 8px;
 }
 
@@ -134,7 +134,7 @@ header svg {
   flex-direction: column; /* Stack items vertically */
   justify-content: center; /* Center elements vertically */
   align-items: center; /* Center elements horizontally */
-  height: 100vh; /* Ensure the container takes up the full viewport height */
+ /* Ensure the container takes up the full viewport height */
 }
 
 /* Trending Section */

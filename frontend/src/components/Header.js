@@ -4,9 +4,10 @@ import { FaHome, FaSearch, FaEdit, FaMicrophone, FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import './Header.css';
 
-const Header = ({ handleNavClick, setLoggedIn, setUsername, setSearchInput }) => {
+const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setSearchInput }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [hoveredIcon, setHoveredIcon] = useState(null);
 
   const handleLogout = () => {
     axios.post('http://localhost:8000/api/auth/logout', {}, {
@@ -42,12 +43,13 @@ const Header = ({ handleNavClick, setLoggedIn, setUsername, setSearchInput }) =>
 
   return (
     <header>
-      <Link to="/" onClick={handleNavClick} className="icon-container">
-        <FaHome title="Home" />
+      <Link to="/" onClick={handleNavClick} className="icon-container" onMouseEnter={() => setHoveredIcon('home')} onMouseLeave={() => setHoveredIcon(null)}>
+        <FaHome title="Home" style={{marginRight: "5px"}}/>
+        {hoveredIcon === 'home' && <span className="icon-title">Home</span>}
       </Link>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div className="search-container">
-          <FaSearch title="Search" onClick={handleSearch} style={{ cursor: 'pointer' }} />
+          <FaSearch title="Search" onClick={handleSearch} style={{ cursor: 'pointer'}} />
           <input
             type="text"
             placeholder="Search..."
@@ -56,20 +58,23 @@ const Header = ({ handleNavClick, setLoggedIn, setUsername, setSearchInput }) =>
             onKeyPress={handleKeyPress}
           />
         </div>
-        <Link to="/editor" onClick={handleNavClick} className="icon-container">
-          <FaEdit title="Editor" />
-        </Link>
-        <Link to="/transcribe" onClick={handleNavClick} className="icon-container">
-          <FaMicrophone title="Auto-transcribe" />
-        </Link>
+        <div className="icon-container" onClick={() => handleNavigate('/editor')} onMouseEnter={() => setHoveredIcon('editor')} onMouseLeave={() => setHoveredIcon(null)}>
+          <FaEdit title="Editor" style={{marginRight: "5px"}}/>
+          {hoveredIcon === 'editor' && <span className="icon-title">Editor</span>}
+        </div>
+        <div className="icon-container" onClick={() => handleNavigate('/transcribe')} onMouseEnter={() => setHoveredIcon('transcribe')} onMouseLeave={() => setHoveredIcon(null)}>
+          <FaMicrophone title="Generate Notation" style={{marginRight: "5px"}}/>
+          {hoveredIcon === 'transcribe' && <span className="icon-title">Generate</span>}
+        </div>
       </div>
       <div style={{ position: 'relative' }}>
-        <div className="icon-container" onClick={toggleProfileDropdown}>
-          <FaUser title="Profile" />
+        <div className="icon-container" onClick={toggleProfileDropdown} onMouseEnter={() => setHoveredIcon('profile')} onMouseLeave={() => setHoveredIcon(null)}>
+          <FaUser title="Profile" style={{marginRight: "5px"}}/>
+          {hoveredIcon === 'profile' && <span className="icon-title">Profile</span>}
         </div>
         {showProfileDropdown && (
           <div className="profile-dropdown">
-            <Link to="/profile" onClick={handleNavClick}>Profile</Link>
+            <button onClick={() => handleNavigate('/profile')}>Profile</button>
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

@@ -83,9 +83,9 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
   };
 
   return (
-    <Container maxWidth="md" sx={{ textAlign: "center" }}>
+    <Container maxWidth="md" sx={{ textAlign: "center", fontFamily: 'Poppins, sans-serif' }}>
       <Box sx={{ border: "2px dashed black", padding: "20px", borderRadius: "10px", marginTop: "20px" }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Poppins, sans-serif' }}>
           Drag & Drop File Here
         </Typography>
         <FileUploader
@@ -95,16 +95,16 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
           dropMessageStyle={dropMessageStyle}
         >
           <MusicNoteIcon fontSize="large" />
-          <Typography variant="body1" sx={{ marginTop: 1 }}>
+          <Typography variant="body1" sx={{ marginTop: 1, fontFamily: 'Poppins, sans-serif' }}>
             {fileTypes.join(", ")}
           </Typography>
         </FileUploader>
         {file && (
           <>
-            <Typography variant="body1" sx={{ marginTop: 1 }}>
+            <Typography variant="body1" sx={{ marginTop: 1, fontFamily: 'Poppins, sans-serif' }}>
               Selected file: {file.name}
             </Typography>
-            <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleUpload}>
+            <Button variant="contained" color="primary" sx={{ marginTop: 2, fontFamily: 'Poppins, sans-serif' }} onClick={handleUpload}>
               Upload
             </Button>
           </>

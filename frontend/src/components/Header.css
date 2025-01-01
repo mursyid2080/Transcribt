@@ -12,12 +12,22 @@ header {
     justify-content: center;
     width: 50px;
     height: 50px;
-    border-radius: 50%;
+    border-radius: 25px;
     background-color: #282828;
     color: #fff;
+    font-family: 'Poppins';
     margin-right: 10px;
     cursor: pointer;
+    transition: width 0.3s ease;
     /* padding: 10px; */
+  }
+
+  .icon-container:hover {
+    width: 150px; /* Enlarge the icon container on hover */
+  }
+
+  .icon-title{
+    font-family: 'Poppins' !important; 
   }
   
   .search-container {

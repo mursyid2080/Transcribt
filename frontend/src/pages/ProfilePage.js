@@ -8,6 +8,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'; 
 
 const ProfilePage = () => {
+  
   const [user, setUser] = useState(null);
   const [transcriptions, setTranscriptions] = useState([]);
   const [email, setEmail] = useState('');
@@ -16,6 +17,14 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [totalFavorites, setTotalFavorites] = useState(0);
   const navigate = useNavigate();
+  const [hasReloaded, setHasReloaded] = useState(false);
+
+  useEffect(() => {
+    if (!sessionStorage.getItem('hasReloaded')) {
+      sessionStorage.setItem('hasReloaded', 'true');
+      window.location.replace(window.location.href); // Perform a deep refresh
+    }
+  }, []);
 
   const handleNavigate = (transcription) => {
     navigate('/editor', { 
@@ -28,6 +37,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // window.location.reload();
         const transcriptionsResponse = await axios.get("http://localhost:8000/transcription/api/user/transcriptions/", {
           withCredentials: true
         });

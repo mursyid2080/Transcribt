@@ -52,10 +52,14 @@ class SmoosicComponent extends React.Component {
     this.mouseClickHandler = null;
     this.eventSource = null;
     
+    
   }
 
   async componentDidMount() {
-    this.Smo = window.Smo;
+    
+    this.Smo = _.cloneDeep(window.Smo);
+    
+    
     // Default config, using the remote URL if no score is passed
     let config = {
       smoPath: "../../public/smoosic/release",
@@ -64,7 +68,7 @@ class SmoosicComponent extends React.Component {
       scoreDomContainer: "smo-scroll-region",
       leftControls: "controls-left",
       topControls: "controls-top",
-      initialScore: '', // Default remote score
+      initialScore: '../../public/kosong.xml', // Default remote score
       disableSplash: true,
     };
   
@@ -107,7 +111,7 @@ class SmoosicComponent extends React.Component {
           const quantizeDuration = 1024;
 
           // Create an instance of MidiToSmo and convert
-          const midiToSmo = new this.Smo.MidiToSmo(midiJson, quantizeDuration);
+          const midiToSmo = new window.Smo.MidiToSmo(midiJson, quantizeDuration);
           // const smoScore = midiToSmo.convert();
 
           console.log(midiToSmo); // Process or display the SmoScore as needed
@@ -124,11 +128,6 @@ class SmoosicComponent extends React.Component {
       // Set the XML string in the state for debugging
       
       
-
-      // Set the audio file if provided
-      if (audioFile) {
-        this.setState({ audioFile });
-      }
     } 
     // use remote
     else if (id) {
@@ -167,6 +166,7 @@ class SmoosicComponent extends React.Component {
 
       // Create the UI DOM structure
       this.Smo.SuiDom.createUiDom(element);
+      console.log('Smoosic UI DOM created:', this.Smo.SuiDom);
 
       try {
         // Use async/await to wait for Smoosic configuration to complete
@@ -175,10 +175,7 @@ class SmoosicComponent extends React.Component {
         // After initialization, you can safely use SmoScore or other Smoosic-related instances
         console.log('Smoosic initialized:', this.Smo.SuiApplication.instance);
         console.log('Smoosic Event Handlers:', this.Smo.SuiEventHandler);
-        // window.Smo.SuiApplication.instance.view.preferences.showPiano = false;
-        
-        // window.Smo.SuiApplication.instance.view.updateScorePreferences(window.Smo.SuiApplication.instance.view.score.preferences);
-        // console.log('Score', this.globSmoApp.score.serialize());
+
       } catch (error) {
         console.error('Error during Smoosic initialization:', error);
       }
@@ -264,15 +261,30 @@ class SmoosicComponent extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { config } = this.props;
-    if (!_.isEqual(config, prevProps.config)) {
-      this.updateSmoosic(config);
-    }
+    // const { config } = this.props;
+    // if (!_.isEqual(config, prevProps.config)) {
+    //   this.updateSmoosic(config);
+    // }
   }
 
   componentWillUnmount() {
-    this.setState({ audioFile: '' });
+    // this.setState({ audioFile: '' });
+    console.log('Unmounting SmoosicComponent', this.Smo.SuiApplication.instance);
     this.Smo = null;
+    // window.Smo.SuiApplication.instance = null;
+    // window.Smo = null;
+
+    if (this.smoosicElem.current) {
+      this.smoosicElem.current.innerHTML = '';
+      this.smoosicElem.current.remove(); // Remove the element from the DOM
+    }
+    
+    const pianoElement = document.getElementById('piano-element-id'); // Replace with actual ID
+      if (pianoElement) {
+        pianoElement.remove(); // Remove the element if necessary
+      }
+
+      
   }
 
   handleSave = () => {
@@ -575,7 +587,7 @@ class SmoosicComponent extends React.Component {
             onCategoriesChange={this.handleCategoriesChange}
           />
         ) : (
-          <div>Loading...</div> // Show a loading indicator if transcription is not available
+          <div></div> // Show a loading indicator if transcription is not available
         )}
       </div>
     );

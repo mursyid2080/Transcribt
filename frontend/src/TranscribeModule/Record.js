@@ -67,8 +67,30 @@ export default function Record({ onMusicXml }) {
   };
 
   return (
-    <Container className="Record" style={{ padding: "20px", borderRadius: "10px", marginTop: "20px", backgroundColor:"#212121"}}>
+    <Container
+      className="Record"
+      style={{
+        padding: "20px",
+        borderRadius: "10px",
+        marginTop: "20px",
+        backgroundColor: "#212121",
+        width: "600px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        fontFamily: 'Poppins, sans-serif'
+      }}
+    >
       <Recorder
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          fontFamily: 'Poppins, sans-serif'
+        }}
         record={true}
         hideHeader={true}
         audioURL={audioDetails.url}
@@ -77,7 +99,7 @@ export default function Record({ onMusicXml }) {
         handleAudioUpload={handleAudioUpload}
         handleReset={() => handleReset()}
       />
-      <button onClick={handleAudioUpload}>Upload Audio</button>
+      {/* <button onClick={handleAudioUpload}>Upload Audio</button> */}
     </Container>
   );
 }
