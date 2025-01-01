@@ -1,22 +1,19 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Transcription
-from .serializers import TranscriptionSerializer
+
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-import tensorflow as tf
+
 import tensorflow_hub as hub
-import numpy as np
+
 import logging
 from pydub import AudioSegment
 import os
 import requests
-import soundfile as sf
+
 from scipy.io import wavfile
-import music21
-import tempfile
-import base64
+
 from django.http import JsonResponse, HttpResponse
 from django.core.files.storage import FileSystemStorage
 from pathlib import Path
@@ -28,27 +25,22 @@ from IPython.core.display import display, HTML, Javascript
 import json, random
 from django.conf import settings
 
-import matplotlib.pyplot as plt
-import librosa
-from librosa import display as librosadisplay
+
 
 import logging
 import math
 import statistics
-import sys
 
 from IPython.display import Audio, Javascript
 
 import uuid
-from base64 import b64decode
 
-import omnizart
-from omnizart.vocal import VocalTranscription
+
+
 from music21 import converter, note, stream, tempo
-import pretty_midi
-import malaya_speech    
+ 
 import numpy as np
-from malaya_speech import Pipeline
+
 from crepe_notes import crepe_notes
 from django.http import FileResponse
 
@@ -99,9 +91,15 @@ class TranscriptionUploadView(APIView):
                 wav_file = Path(output_file).with_suffix('.wav')
                 midi_file = Path(output_file).with_suffix('.transcription.mid')
 
-                # Define the destination paths in the media folder
-                media_wav_file = Path(settings.MEDIA_ROOT) / wav_file.name
-                media_midi_file = Path(settings.MEDIA_ROOT) / midi_file.name
+                # Define the subdirectory within MEDIA_ROOT
+                midi_subdirectory = Path(settings.MEDIA_ROOT) / 'midi'
+
+                # Ensure the subdirectory exists
+                midi_subdirectory.mkdir(parents=True, exist_ok=True)
+
+                # Define the paths for the wav and midi files within the subdirectory
+                media_wav_file = midi_subdirectory / wav_file.name
+                media_midi_file = midi_subdirectory / midi_file.name
 
                 # Move the .wav file to the media folder
                 shutil.move(str(wav_file), str(media_wav_file))
@@ -111,7 +109,7 @@ class TranscriptionUploadView(APIView):
                 new_midi_name = f"{file_name_without_extension}.mid"
 
                 # Define the path for the renamed MIDI file in the media folder
-                new_media_midi_file = Path(settings.MEDIA_ROOT) / new_midi_name
+                new_media_midi_file = midi_subdirectory / new_midi_name
 
                 # Rename and move the MIDI file
                 os.rename(media_midi_file, new_media_midi_file)
@@ -123,26 +121,7 @@ class TranscriptionUploadView(APIView):
     
 
                 print(f"Generated MIDI file: {midi_data}")
-                # Convert MIDI to MusicXML
-            
-
-                # small_model = malaya_speech.stt.deep_transducer(model = 'small-conformer')
-                # print("Loaded model")
-
-                # # Load the audio file
-                # y, sr = malaya_speech.load(output_file)
-                # if y is None or len(y) == 0:
-                #     raise ValueError("The audio file is empty or not loaded properly.")
-
-                # # Perform speech-to-text
-                # result = small_model.greedy_decoder([y])
-
-                # Clean up temporary files
-                # os.remove(base_filename + '.transcription' + '.mid')
-                # os.remove(output_file + '.amp_envelope' + '.npz')
-                # os.remove(output_file + '.f0' + '.csv')
-                # os.remove(output_file + '.onsets' + '.npz')
-                # os.remove(output_file + '.wav')
+  
                 file_name_without_extension = os.path.splitext(output_file)[0]
 
                 sc_dict = {

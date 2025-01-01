@@ -1,6 +1,7 @@
 from authentication import views
 from django.urls import path
-
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework_simplejwt.views import (TokenObtainPairView)
 
 # urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path('csrf-token/', views.CSRFTokenView.as_view(), name='csrf-token'),
     path('user/profile/', views.UserProfileView.as_view(), name='user-profile'),
     path('user/profile/update/', views.UpdateUserProfileView.as_view(), name='update-user-profile'),
+    
     # path('', login_required(views.HomeView.as_view()), name='home'),
     # path('activate/<uidb64>/<token>',
     #      views.ActivateAccountView.as_view(), name='activate'),
@@ -24,4 +26,4 @@ urlpatterns = [
     #      views.SetNewPasswordView.as_view(), name='set-new-password'),
     # path('request-reset-email', views.RequestResetEmailView.as_view(),
     #      name='request-reset-email')
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

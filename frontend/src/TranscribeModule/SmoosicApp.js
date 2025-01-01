@@ -87,7 +87,7 @@ class SmoosicComponent extends React.Component {
       const midi = score;
       console.log('Midi:', midi);
 
-      const midiUrl = `http://localhost:8000/media/${score}.mid`;
+      const midiUrl = `http://localhost:8000/media/midi/${score}.mid`;
 
 
       fetch(midiUrl)

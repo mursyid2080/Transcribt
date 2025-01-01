@@ -45,7 +45,7 @@ const RightSection = ({ categories, setSelectedCategory }) => {
                 ))}
             </div>
           ) : (
-            <p>No Categories.</p>
+            <p> </p>
           )}
         </Scrollbars>
       </div>

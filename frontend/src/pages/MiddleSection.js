@@ -9,6 +9,7 @@ import { FaArrowLeft } from "react-icons/fa";
 
 const MiddleSection = ({ transcriptions, categories, selectedCategory, setSelectedCategory, searchInput, setSearchInput }) => {
     const [trending, setTrending] = useState([]);
+    const [hoveredIcon, setHoveredIcon] = useState(null);
     
     const trendingRef = React.createRef();
 
@@ -57,6 +58,7 @@ const MiddleSection = ({ transcriptions, categories, selectedCategory, setSelect
                       }} // Reset category to show initial content
                     >
                     <FaArrowLeft title="Back" />
+                    {hoveredIcon === 'back' && <span className="icon-title">Back</span>}
                 </div>
             
                 <Scrollbars
