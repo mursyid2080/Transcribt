@@ -6,8 +6,18 @@ import EditProfileModal from '../components/EditProfileModal';
 import TranscriptionCard from '../components/TranscriptionCard';
 import { Routes, Route, Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'; 
+import Scrollbars from "react-custom-scrollbars";
 
 const ProfilePage = () => {
+
+  const renderThumb = ({ style, ...props }) => {
+    const thumbStyle = {
+      backgroundColor: "rgba(236, 236, 236, 0.64)", // Semi-transparent white
+      borderRadius: "6px", // Rounded corners
+      width: "8px", // Thin scrollbar
+    };
+    return <div style={{ ...style, ...thumbStyle }} {...props} />;
+  };
   
   const [user, setUser] = useState(null);
   const [transcriptions, setTranscriptions] = useState([]);
@@ -130,39 +140,54 @@ const ProfilePage = () => {
       <div className="profile-right-section">
         <div className="top-section">
           <h3>Saved Projects</h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <Scrollbars
+            autoHide
+            renderThumbHorizontal={renderThumb}
+            >
+            <div style={{ display: 'flex', flexDirection: "row", alignItems: "center", height: "100%"}}>
 
-            {transcriptions.filter(transcription => !transcription.is_published).map(transcription => (
-              <div 
-                key={transcription.id}
-                onClick={() => handleNavigate(transcription)}
-                style={{ cursor: 'pointer' }}
-              >
-                <TranscriptionCard
-                  image={transcription.image_file}
-                  title={transcription.title}
-                  likes={transcription.favorites}
-                  saves={transcription.saves || 0}
-                />
-              </div>
-            ))}
-          </div>
+              {transcriptions.filter(transcription => !transcription.is_published).map(transcription => (
+                <div 
+                  key={transcription.id}
+                  onClick={() => handleNavigate(transcription)}
+                  style={{ cursor: 'pointer' , display: "flex", alignItems: "center"}}
+                >
+                  <TranscriptionCard
+                    image={transcription.image_file}
+                    title={transcription.title}
+                    likes={transcription.favorites}
+                    saves={transcription.saves || 0}
+                  />
+                </div>
+              ))}
+            </div>
+          </Scrollbars>
         </div>
         <div className="bottom-section">
           <h3>Published Projects</h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <Scrollbars
+            autoHide
+            renderThumbHorizontal={renderThumb}
+            >
+
+            <div style={{ display: 'flex', flexDirection: "row", alignItems: "center", height: "100%"}}>
 
             {transcriptions.filter(transcription => transcription.is_published).map(transcription => (
-              <Link to={`/editor/${transcription.id}`} key={transcription.id}>
-                <TranscriptionCard
-                  image={transcription.image_file}
-                  title={transcription.title}
-                  likes={transcription.favorites}
-                  saves={transcription.saves || 0}
-                />
-              </Link>
-            ))}
-          </div>
+                <div 
+                  key={transcription.id}
+                  onClick={() => handleNavigate(transcription)}
+                  style={{ cursor: 'pointer' , display: "flex", alignItems: "center"}}
+                >
+                  <TranscriptionCard
+                    image={transcription.image_file}
+                    title={transcription.title}
+                    likes={transcription.favorites}
+                    saves={transcription.saves || 0}
+                  />
+                </div>
+              ))}
+            </div>
+          </Scrollbars>
         </div>
       </div>
       <EditProfileModal

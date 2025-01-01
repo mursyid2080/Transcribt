@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Scrollbars from 'react-custom-scrollbars'; 
 import './SmoosicApp.css'
 import PublishButton from '../components/PublishButton';
+import DeleteButton from '../components/DeleteButton.js';
 import parseMidi from '../midi-parser.js';
 
 
@@ -545,15 +546,23 @@ class SmoosicComponent extends React.Component {
                 </button>
 
                 
-                {this.state.transcription ?
-                (<PublishButton style={{
-                    width: '100px',
-                    padding: '10px 20px',
-                    cursor: 'pointer',
-                  }}
-                  transcriptionId={this.state.transcription.id}
-                  initialIsPublished={this.state.transcription.is_published}
-                />) : (
+                {this.state.transcription ? (
+                  <>
+                    <PublishButton
+                      style={{
+                        width: '100px',
+                        padding: '10px 20px',
+                        cursor: 'pointer',
+                      }}
+                      transcriptionId={this.state.transcription.id}
+                      initialIsPublished={this.state.transcription.is_published}
+                    />
+                    <DeleteButton
+                      transcriptionId={this.state.transcription.id}
+                      onDelete={this.handleDelete}
+                    />
+                  </>
+                ) : (
                   <div></div>
                 )}
               </div>
@@ -561,18 +570,7 @@ class SmoosicComponent extends React.Component {
           )}
         </div>
 
-        {/* ModalForm Component */}
-        {/* <ModalForm
-          showModal={showModal}
-          title={this.state.transcription?.title || title}
-          author={author}
-          categoriesOptions={categoriesOptions}
-          selectedCategories={selectedCategories}
-          onClose={this.handleModalClose}
-          onSubmit={this.handleSubmit}
-          onInputChange={this.handleInputChange}
-          onCategoriesChange={this.handleCategoriesChange}
-        /> */}
+
         {this.modalAvail && showModal ? (
           <ModalForm
             showModal={showModal}

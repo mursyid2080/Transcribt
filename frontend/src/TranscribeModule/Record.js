@@ -4,8 +4,12 @@ import "react-voice-recorder/dist/index.css";
 import Box from '@mui/material/Box';
 import { Container } from "@mui/material";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
+
 
 export default function Record({ onMusicXml }) {
+  const navigate = useNavigate();
   const [audioDetails, setAudioDetails] = useState({
     url: null,
     blob: null,
@@ -44,7 +48,19 @@ export default function Record({ onMusicXml }) {
         .then(response => {
           console.log('Transcription:', response.data);
           const { transcription } = response.data;
-          onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
+
+          // Access MusicXML
+          const midi = transcription.midi_file;
+
+          // Access speech transcription
+          const speechTranscription = transcription.speech_transcription;
+          const audioFileURL = URL.createObjectURL(audioBlob);
+          navigate('/editor', { 
+            state: { 
+              score: midi, 
+              audioFile: audioFileURL } 
+            });
+          // onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
         })
         .catch(error => {
           console.error('There was an error uploading the file!', error);

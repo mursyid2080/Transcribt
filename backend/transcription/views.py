@@ -118,3 +118,11 @@ class TogglePublishView(APIView):
         transcription.is_published = not transcription.is_published
         transcription.save()
         return Response({'is_published': transcription.is_published}, status=status.HTTP_200_OK)
+
+class DeleteTranscriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        transcription = get_object_or_404(SavedTranscription, pk=pk, user=request.user)
+        transcription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -76,7 +76,7 @@ export class XmlToSmo {
       layoutDefaults.globalLayout.zoomScale = 1.0;
       const xmlState = new XmlState();
       xmlState.newTitle = false;
-      rv.scoreInfo.name = 'Imported Smoosic';
+      rv.scoreInfo.name = 'Imported';
       XmlToSmo.scoreInfoFields.forEach((field) => {
         (rv.scoreInfo as any)[field] = '';
       });

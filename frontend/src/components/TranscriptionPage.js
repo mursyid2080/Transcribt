@@ -229,7 +229,7 @@ class TranscriptionPage extends Component {
             universal={true} // Ensures consistent behavior across devices
             style={{ maxWidth: '35%' }}
           >
-            <div className="transcription-lyrics">
+            <div className="transcription-lyrics" style={{textAlign: "center"}}>
               <p>{transcription.lyrics}</p>
             </div>
           </Scrollbars>

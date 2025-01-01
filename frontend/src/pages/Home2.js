@@ -18,7 +18,9 @@ const Home = ({ searchInput, setSearchInput }) => {
         const response = await axios.get("http://localhost:8000/transcription/api/transcriptions/", {}, {
           withCredentials: true
         });
-        const data = response.data;
+        const allData = response.data;
+
+        const data = allData.filter(item => item.is_published);
 
         const sortedTrending = [...data].sort((a, b) => b.saves - a.saves).slice(0, 10);
 
