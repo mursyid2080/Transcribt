@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 const getCSRFToken = () => {
     console.log(document.cookie);
@@ -21,7 +22,7 @@ const DeleteButton = ({ transcriptionId, onDelete }) => {
         const csrfToken = getCSRFToken();
         try {
         const response = await axios.delete(
-            `http://localhost:8000/transcription/api/transcriptions/delete/${transcriptionId}/`,
+            `${API_BASE_URL}/transcription/api/transcriptions/delete/${transcriptionId}/`,
             {
             headers: {
                 'X-CSRFToken': csrfToken, // Include CSRF token

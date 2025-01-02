@@ -4,6 +4,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import TranscriptionCard from "../components/TranscriptionCard";
 import TranscriptionPage from "../components/TranscriptionPage";
 import "./Home.css";
+import API_BASE_URL from "../config";
 
 const Home = () => {
   const [transcriptions, setTranscriptions] = useState([]);
@@ -13,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/transcription/api/transcriptions/", {}, {
+        const response = await axios.get(`${API_BASE_URL}/transcription/api/transcriptions/`, {}, {
           withCredentials: true
         });
         const data = response.data;

@@ -14,6 +14,7 @@ import './App.css';
 import TranscriptionPage from "./components/TranscriptionPage"; // Component to display the transcription details
 import axios from 'axios';
 import Header from './components/Header';
+import API_BASE_URL from './config';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(() => {
@@ -35,7 +36,7 @@ function App() {
   }, [loggedIn]);
 
   const handleLogout = () => {
-    axios.post('http://localhost:8000/api/auth/logout', {}, {
+    axios.post(`${API_BASE_URL}/api/auth/logout`, {}, {
       withCredentials: true,
     })
     .then(response => {

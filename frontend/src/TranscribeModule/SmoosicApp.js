@@ -12,6 +12,7 @@ import './SmoosicApp.css'
 import PublishButton from '../components/PublishButton';
 import DeleteButton from '../components/DeleteButton.js';
 import parseMidi from '../midi-parser.js';
+import API_BASE_URL from '../config.js';
 
 
 class SmoosicComponent extends React.Component {
@@ -87,7 +88,7 @@ class SmoosicComponent extends React.Component {
       const midi = score;
       console.log('Midi:', midi);
 
-      const midiUrl = `http://localhost:8000/media/midi/${score}.mid`;
+      const midiUrl = `${API_BASE_URL}/media/midi/${score}.mid`;
 
 
       fetch(midiUrl)
@@ -133,7 +134,7 @@ class SmoosicComponent extends React.Component {
     // use remote
     else if (id) {
       try {
-        const response = await axios.get(`http://localhost:8000/transcription/api/transcriptions/${id}/`);
+        const response = await axios.get(`${API_BASE_URL}/transcription/api/transcriptions/${id}/`);
         this.setState({ transcription: response.data }, () => {
           if (response.data.score_data) {
             console.log(response.data);
@@ -438,8 +439,8 @@ class SmoosicComponent extends React.Component {
       console.log('csrf', csrfToken);
   
       const url = this.state.transcription && this.state.transcription.id
-        ? `http://localhost:8000/transcription/api/transcription/update/${transcription.id}/`
-        : 'http://localhost:8000/transcription/save-transcription/';
+        ? `${API_BASE_URL}/transcription/api/transcription/update/${transcription.id}/`
+        : `${API_BASE_URL}/transcription/save-transcription/`;
   
       const response = await axios.post(
         url,

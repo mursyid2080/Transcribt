@@ -7,6 +7,7 @@ import TranscriptionCard from '../components/TranscriptionCard';
 import { Routes, Route, Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'; 
 import Scrollbars from "react-custom-scrollbars";
+import API_BASE_URL from "../config";
 
 const ProfilePage = () => {
 
@@ -48,7 +49,7 @@ const ProfilePage = () => {
     const fetchData = async () => {
       try {
         // window.location.reload();
-        const transcriptionsResponse = await axios.get("http://localhost:8000/transcription/api/user/transcriptions/", {
+        const transcriptionsResponse = await axios.get(`${API_BASE_URL}/transcription/api/user/transcriptions/`, {
           withCredentials: true
         });
         const transcriptionsData = transcriptionsResponse.data;
@@ -56,7 +57,7 @@ const ProfilePage = () => {
 
         console.log(transcriptionsData); 
   
-        const userProfileResponse = await axios.get("http://localhost:8000/api/auth/user/profile/", {
+        const userProfileResponse = await axios.get(`${API_BASE_URL}/api/auth/user/profile/`, {
           withCredentials: true
         });
         const userProfileData = userProfileResponse.data;
@@ -100,7 +101,7 @@ const ProfilePage = () => {
         console.log(`${key}: ${value}`);
       }
       const csrfToken = getCSRFToken();
-      const response = await axios.post("http://localhost:8000/api/auth/user/profile/update/", formData, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/user/profile/update/`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',

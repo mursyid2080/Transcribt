@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FaCheck, FaTimes } from 'react-icons/fa';
+import API_BASE_URL from '../config';
 
 const PublishButton = ({ transcriptionId, initialIsPublished }) => {
     const [isPublished, setIsPublished] = useState(initialIsPublished);
@@ -21,7 +22,7 @@ const PublishButton = ({ transcriptionId, initialIsPublished }) => {
         const csrfToken = getCSRFToken();
         try {
             const response = await axios.post(
-                `http://localhost:8000/transcription/api/transcription/toggle-publish/${transcriptionId}/`,
+                `${API_BASE_URL}/transcription/api/transcription/toggle-publish/${transcriptionId}/`,
                 {},
                 {
                     headers: {

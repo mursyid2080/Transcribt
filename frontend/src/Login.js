@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css'; // For styling
+import API_BASE_URL from './config';
 
 
 const Login = ({ setLoggedIn, setUsername }) => {
@@ -37,7 +38,7 @@ const Login = ({ setLoggedIn, setUsername }) => {
     formData.append('password', password);
 
     axios
-      .post('http://localhost:8000/api/auth/login', formData, { withCredentials: true })
+      .post(`${API_BASE_URL}/api/auth/login`, formData, { withCredentials: true })
       .then((response) => {
         localStorage.setItem('access_token', response.data.access_token);
         setUsername(username);

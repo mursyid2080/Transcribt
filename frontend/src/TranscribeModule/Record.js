@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { Container } from "@mui/material";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import API_BASE_URL from "../config";
 
 
 
@@ -40,7 +41,7 @@ export default function Record({ onMusicXml }) {
         formData.append('file', audioBlob, 'audio.wav'); // Assuming the filename is 'audio.wav'
 
         // Send the FormData with axios
-        axios.post('http://localhost:8000/transcribe/upload/', formData, {
+        axios.post(`${API_BASE_URL}/transcribe/upload/`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

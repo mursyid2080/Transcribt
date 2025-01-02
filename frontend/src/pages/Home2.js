@@ -4,6 +4,7 @@ import LeftSection from "./LeftSection";
 import MiddleSection from "./MiddleSection";
 import RightSection from "./RightSection";
 import "./Home2.css";
+import API_BASE_URL from "../config";
 
 const Home = ({ searchInput, setSearchInput }) => {
   const [transcriptions, setTranscriptions] = useState([]);
@@ -15,7 +16,7 @@ const Home = ({ searchInput, setSearchInput }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/transcription/api/transcriptions/", {}, {
+        const response = await axios.get(`${API_BASE_URL}/transcription/api/transcriptions/`, {}, {
           withCredentials: true
         });
         const allData = response.data;

@@ -11,6 +11,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { FaFileExport } from 'react-icons/fa'; // Import icons
 import html2canvas from "html2canvas";
 import Zoomable from './Zoomable';
+import API_BASE_URL from '../config';
 
 class TranscriptionPage extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class TranscriptionPage extends Component {
     }
 
     axios
-      .get(`http://localhost:8000/transcription/api/transcriptions/${id}/`)
+      .get(`${API_BASE_URL}/transcription/api/transcriptions/${id}/`)
       .then((response) => {
         this.setState({ transcription: response.data }, () => {
           if (response.data.score_data) {

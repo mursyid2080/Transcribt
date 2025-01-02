@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FaHeart, FaRegHeart } from 'react-icons/fa'; // Import icons
+import API_BASE_URL from '../config';
 
 
 const FavoriteButton = ({ transcriptionId, isFavoritedInitially }) => {
@@ -24,7 +25,7 @@ const FavoriteButton = ({ transcriptionId, isFavoritedInitially }) => {
 
         try {
             const response = await axios.post(
-                `http://localhost:8000/transcription/api/toggle-favorite/${transcriptionId}/`,
+                `${API_BASE_URL}/transcription/api/toggle-favorite/${transcriptionId}/`,
                 {},
                 {
                     headers: {

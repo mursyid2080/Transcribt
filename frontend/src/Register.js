@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Register.css'; // Make sure to import the CSS file
+import API_BASE_URL from './config';
 
 const Register = (props) => {
   const [username, setUsername] = useState('');
@@ -69,7 +70,7 @@ const Register = (props) => {
     formData.append('password', password);
     formData.append('password2', password2);
 
-    axios.post('http://localhost:8000/api/auth/register', formData)
+    axios.post(`${API_BASE_URL}/api/auth/register`, formData)
       .then(response => {
         console.log('Register successful:', response);
         navigate('/login'); // Redirect to login page after successful registration

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaHome, FaSearch, FaEdit, FaMicrophone, FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import './Header.css';
+import API_BASE_URL from '../config';
 
 const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setSearchInput }) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -10,7 +11,7 @@ const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setS
   const [hoveredIcon, setHoveredIcon] = useState(null);
 
   const handleLogout = () => {
-    axios.post('http://localhost:8000/api/auth/logout', {}, {
+    axios.post(`${API_BASE_URL}/api/auth/logout`, {}, {
       withCredentials: true,
     })
     .then(response => {

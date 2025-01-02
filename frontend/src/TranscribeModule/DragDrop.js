@@ -7,6 +7,7 @@ import { FileUploader } from "react-drag-drop-files";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import API_BASE_URL from '../config';
 
 
 const fileTypes = ['mp3', 'wav', 'flac'];
@@ -31,7 +32,7 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
     const formData = new FormData();
     formData.append('file', file, file.name);
 
-    axios.post('http://localhost:8000/transcribe/upload/', formData, {
+    axios.post(`${API_BASE_URL}/transcribe/upload/`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
