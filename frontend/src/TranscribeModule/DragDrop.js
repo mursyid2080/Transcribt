@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import API_BASE_URL from '../config';
 
 
-const fileTypes = ['mp3', 'wav', 'flac'];
+const fileTypes = ['mp3', 'wav'];
 
 function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
   const [file, setFile] = useState(null);

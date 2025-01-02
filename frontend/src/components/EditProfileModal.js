@@ -31,36 +31,36 @@ const EditProfileModal = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>Edit Profile</h2>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Email:
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-            />
-          </label>
-          <label>
-            Bio:
-            <textarea 
-              value={bio} 
-              onChange={(e) => setBio(e.target.value)} 
-            />
-          </label>
-          <label>
-            Profile Picture:
-            <input 
-              type="file" 
-              onChange={(e) => setProfilePicture(e.target.files[0])} 
-            />
-          </label>
-          <button type="submit">Update Profile</button>
-          <button type="button" onClick={onClose}>Cancel</button>
-        </form>
-      </div>
+    <div className="modal-content">
+      <h2>Edit Profile</h2>
+      <form onSubmit={handleSubmit} className="edit-profile-form">
+        <label>
+          Email:
+          <input 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+          />
+        </label>
+        <label>
+          Bio:
+          <textarea 
+            value={bio} 
+            onChange={(e) => setBio(e.target.value)} 
+          />
+        </label>
+        <label>
+          Profile Picture:
+          <input 
+            type="file" 
+            accept="image/*"
+            onChange={(e) => setProfilePicture(e.target.files[0])}
+          />
+        </label>
+        <button type="submit">Save</button>
+      </form>
     </div>
+  </div>
   );
 };
 

@@ -92,7 +92,7 @@ const ModalForm = ({
               {/* Categories Multi-Select */}
               <div style={styles.formGroup}>
                 <label htmlFor="categories">Categories:</label>
-                <small>Select one or more categories</small>
+                <small>Select a category</small>
                 <select
                   multiple
                   name="categories"

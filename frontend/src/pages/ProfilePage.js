@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './ProfilePage.css';
 import axios from 'axios';
-import { FaEdit } from 'react-icons/fa';
+import { LiaUserEditSolid } from "react-icons/lia";
 import EditProfileModal from '../components/EditProfileModal';
 import TranscriptionCard from '../components/TranscriptionCard';
 import { Routes, Route, Link } from "react-router-dom";
@@ -123,19 +123,30 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="profile-left-section" >
-        <div style={{backgroundImage: `url('/images/profile_batik.jpg')`, filter: 'brightness(0.2)'}} className="profile-background">
+        <div style={{backgroundImage: `url('/images/login_batik.jpg')`, filter: 'brightness(0.2)'}} className="profile-background">
         </div>
         <div className='user-info'>
-          <div className="profile-picture-container">
-            <img src={user.profile.profile_picture} alt="Profile" className="profile-picture" />
-            <button className="edit-button" onClick={() => setIsEditing(true)}>
-              <FaEdit />
+          <div style={{ backgroundColor: '#181818', color: '#fff', padding: '20px', borderRadius: '8px' }}>
+            <button className="edit-button" onClick={() => setIsEditing(true)} style={{ 
+              position: 'absolute', 
+              top: '10px', 
+              right: '10px', 
+              fontSize: '24px' 
+            }}>
+              <LiaUserEditSolid />
             </button>
+            <div className="profile-picture-container">
+              <img 
+                src={user.profile.profile_picture ? user.profile.profile_picture : `url('/images/profile.jpg')`} 
+                alt="Profile" 
+                className="profile-picture" 
+              />
+            </div>
+            <h2>{user.username}</h2>
+            <p>{user.email}</p>
+            <p>Total Favorites: {totalFavorites}</p>
+            <p>{user.profile.bio}</p>
           </div>
-          <h2>{user.username}</h2>
-          <p>{user.email}</p>
-          <p>{user.profile.bio}</p>
-          <p>Total Favorites: {totalFavorites}</p>
         </div>
       </div>
       <div className="profile-right-section">

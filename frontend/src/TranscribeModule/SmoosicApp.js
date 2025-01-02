@@ -270,21 +270,22 @@ class SmoosicComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    // this.setState({ audioFile: '' });
+    this.unbindKeyboardForModal();
+    this.setState({ audioFile: '' });
     console.log('Unmounting SmoosicComponent', this.Smo.SuiApplication.instance);
     this.Smo = null;
     // window.Smo.SuiApplication.instance = null;
     // window.Smo = null;
 
-    if (this.smoosicElem.current) {
-      this.smoosicElem.current.innerHTML = '';
-      this.smoosicElem.current.remove(); // Remove the element from the DOM
-    }
+    // if (this.smoosicElem.current) {
+    //   this.smoosicElem.current.innerHTML = '';
+    //   this.smoosicElem.current.remove(); // Remove the element from the DOM
+    // }
     
-    const pianoElement = document.getElementById('piano-element-id'); // Replace with actual ID
-      if (pianoElement) {
-        pianoElement.remove(); // Remove the element if necessary
-      }
+    // const pianoElement = document.getElementById('piano-element-id'); // Replace with actual ID
+    //   if (pianoElement) {
+    //     pianoElement.remove(); // Remove the element if necessary
+    //   }
 
       
   }
@@ -501,7 +502,7 @@ class SmoosicComponent extends React.Component {
         >
           <input
             type="file"
-            accept="audio/*"
+            accept=".wav, .mp3"
             onChange={this.handleFileChange}
             id="audio-upload"
             style={{ marginRight: '20px', display: 'none' }}

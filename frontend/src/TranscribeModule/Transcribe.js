@@ -53,14 +53,13 @@ const Transcribe = () => {
   
 
   return (
-    <div style={{height: '92vh', backgroundImage: `url('/images/input.jpg')`}}>
-      <div style={{height: '92vh', backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
-
-        <Container maxWidth="lg" style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-          <Typography variant="h4" align="center" gutterBottom style={{marginTop: "60px", fontFamily: "Poppins"}}>
+    <div style={{ height: '92vh', display: 'flex' }}>
+      <div style={{ flex: 1, backgroundColor: '#efefef', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <Container maxWidth="lg" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <Typography variant="h4" align="center" gutterBottom style={{  fontFamily: "Poppins" }}>
             Transcribe Your Music
           </Typography>
-          <Typography variant="body1" align="center" paragraph style={{width: "400px", fontFamily: "Poppins"}}>
+          <Typography variant="body1" align="center" paragraph style={{ width: "400px", fontFamily: "Poppins" }}>
             This page allows you to upload an audio file or record your voice to generate a music sheet. 
             Simply choose your preferred input method below and let our tool do the rest. 
             Create beautiful music sheets effortlessly with your voice!
@@ -72,7 +71,23 @@ const Transcribe = () => {
             </Box>
           </div>
         </Container>
+      </div >
+      <div style={{ flex: 1, position: 'relative' }}>
+      {/* <div style={{ 
+        backgroundImage: `url('/images/login_batik.jpg')`, 
+        backgroundSize: 'cover', 
+        height: '100%', 
+        filter: 'brightness(50%)' 
+      }}></div> */}
+      <div style={{ 
+        position: 'absolute', 
+        top: '50%', 
+        left: '50%', 
+        transform: 'translate(-50%, -50%)' 
+      }}>
+        <img src="/images/happy.svg" alt="Center Image" style={{ maxWidth: '100%', maxHeight: '100%' }} />
       </div>
+    </div>
     </div>
   );
 };

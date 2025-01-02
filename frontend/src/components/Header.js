@@ -18,12 +18,15 @@ const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setS
       console.log('Logout successful:', response.data);
       setLoggedIn(false);
       setUsername('');
+      setShowProfileDropdown(false);
       localStorage.removeItem('access_token');
     })
     .catch(error => {
       console.error('Error logging out:', error);
     });
   };
+
+  
 
   const toggleProfileDropdown = () => setShowProfileDropdown(!showProfileDropdown);
 
@@ -63,10 +66,14 @@ const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setS
           <FaEdit title="Editor" style={{marginRight: "5px"}}/>
           {hoveredIcon === 'editor' && <span className="icon-title">Editor</span>}
         </div>
-        <div className="icon-container" onClick={() => handleNavigate('/transcribe')} onMouseEnter={() => setHoveredIcon('transcribe')} onMouseLeave={() => setHoveredIcon(null)}>
+        <Link to="/transcribe" onClick={handleNavClick} className="icon-container" onMouseEnter={() => setHoveredIcon('transcribe')} onMouseLeave={() => setHoveredIcon(null)}>
+          <FaMicrophone title="Generate" style={{marginRight: "5px"}}/>
+          {hoveredIcon === 'transcribe' && <span className="icon-title">Generate</span>}
+        </Link>
+        {/* <div className="icon-container" onClick={() => handleNavigate('/transcribe')} onMouseEnter={() => setHoveredIcon('transcribe')} onMouseLeave={() => setHoveredIcon(null)}>
           <FaMicrophone title="Generate Notation" style={{marginRight: "5px"}}/>
           {hoveredIcon === 'transcribe' && <span className="icon-title">Generate</span>}
-        </div>
+        </div> */}
       </div>
       <div style={{ position: 'relative' }}>
         <div className="icon-container" onClick={toggleProfileDropdown} onMouseEnter={() => setHoveredIcon('profile')} onMouseLeave={() => setHoveredIcon(null)}>
@@ -75,7 +82,8 @@ const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setS
         </div>
         {showProfileDropdown && (
           <div className="profile-dropdown">
-            <button onClick={() => handleNavigate('/profile')}>Profile</button>
+            <Link to="/profile" onClick={() => { handleNavClick(); setShowProfileDropdown(false); }}>Profile</Link>
+            {/* <button onClick={handleNavClick}>Profile</button> */}
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

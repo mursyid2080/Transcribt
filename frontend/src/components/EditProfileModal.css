@@ -58,3 +58,17 @@
     background-color: #f44336;
     color: white;
   }
+
+  .edit-profile-form label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+  
+  .edit-profile-form input[type="email"],
+  .edit-profile-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
