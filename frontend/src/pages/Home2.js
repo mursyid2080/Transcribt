@@ -16,9 +16,13 @@ const Home = ({ searchInput, setSearchInput }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.time('fetchTranscriptions');
         const response = await axios.get(`${API_BASE_URL}/transcription/api/transcriptions/`, {}, {
           withCredentials: true
         });
+        console.timeEnd('fetchTranscriptions');
+        console.log('Response size:', response.data.length);
+
         const allData = response.data;
 
         const data = allData.filter(item => item.is_published);

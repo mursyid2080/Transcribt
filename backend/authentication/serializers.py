@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from .models import UserProfile
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField()

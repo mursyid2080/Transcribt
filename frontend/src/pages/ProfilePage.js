@@ -137,7 +137,7 @@ const ProfilePage = () => {
             </button>
             <div className="profile-picture-container">
               <img 
-                src={user.profile.profile_picture ? user.profile.profile_picture : `url('/images/profile.jpg')`} 
+                src={user.profile.profile_picture ? user.profile.profile_picture : '/images/profile.jpg'} 
                 alt="Profile" 
                 className="profile-picture" 
               />

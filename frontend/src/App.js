@@ -14,6 +14,8 @@ import './App.css';
 import TranscriptionPage from "./components/TranscriptionPage"; // Component to display the transcription details
 import axios from 'axios';
 import Header from './components/Header';
+import ResetPasswordRequest from './ResetPasswordRequest';
+import ResetPasswordConfirm from './ResetPasswordConfirm';
 import API_BASE_URL from './config';
 
 function App() {
@@ -76,6 +78,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUsername={setUsername} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUsername={setUsername} />} />
+          <Route path="/reset-password" element={<ResetPasswordRequest/>} />
+          <Route path="/reset-password/:uid/:token" element={<ResetPasswordConfirm/>} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       )}

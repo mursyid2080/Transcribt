@@ -79,9 +79,12 @@ const Login = ({ setLoggedIn, setUsername }) => {
           Log in
         </button>
         {loginError && <small className="error-text">{loginError}</small>}
-        <p className="signup-text">
-          Don’t have an account? <a href="/register">Sign up</a>
-        </p>
+        <div className="signup-text" style={{display: 'flex', justifyContent: 'space-between'}}>
+          <p >
+            Don’t have an account? <a href="/register">Sign up</a> 
+          </p>
+          <a href="/reset-password" className="reset-link">Reset Password</a>
+        </div>
       </div>
       <div className="login-right" style={{backgroundImage: `url('/images/login_batik.jpg')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center"}}>
         <div style={{ width: "100%", height: "100%", backgroundColor: 'rgba(0,0,0, 0.55)'}}/>

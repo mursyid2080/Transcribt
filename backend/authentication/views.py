@@ -15,6 +15,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from .serializers import PasswordResetSerializer
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.contrib.auth import get_user_model
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RegistrationView(View):
@@ -107,32 +113,56 @@ class LogoutView(View):
         return JsonResponse({'message': 'Logout successful.'})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class RequestResetEmailView(View):
-    def get(self, request):
-        return JsonResponse({'message': 'Please provide your email to reset the password.'})
-
+class PasswordResetRequestView(APIView):
+    """
+    Sends a password reset email with a link containing a token.
+    """
     def post(self, request):
-        email = request.POST.get('email')
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = User.objects.filter(email=email).first()
+            if user:
+                # Generate password reset token and email link
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(str(user.pk).encode())
+                reset_link = f"http://localhost:3000/reset-password/{uid}/{token}/"
+                
+                # Send email with reset link
+                send_mail(
+                    'Password Reset Request',
+                    f'Click the link to reset your password: {reset_link}',
+                    'noreply@yourdomain.com',
+                    [email],
+                )
+                return Response({"message": "Password reset email sent."}, status=status.HTTP_200_OK)
+            return Response({"error": "User not found."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if not email:
-            return JsonResponse({'error': 'Email is required.'}, status=400)
 
-        user = User.objects.filter(email=email).first()
-        if user:
-            email_subject = 'Reset Your Password'
-            message = f"Click the link to reset your password: /reset-password/{user.pk}"
+class PasswordResetConfirmView(APIView):
+    def post(self, request, uid, token):
+        try:
+            # Decode the uid (which is base64 encoded)
+            uid = urlsafe_base64_decode(uid).decode()  # Decoding the uid
+            user = get_user_model().objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+            return Response({"error": "Invalid user"}, status=status.HTTP_400_BAD_REQUEST)
 
-            email_message = EmailMessage(
-                email_subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                [email]
-            )
-            email_message.send()
+        # Check if the token is valid
+        if not default_token_generator.check_token(user, token):
+            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse({'message': 'If the email is valid, instructions to reset your password have been sent.'})
+        # Reset password logic
+        new_password = request.data.get('new_password')
+        if not new_password:
+            return Response({"error": "New password is required"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Set and save the new password
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"success": "Password reset successful"}, status=status.HTTP_200_OK)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SetNewPasswordView(View):

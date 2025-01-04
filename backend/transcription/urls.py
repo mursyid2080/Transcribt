@@ -13,4 +13,4 @@ urlpatterns = [
     path('api/transcription/toggle-publish/<int:pk>/', TogglePublishView.as_view(), name='toggle-publish'),
     path('api/transcriptions/delete/<int:pk>/', DeleteTranscriptionView.as_view(), name='delete-transcription'),
     
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] 

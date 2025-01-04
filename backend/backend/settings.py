@@ -135,6 +135,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
@@ -197,5 +199,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # or your email provider
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'heritageharmony02@gmail.com'
+EMAIL_HOST_PASSWORD = 'rzop cjqp accf ttdq'
+DEFAULT_FROM_EMAIL = 'noreply@heritageharmony.com'
 

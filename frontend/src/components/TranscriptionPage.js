@@ -24,6 +24,7 @@ class TranscriptionPage extends Component {
       zoomLevel: 1,
     };
     this.Smo = null;
+    this.application = null;
   }
 
   componentDidMount() {
@@ -65,9 +66,14 @@ class TranscriptionPage extends Component {
     }
     this.Smo = window.Smo;
     this.Smo.SuiApplication.configure(config).then((application) => {
+      this.application = application;
       console.log('done!');
+      // console.log('scale: ' , this.application.view.score.layoutManager);
+      // const globalLayout = this.application.view.score.layoutManager.getGlobalLayout();
+      // globalLayout.zoomScale *= 1.9;
+      this.application.view.updateZoom(1.4);
     });
-    
+  
   }
 
 
@@ -100,17 +106,16 @@ class TranscriptionPage extends Component {
   };
 
   handleZoomIn = () => {
-    this.setState((prevState) => ({
-      zoomLevel: Math.min(prevState.zoomLevel + 0.1, 2), // Max zoom level 2
-    }));
+    const globalLayout = this.application.view.score.layoutManager.getGlobalLayout();
+    globalLayout.zoomScale *= 1.1;
+    this.application.view.updateZoom(globalLayout.zoomScale);
   };
 
   handleZoomOut = () => {
-    const globalLayout = this.Smo.SuiApplication.instance.view.score.layoutManager.getGlobalLayout();
-    globalLayout.zoomScale *= 1.1;
-    this.Smo.SuiApplication.instance.view.updateZoom(globalLayout.zoomScale);
-    this.Smo.SuiApplication.createUi();
-    console.log(globalLayout.zoomScale);
+    const globalLayout = this.application.view.score.layoutManager.getGlobalLayout();
+    globalLayout.zoomScale = globalLayout.zoomScale / 1.1;
+    this.application.view.updateZoom(globalLayout.zoomScale);
+    console.log('zoom: ', globalLayout.zoomScale);
   };
 
   captureImage = () => {
@@ -122,23 +127,25 @@ class TranscriptionPage extends Component {
         const originalWidth = booElement.offsetWidth;
         const originalHeight = booElement.offsetHeight;
   
-        // Capture the 'boo' element as a square image
-        html2canvas(booElement, {
-          width: originalWidth,
-          height: originalHeight,
-          windowWidth: originalWidth,  // Force the width of the viewport
-          windowHeight: originalHeight // Force the height of the viewport
-        }).then((canvas) => {
-          // Resize the canvas to a square if needed
-          const imageCapture = canvas.toDataURL('image/png');
-          const pdf = new jsPDF.jsPDF({
-            orientation: 'portrait',
-            unit: 'px',
-            format: [originalWidth, originalHeight]
-          });
-          pdf.addImage(imageCapture, 'SVG', 0, 0, originalWidth, originalHeight);
-          pdf.save('transcription.pdf');
-        });
+        const scale = 3; // Increase this value for higher resolution
+
+    // Capture the osmd element as an HD image
+    html2canvas(booElement, {
+      width: originalWidth * scale,
+      height: originalHeight * scale,
+      windowWidth: originalWidth * scale,  // Force the width of the viewport
+      windowHeight: originalHeight * scale, // Force the height of the viewport
+      scale: scale
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [originalWidth * scale, originalHeight * scale]
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, originalWidth * scale, originalHeight * scale);
+      pdf.save('transcription.pdf');
+    });
       } else {
         console.error("Element with id 'boo' not found");
       }
@@ -227,7 +234,7 @@ class TranscriptionPage extends Component {
         <div className="music-page-header-section">
           <div className="music-page-header-section-left">
             <img
-              src={transcription.profile_picture}
+              src={transcription.profile_picture ? transcription.profile_picture : '/images/profile.jpg'} 
               alt="Profile"
               className="music-profile-picture"
             />
@@ -254,8 +261,16 @@ class TranscriptionPage extends Component {
 
         
         <div className="audio-lyrics-container" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-        <div className="transcription-content" style={{ display: 'flex', flexDirection: 'column', height: '80vh'}}>
-          <div style={{width: '70vw', height: '100%', borderRadius: '10px'}}>
+        <div className="transcription-content" style={{ display: 'flex', flexDirection: 'column', height: '80vh', width: '70vw'}}>
+          <div style={{ height: '100%', borderRadius: '10px', backgroundColor: '#fff', marginBottom: '30px'}}>
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '10px' }}>
+            <button onClick={this.handleZoomIn} style={{ marginRight: '10px' }}>
+              <FaSearchPlus />
+            </button>
+            <button onClick={this.handleZoomOut}>
+              <FaSearchMinus />
+            </button>
+          </div>
 
             <Scrollbars
               autoHide // Automatically hides scrollbar when inactive
@@ -266,7 +281,7 @@ class TranscriptionPage extends Component {
               style={{ maxWidth: '100%' , borderRadius: '10px', backgroundColor: '#ffffff'}}
 
             >
-              <div className="transcription-scrollable" ref={this.osmdContainer} style={{ transform: `scale(${this.zoomLevel})`, transformOrigin: 'top left' }}></div>
+              <div className="transcription-scrollable" ref={this.osmdContainer} style={{  }}></div>
             </Scrollbars>
           </div>
 
