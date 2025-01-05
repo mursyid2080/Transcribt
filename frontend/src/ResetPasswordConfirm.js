@@ -1,15 +1,15 @@
-// ResetPasswordConfirm.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import API_BASE_URL from './config';
-import './Login.css'
+import './Login.css';
 
 const ResetPasswordConfirm = () => {
   const { uid, token } = useParams();
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,9 +18,15 @@ const ResetPasswordConfirm = () => {
         new_password: newPassword,
       });
       setMessage(response.data.message);
+      setError(''); // Clear any previous error
     } catch (err) {
       setError('Failed to reset password. Please try again.');
+      setMessage(''); // Clear any previous message
     }
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
   };
 
   return (

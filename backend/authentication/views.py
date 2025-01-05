@@ -162,7 +162,7 @@ class PasswordResetConfirmView(APIView):
         user.set_password(new_password)
         user.save()
 
-        return Response({"success": "Password reset successful"}, status=status.HTTP_200_OK)
+        return Response({"message": "Password reset successful"}, status=status.HTTP_200_OK)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SetNewPasswordView(View):
@@ -171,19 +171,19 @@ class SetNewPasswordView(View):
         password2 = request.POST.get('password2')
 
         if len(password) < 6:
-            return JsonResponse({'error': 'Passwords should be at least 6 characters long.'}, status=400)
+            return Response({'error': 'Passwords should be at least 6 characters long.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if password != password2:
-            return JsonResponse({'error': 'Passwords do not match.'}, status=400)
+            return Response({'error': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = User.objects.get(pk=uidb64)
             user.set_password(password)
             user.save()
 
-            return JsonResponse({'message': 'Password reset successful. You can now log in.'})
+            return Response({'message': 'Password reset successful. You can now log in.'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return JsonResponse({'error': 'Invalid user ID.'}, status=400)
+            return Response({'error': 'Invalid user ID.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
