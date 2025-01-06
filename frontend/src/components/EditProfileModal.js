@@ -58,6 +58,7 @@ const EditProfileModal = ({
           />
         </label>
         <button type="submit">Save</button>
+        <button type="button" onClick={onClose} className="close-button">Close</button>
       </form>
     </div>
   </div>

@@ -12,6 +12,7 @@ import './SmoosicApp.css'
 import PublishButton from '../components/PublishButton';
 import DeleteButton from '../components/DeleteButton.js';
 import parseMidi from '../midi-parser.js';
+import KeyboardInputInfo from '../components/KeyboardInputInfo.js';
 import API_BASE_URL from '../config.js';
 
 
@@ -27,6 +28,7 @@ class SmoosicComponent extends React.Component {
       showModal: false, // State to control the visibility of the modal
       title: '', // To store the entered title
       author: '', // To store the entered author
+      showTutorial: false,
       categoriesOptions: [
         "Nasihat dan Pengajaran",       // Advice and moral lessons
         "Cinta dan Kasih Sayang",       // Love and affection
@@ -156,6 +158,7 @@ class SmoosicComponent extends React.Component {
     } else {
       // Initialize Smoosic with the default config if no score is provided
       this.initSmoosic(this.smoosicElem.current, config);
+      this.setState({ showTutorial: true });
     }
     this.modalAvail = true;
   
@@ -470,6 +473,10 @@ class SmoosicComponent extends React.Component {
   });
 };
 
+  closeTutorial = () => {
+    this.setState({ showTutorial: false });
+  };
+
   render() {
     console.log(this.state.transcription);
     const {
@@ -589,6 +596,16 @@ class SmoosicComponent extends React.Component {
         ) : (
           <div></div> // Show a loading indicator if transcription is not available
         )}
+
+        {this.state.showTutorial ? (
+          <KeyboardInputInfo 
+          showTutorial={this.state.showTutorial} 
+          closeTutorial={this.closeTutorial} 
+        />
+        ) : (
+          <div></div>
+        )}
+        
       </div>
     );
   }

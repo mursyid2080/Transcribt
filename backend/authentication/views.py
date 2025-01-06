@@ -126,6 +126,7 @@ class PasswordResetRequestView(APIView):
                 # Generate password reset token and email link
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(str(user.pk).encode())
+                # ipaddressu
                 reset_link = f"http://localhost:3000/reset-password/{uid}/{token}/"
                 
                 # Send email with reset link

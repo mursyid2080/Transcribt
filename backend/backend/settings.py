@@ -201,11 +201,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'  # or your email provider
-EMAIL_PORT = 587 
-EMAIL_HOST_USER = 'postmaster@sandboxa0bdb15aa60c402f800a17fdc2b4bd00.mailgun.org'
-EMAIL_HOST_PASSWORD = 'a270124cc67ab49b65c290432af02e28-e61ae8dd-ee71b409'
+EMAIL_HOST = 'smtp.gmail.com'  # or your email provider
+EMAIL_PORT = 465 
+EMAIL_HOST_USER = 'heritageharmony02@gmail.com'
+EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = 'noreply@heritageharmony.com'
+EMAIL_USE_SSL = True
 
 # ANYMAIL = {
 # "MAILGUN_API_KEY": "api_key_305834958304534",
