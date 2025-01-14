@@ -67,8 +67,8 @@ const Header = ({ handleNavClick, handleNavigate, setLoggedIn, setUsername, setS
           {hoveredIcon === 'editor' && <span className="icon-title">Editor</span>}
         </div>
         <Link to="/transcribe" onClick={handleNavClick} className="icon-container" onMouseEnter={() => setHoveredIcon('transcribe')} onMouseLeave={() => setHoveredIcon(null)}>
-          <FaMicrophone title="Generate" style={{marginRight: "5px"}}/>
-          {hoveredIcon === 'transcribe' && <span className="icon-title">Generate</span>}
+          <FaMicrophone title="Vocalscribe" style={{marginRight: "5px"}}/>
+          {hoveredIcon === 'transcribe' && <span className="icon-title">Vocalscribe</span>}
         </Link>
         {/* <div className="icon-container" onClick={() => handleNavigate('/transcribe')} onMouseEnter={() => setHoveredIcon('transcribe')} onMouseLeave={() => setHoveredIcon(null)}>
           <FaMicrophone title="Generate Notation" style={{marginRight: "5px"}}/>

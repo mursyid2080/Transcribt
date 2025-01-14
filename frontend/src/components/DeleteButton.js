@@ -20,23 +20,25 @@ const DeleteButton = ({ transcriptionId, onDelete }) => {
 
     const handleDelete = async () => {
         const csrfToken = getCSRFToken();
-        try {
-        const response = await axios.delete(
-            `${API_BASE_URL}/transcription/api/transcriptions/delete/${transcriptionId}/`,
-            {
-            headers: {
-                'X-CSRFToken': csrfToken, // Include CSRF token
-            },
-            withCredentials: true,
-            }
-        );
-        console.log('Delete successful:', response);
-        // onDelete(transcriptionId); // Call the onDelete callback to update the parent component
-        navigate('/profile'); // Redirect to the profile page
-        } catch (error) {
-        console.error('Error deleting transcription:', error);
+        if (window.confirm('Are you sure you want to delete this transcription?')) {
+          try {
+            const response = await axios.delete(
+              `${API_BASE_URL}/transcription/api/transcriptions/delete/${transcriptionId}/`,
+              {
+              headers: {
+                  'X-CSRFToken': csrfToken, // Include CSRF token
+              },
+              withCredentials: true,
+              }
+          );
+          console.log('Delete successful:', response);
+          // onDelete(transcriptionId); // Call the onDelete callback to update the parent component
+          navigate('/profile'); // Redirect to the profile page
+          } catch (error) {
+          console.error('Error deleting transcription:', error);
+          }
         }
-    };
+      };
 
   return (
     <button

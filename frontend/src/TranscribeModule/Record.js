@@ -9,7 +9,8 @@ import API_BASE_URL from "../config";
 
 
 
-export default function Record({ onMusicXml }) {
+
+export default function Record({ onMusicXml, setLoading }) {
   const navigate = useNavigate();
   const [audioDetails, setAudioDetails] = useState({
     url: null,
@@ -17,6 +18,8 @@ export default function Record({ onMusicXml }) {
     chunks: null,
     duration: { h: 0, m: 0, s: 0 }
   });
+  // const [loading, setLoading] = useState(false); // State to track loading status
+
 
   const handleAudioStop = (data) => {
     console.log(data);
@@ -28,6 +31,8 @@ export default function Record({ onMusicXml }) {
       console.error('No audio URL provided');
       return;
     }
+
+    setLoading(true); // Set loading to true when the upload starts
 
     // Use axios to download the audio file from the URL
     axios.get(audioDetails.url, {
@@ -65,13 +70,16 @@ export default function Record({ onMusicXml }) {
         })
         .catch(error => {
           console.error('There was an error uploading the file!', error);
+        })
+        .finally(() => {
+          setLoading(false); // Set loading to false when the upload is complete
         });
     })
     .catch(error => {
         console.error('Error downloading audio file:', error);
+        setLoading(false); // Set loading to false if there's an error
     });
-};
-
+  };
 
   const handleReset = () => {
     const reset = {
@@ -116,6 +124,7 @@ export default function Record({ onMusicXml }) {
         handleAudioUpload={handleAudioUpload}
         handleReset={() => handleReset()}
       />
+      
       {/* <button onClick={handleAudioUpload}>Upload Audio</button> */}
     </Container>
   );

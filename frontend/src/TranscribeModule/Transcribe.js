@@ -14,6 +14,7 @@ import IconButton from "./IconButton"
 import DragDrop from './DragDrop';
 import Record from './Record';
 import MusicXMLRenderer from './MusicXMLRenderer';
+import './Transcribe.css';
 
 function InputSelector({ onClick }) {
   return (
@@ -32,6 +33,8 @@ function InputSelector({ onClick }) {
 const Transcribe = () => {
 
   const [musicxml, setMusicxml] = useState(null); // State to hold MusicXML data
+  const [loading, setLoading] = useState(false); // State to track loading status
+
 
   // Function to handle MusicXML data
   const handleMusicXml = (data) => {
@@ -39,8 +42,8 @@ const Transcribe = () => {
   };
   
   const inputDictionary = {
-    'DragDrop': <DragDrop onMusicXml={handleMusicXml} />,
-    'Record': <Record onMusicXml={handleMusicXml} />
+    'DragDrop': <DragDrop onMusicXml={handleMusicXml} setLoading={setLoading}/>,
+    'Record': <Record onMusicXml={handleMusicXml} setLoading={setLoading} />
   };
   
   const [currentInput, setCurrentInput] = useState('DragDrop');
@@ -54,6 +57,12 @@ const Transcribe = () => {
 
   return (
     <div style={{ height: '92vh', display: 'flex' }}>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <span>Loading...</span>
+        </div>
+      )}
       <div style={{ flex: 1, backgroundColor: '#efefef', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <Container maxWidth="lg" style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
           <Typography variant="h4" align="center" gutterBottom style={{  fontFamily: "Poppins" }}>
@@ -87,7 +96,8 @@ const Transcribe = () => {
       }}>
         <img src="/images/happy.svg" alt="Center Image" style={{ maxWidth: '100%', maxHeight: '100%' }} />
       </div>
-    </div>
+      </div>
+      
     </div>
   );
 };

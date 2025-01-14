@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-scnlw63g1pph4*i(l(9!+rca+b$=si(_#1=$0d)sxympupe+ij
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ['127.0.0.1','localhost', 'lustrous-hummingbird-27308d.netlify.app', 'backend-summer-glade-8183.fly.dev']
 
 # AUTH_USER_MODEL = 'authentication.User'
 
@@ -98,12 +98,16 @@ CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True  # Required for SameSite=None
 
-CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = True  # Required for SameSite=None
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',  # Frontend origin
+    'https://lustrous-hummingbird-27308d.netlify.app',
+    'https://backend-summer-glade-8183.fly.dev',
 ]
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -114,6 +118,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://192.168.193.40:3000',
     'http://192.168.159.133:3000',
     'http://192.168.159.133',
+    'https://lustrous-hummingbird-27308d.netlify.app',
+    'https://backend-summer-glade-8183.fly.dev',
 ]
 
 
@@ -216,3 +222,11 @@ EMAIL_USE_SSL = True
 # EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 # DEFAULT_FROM_EMAIL = "your-sender-email@example.com"
 # SERVER_EMAIL = "your-sender-email@example.com"
+
+# CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://.*\.netlify\.app$"]
+
+# # Secure settings
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_HSTS_SECONDS = 3600
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True

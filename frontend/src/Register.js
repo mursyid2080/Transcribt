@@ -13,6 +13,7 @@ const Register = (props) => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [password2Error, setPassword2Error] = useState('');
+  const [registerError, setRegisterError] = useState('');
 
   const navigate = useNavigate();
 
@@ -22,6 +23,7 @@ const Register = (props) => {
     setEmailError('');
     setPasswordError('');
     setPassword2Error('');
+    setRegisterError('');
 
     // Check if the user has entered both fields correctly
     if (username === '') {
@@ -77,6 +79,7 @@ const Register = (props) => {
       })
       .catch(error => {
         console.error('Error registering:', error);
+        setRegisterError(error.response?.data?.errors?.[0] || 'Registration failed'); // Update the error state
       });
   };
 
@@ -128,6 +131,7 @@ const Register = (props) => {
           />
           <label className="errorLabel">{password2Error}</label>
         </div>
+        {registerError && <small className="errorLabel">{registerError}</small>}
         <br />
         <div className="inputContainer">
           <input className="inputButton" type="button" onClick={onButtonClick} value="Register" />

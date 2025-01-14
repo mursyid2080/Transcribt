@@ -24,11 +24,16 @@ const ProfilePage = () => {
   const [transcriptions, setTranscriptions] = useState([]);
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
-  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePicture, setProfilePicture] = useState('/images/profile.jpg');
   const [isEditing, setIsEditing] = useState(false);
   const [totalFavorites, setTotalFavorites] = useState(0);
   const navigate = useNavigate();
   const [hasReloaded, setHasReloaded] = useState(false);
+
+  const handleImageError = () => {
+    setProfilePicture('/images/profile.jpg');
+  };
+  
 
   useEffect(() => {
     if (!sessionStorage.getItem('hasReloaded')) {
@@ -65,6 +70,7 @@ const ProfilePage = () => {
   
         setTotalFavorites(totalFavorites);
         setUser(userProfileData);
+        setProfilePicture(userProfileData.profile.profile_picture);
         setTranscriptions(transcriptionsData);
       } catch (error) {
         console.error("Error fetching:", error);
@@ -137,9 +143,10 @@ const ProfilePage = () => {
             </button>
             <div className="profile-picture-container">
               <img 
-                src={user.profile.profile_picture ? user.profile.profile_picture : '/images/profile.jpg'} 
+                src={profilePicture} 
                 alt="Profile" 
                 className="profile-picture" 
+                onError={handleImageError}
               />
             </div>
             <h2>{user.username}</h2>

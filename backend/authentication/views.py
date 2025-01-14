@@ -128,6 +128,7 @@ class PasswordResetRequestView(APIView):
                 uid = urlsafe_base64_encode(str(user.pk).encode())
                 # ipaddressu
                 reset_link = f"http://localhost:3000/reset-password/{uid}/{token}/"
+                # reset_link = f"https://lustrous-hummingbird-27308d.netlify.app/reset-password/{uid}/{token}/"
                 
                 # Send email with reset link
                 send_mail(

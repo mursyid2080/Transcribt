@@ -14,6 +14,10 @@ import DeleteButton from '../components/DeleteButton.js';
 import parseMidi from '../midi-parser.js';
 import KeyboardInputInfo from '../components/KeyboardInputInfo.js';
 import API_BASE_URL from '../config.js';
+import Cookies from 'js-cookie';
+
+import { useNavigate } from 'react-router-dom';
+
 
 
 class SmoosicComponent extends React.Component {
@@ -35,7 +39,7 @@ class SmoosicComponent extends React.Component {
         "Keindahan Alam",               // Nature and the environment
         "Kehidupan Seharian",           // Daily life and routines
         "Permainan dan Hiburan",        // Games and entertainment
-        "Cerita dan Legenda",           // Stories and legends
+        "Cerita dan Lagenda",           // Stories and legends
         "Keagamaan dan Ketuhanan",      // Religious and spiritual themes
         "Pekerjaan dan Tradisi",        // Occupations and traditional work
         "Perpaduan dan Kemasyarakatan", // Unity and community
@@ -55,6 +59,7 @@ class SmoosicComponent extends React.Component {
     this.mouseMoveHandler = null;
     this.mouseClickHandler = null;
     this.eventSource = null;
+
     
     
   }
@@ -361,6 +366,7 @@ class SmoosicComponent extends React.Component {
   };
 
   handleSubmit = async (modalFormData) => {
+    
     this.setState({
       title: modalFormData.title,
       author: modalFormData.author,
@@ -427,16 +433,21 @@ class SmoosicComponent extends React.Component {
     const token = localStorage.getItem("access_token");
     console.log(token);
   
-    const getCSRFToken = () => {
-      console.log(document.cookie);
-      const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-        const [name, value] = cookie.split('=');
-        acc[name] = value;
-        return acc;
-      }, {});
+    // const getCSRFToken = () => {
+    //   console.log(document.cookie);
+    //   const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+    //     const [name, value] = cookie.split('=');
+    //     acc[name] = value;
+    //     return acc;
+    //   }, {});
   
-      return cookies.csrftoken || null;
+    //   return cookies.csrftoken || null;
+    // };
+    const getCSRFToken = () => {
+      const csrftoken = Cookies.get('csrftoken');
+      return csrftoken;
     };
+
   
     try {
       const csrfToken = getCSRFToken();
@@ -464,6 +475,8 @@ class SmoosicComponent extends React.Component {
       if (response.status === 200) {
         console.log('Data saved successfully:', response.data);
         this.toggleModal(); // Close the modal after successful save
+        alert("Project saved! You can find it in your profile.");
+        this.props.navigate('/profile');
       } else {
         console.error('Error saving data:', response.statusText);
       }

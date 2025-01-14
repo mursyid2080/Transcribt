@@ -12,7 +12,7 @@ import API_BASE_URL from '../config';
 
 const fileTypes = ['mp3', 'wav'];
 
-function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
+function DragDrop({ onMusicXml, setLoading }) { // Accept onMusicXml prop
   const [file, setFile] = useState(null);
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -28,6 +28,8 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
       console.error('No file selected');
       return;
     }
+
+    setLoading(true); // Set loading to true when the upload starts
 
     const formData = new FormData();
     formData.append('file', file, file.name);
@@ -72,11 +74,18 @@ function DragDrop({ onMusicXml }) { // Accept onMusicXml prop
           score: midi, 
           audioFile: audioFileURL } 
         });
+        
       // onMusicXml(transcription.musicxml);  // Pass MusicXML data to parent component
-    })
+    })  
     .catch(error => {
       console.error('There was an error uploading the file!', error);
+      setLoading(false);
+    })
+    .finally(() => {
+      setLoading(false); // Set loading to false when the upload is complete
     });
+    
+    
   };
 
   const dropMessageStyle = {

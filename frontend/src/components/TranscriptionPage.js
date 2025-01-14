@@ -22,9 +22,11 @@ class TranscriptionPage extends Component {
       transcription: null,
       isDomReady: false,
       zoomLevel: 1,
+      profilePicture: '/images/profile.jpg',
     };
     this.Smo = null;
     this.application = null;
+    
   }
 
   componentDidMount() {
@@ -43,6 +45,7 @@ class TranscriptionPage extends Component {
             // this.initializeOSMD(response.data.score_data);
             this.initializeSmo(response.data.score_data);
             this.setState({ isDomReady: true });
+            this.setState({ profilePicture: response.data.profile_picture });
             console.log(response.data);
           }
         });
@@ -118,6 +121,11 @@ class TranscriptionPage extends Component {
     console.log('zoom: ', globalLayout.zoomScale);
   };
 
+  handleImageError = () => {
+    this.setState({ profilePicture: '/images/profile.jpg' });
+  };
+
+
   captureImage = () => {
     if (this.osmdContainer.current) {
       const booElement = this.osmdContainer.current.querySelector('#boo');
@@ -127,7 +135,7 @@ class TranscriptionPage extends Component {
         const originalWidth = booElement.offsetWidth;
         const originalHeight = booElement.offsetHeight;
   
-        const scale = 3; // Increase this value for higher resolution
+        const scale = 1; // Increase this value for higher resolution
 
     // Capture the osmd element as an HD image
     html2canvas(booElement, {
@@ -138,7 +146,7 @@ class TranscriptionPage extends Component {
       scale: scale
     }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
+      const pdf = new jsPDF.jsPDF({
         orientation: 'portrait',
         unit: 'px',
         format: [originalWidth * scale, originalHeight * scale]
@@ -214,7 +222,8 @@ class TranscriptionPage extends Component {
   };
 
   render() {
-    const { transcription } = this.state;
+    const { transcription, profilePicture } = this.state;
+   
 
     const renderThumb = ({ style, ...props }) => {
       const thumbStyle = {
@@ -234,9 +243,10 @@ class TranscriptionPage extends Component {
         <div className="music-page-header-section">
           <div className="music-page-header-section-left">
             <img
-              src={transcription.profile_picture ? transcription.profile_picture : '/images/profile.jpg'} 
+              src={profilePicture} 
               alt="Profile"
               className="music-profile-picture"
+              onError={this.handleImageError}
             />
             <div className="profile-info">
               <h1 className="transcription-title">{transcription.title}</h1>
@@ -290,7 +300,7 @@ class TranscriptionPage extends Component {
           </div>
         </div>
 
-          <div className="lyrics-section" style={{ flex: 1 }}>
+          <div className="lyrics-section" style={{ flex: 1, backgroundColor: '#fff', borderRadius: '10px', marginLeft: '10px', height: '78vh'}}>
             <Scrollbars
               autoHide // Automatically hides scrollbar when inactive
               autoHideTimeout={1000} // Hides after 1 second of inactivity
@@ -300,7 +310,7 @@ class TranscriptionPage extends Component {
               style={{ maxWidth: '100%' }}
             >
               <div className="transcription-lyrics" style={{ textAlign: "center" }}>
-                <p style={{padding: '50px'}}>{transcription.lyrics}</p>
+                <p style={{padding: '50px', whiteSpace: 'pre-line'}}>{transcription.lyrics}</p>
               </div>
             </Scrollbars>
           </div>
